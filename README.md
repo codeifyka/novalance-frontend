@@ -20,16 +20,16 @@ Then you need to create a copy of **.env.example** and name it **.env** or run t
 copy .env.example .env
 ```
 
-Then since this is laravel you need to generate new key so run
-
-```bash
-php artisan key:generate
-```
-
 then install all necessary composer dependencies by running
 
 ```bash
 composer install
+```
+
+Then since this is laravel you need to generate new key so run
+
+```bash
+php artisan key:generate
 ```
 
 
