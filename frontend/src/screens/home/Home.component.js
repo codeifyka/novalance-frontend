@@ -1,19 +1,20 @@
-import RestInfo from "@/libs/RestInfo";
-import axios from "axios";
+import { FreeLancerHomeVue } from "@/components/freelancer/home";
+import UserSessionRepository from "@/libs/UserSessionRepository";
 import { defineComponent, onMounted, ref } from "vue";
 
 export default defineComponent({
     name: 'HomeVue',
+    components: { FreeLancerHomeVue },
     props: {},
     setup() {
-        let data = ref(null);
+        let account_type = ref(null);
 
-        const restInfo = new RestInfo(axios);
+        const userSessionRepository = new UserSessionRepository(localStorage);
 
         onMounted(async () => {
-            data.value = await restInfo.getInfo();
+            account_type.value = await userSessionRepository.getAccountType();
         });
 
-        return { data };
+        return { account_type };
     },
 });
