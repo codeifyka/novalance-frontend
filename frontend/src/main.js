@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/vue';
 import { createApp } from 'vue';
 import './style.css';
 import App from './App.vue';
@@ -48,6 +49,8 @@ router.beforeEach(async (to, from) => {
         
     }
 });
+
+app.component("Icon", Icon);
 
 app.use(router);
 app.mount('#app');

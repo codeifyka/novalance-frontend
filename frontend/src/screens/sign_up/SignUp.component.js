@@ -2,6 +2,17 @@ import RestUserSession from "@/libs/RestUserSession";
 import axios from "axios";
 import { ref } from "vue";
 
+const styles = {
+    container: "w-full h-screen flex flex-col items-center bg-gray-900",
+    inner: "w-1/3 rounded-md p-8 my-auto",
+    headTitle: "text-xl text-gray-50 font-semibold",
+    form: "grid grid-rows-5 grid-cols-2 gap-2 my-10",
+    long_input: "bg-transparent text-gray-300 font-semibold border-gray-500 placeholder:text-gray-500 border-b p-2 col-span-2 w-full mx-auto outline-none",
+    input: "bg-transparent text-gray-300 font-semibold border-gray-500 placeholder:text-gray-500 border-b p-2 w-full mx-auto outline-none",
+    signInBtn: "text-blue-500 hover:text-blue-600 cursor-pointer",
+    signUpBtn: "px-16 py-2 uppercase text-gray-50 font-semibold rounded-full bg-blue-600 hover:bg-blue-700 cursor-pointer  w-fit mx-auto",
+};
+
 export default {
     setup(){
         const restUserSession = new RestUserSession(axios);
@@ -34,17 +45,6 @@ export default {
                 console.log(error);
                 alert('Bad credentials');
             });
-        }
-
-        const styles = {
-            container: "w-full h-screen flex flex-col items-center bg-gray-900",
-            inner: "w-1/3 rounded-md p-8 my-auto",
-            headTitle: "text-xl text-gray-50 font-semibold",
-            form: "grid grid-rows-5 grid-cols-2 gap-2 my-10",
-            long_input: "bg-transparent text-gray-300 font-semibold border-gray-500 placeholder:text-gray-500 border-b p-2 col-span-2 w-full mx-auto outline-none",
-            input: "bg-transparent text-gray-300 font-semibold border-gray-500 placeholder:text-gray-500 border-b p-2 w-full mx-auto outline-none",
-            signInBtn: "text-blue-500 hover:text-blue-600 cursor-pointer",
-            signUpBtn: "px-16 py-2 uppercase text-gray-50 font-semibold rounded-full bg-blue-600 hover:bg-blue-700 cursor-pointer  w-fit mx-auto",
         }
 
         return {
