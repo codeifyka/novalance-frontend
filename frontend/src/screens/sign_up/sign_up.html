@@ -1,21 +1,21 @@
-<div class="w-full h-screen flex flex-col items-center bg-gray-900">
-    <div class="w-1/3 rounded-md p-8 my-auto">
-        <div class="text-xl text-gray-50 font-semibold">Sign Up</div>
-        <div class="grid grid-rows-5 grid-cols-2 gap-2 my-10">
-            <input v-model="username" class="bg-transparent text-gray-300 font-semibold border-gray-500 placeholder:text-gray-500 border-b p-2 col-span-2 w-full mx-auto outline-none" type="text" placeholder="Username" />
-            <input v-model="first_name" class="bg-transparent text-gray-300 font-semibold border-gray-500 placeholder:text-gray-500 border-b p-2 w-full mx-auto outline-none" type="text" placeholder="First Name" />
-            <input v-model="last_name" class="bg-transparent text-gray-300 font-semibold border-gray-500 placeholder:text-gray-500 border-b p-2 w-full mx-auto outline-none" type="text" placeholder="Last Name" />
-            <input v-model="email" class="bg-transparent text-gray-300 font-semibold border-gray-500 placeholder:text-gray-500 border-b p-2 col-span-2 w-full mx-auto outline-none" type="email" placeholder="Email" />
+<div :class="styles.container">
+    <div :class="styles.inner">
+        <div :class="styles.headTitle">Sign Up</div>
+        <div :class="styles.form">
+            <input v-model="username" :class="styles.long_input" type="text" placeholder="Username" />
+            <input v-model="first_name" :class="styles.input" type="text" placeholder="First Name" />
+            <input v-model="last_name" :class="styles.input" type="text" placeholder="Last Name" />
+            <input v-model="email" :class="styles.long_input" type="email" placeholder="Email" />
 
-            <select v-model="account_type" class="bg-transparent text-gray-300 font-semibold border-gray-500 placeholder:text-gray-500 border-b p-2 col-span-2 w-full mx-auto outline-none">
+            <select v-model="account_type" :class="styles.long_input">
                 <option>freelancer</option>
                 <option>client</option>
             </select>
  
-            <input v-model="password" class="bg-transparent text-gray-300 font-semibold border-gray-500 placeholder:text-gray-500 border-b p-2 w-full mx-auto outline-none" type="password" placeholder="Password" />
-            <input v-model="confirm_password" class="bg-transparent text-gray-300 font-semibold border-gray-500 placeholder:text-gray-500 border-b p-2 w-full mx-auto outline-none" type="password" placeholder="Confirm Password" />
-            <a href="/sign_in" class="text-blue-500 hover:text-blue-600 cursor-pointer">Already have an account ?</a>
+            <input v-model="password" :class="styles.input" type="password" placeholder="Password" />
+            <input v-model="confirm_password" :class="styles.input" type="password" placeholder="Confirm Password" />
+            <a href="/sign_in" :class="styles.signInBtn">Already have an account ?</a>
         </div>
-        <div @click="signUp" class="px-16 py-2 uppercase text-gray-50 font-semibold rounded-full bg-blue-600 hover:bg-blue-700 cursor-pointer  w-fit mx-auto">Sign Up</div>
+        <div @click="signUp" :class="styles.signUpBtn">Sign Up</div>
     </div>
 </div>
