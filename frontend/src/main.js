@@ -11,6 +11,7 @@ import RestUserSession from './libs/RestUserSession';
 import axios from 'axios';
 import { FreeLancerPortfolioVue } from './components/freelancer/portfolio';
 import { FreeLancerServicesVue } from './components/freelancer/services';
+import { FreeLancerCreateServiceVue } from './components/freelancer/services/create';
 
 
 const app = createApp(App);
@@ -21,6 +22,7 @@ const routes = [
     { path: '/sign_up', component: SignUpVue },
     { path: '/user/:username/portfolio', component: FreeLancerPortfolioVue },
     { path: '/user/:username/services', component: FreeLancerServicesVue },
+    { path: '/user/:username/services/create', component: FreeLancerCreateServiceVue },
 ];
 
 const router = createRouter({
