@@ -1,3 +1,3 @@
-import FreeLancerHomeVue from './FreeLancerHome.vue';
+import FreeLancerHomeVue from './FreelancerHome.vue';
 
 export { FreeLancerHomeVue };
