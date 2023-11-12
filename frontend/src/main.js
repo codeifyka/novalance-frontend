@@ -9,6 +9,8 @@ import { SignUpVue } from './screens/sign_up';
 import UserSessionRepository from './libs/UserSessionRepository';
 import RestUserSession from './libs/RestUserSession';
 import axios from 'axios';
+import { FreeLancerPortfolioVue } from './components/freelancer/portfolio';
+import { FreeLancerServicesVue } from './components/freelancer/services';
 
 
 const app = createApp(App);
@@ -17,6 +19,8 @@ const routes = [
     { path: '/', component: HomeVue },
     { path: '/sign_in', component: SignInVue },
     { path: '/sign_up', component: SignUpVue },
+    { path: '/user/:username/portfolio', component: FreeLancerPortfolioVue },
+    { path: '/user/:username/services', component: FreeLancerServicesVue },
 ];
 
 const router = createRouter({
