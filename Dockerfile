@@ -11,8 +11,9 @@ COPY .env.example /app/.env
 
 RUN composer install
 
-RUN php artisan migrate:fresh
 RUN php artisan key:generate
+RUN php artisan migrate:fresh
+RUN php artisan db:seed
 
 ENV PORT 4173 
 EXPOSE 4173
