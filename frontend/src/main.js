@@ -12,6 +12,7 @@ import axios from 'axios';
 import { FreeLancerPortfolioVue } from './components/freelancer/portfolio';
 import { FreeLancerServicesVue } from './components/freelancer/services';
 import { FreeLancerCreateServiceVue } from './components/freelancer/services/create';
+import setupAxios from './libs/ProtectAPI';
 
 
 const app = createApp(App);
@@ -20,9 +21,10 @@ const routes = [
     { path: '/', component: HomeVue },
     { path: '/sign_in', component: SignInVue },
     { path: '/sign_up', component: SignUpVue },
-    { path: '/user/:username/portfolio', component: FreeLancerPortfolioVue },
-    { path: '/user/:username/services', component: FreeLancerServicesVue },
-    { path: '/user/:username/services/create', component: FreeLancerCreateServiceVue },
+    { path: '/services', component: FreeLancerServicesVue },
+    { path: '/create_service', component: FreeLancerCreateServiceVue },
+    { path: '/services/:username', component: FreeLancerServicesVue },
+    { path: '/portfolio', component: FreeLancerPortfolioVue },
 ];
 
 const router = createRouter({
@@ -31,10 +33,10 @@ const router = createRouter({
 });
 
 
-const PROTECTED_ROUTES = ['/'];
+const UNPROTECTED_ROUTES = ['/sign_in', '/sign_up'];
 
 router.beforeEach(async (to, from) => {
-    if(PROTECTED_ROUTES.includes(to.path)){
+    if(!UNPROTECTED_ROUTES.includes(to.path)){
         let userSessionRepository = new UserSessionRepository(localStorage);
         let restUserSession = new RestUserSession(axios);
         let access_token = userSessionRepository.getAccessToken();
@@ -49,6 +51,8 @@ router.beforeEach(async (to, from) => {
                 userSessionRepository.clear();
                 return { path: 'sign_in' };
             }
+            
+            app.provide('axios', setupAxios(access_token));
         } catch (error) {
             console.log(error);
         }

@@ -39,7 +39,7 @@ export default {
                 if(response.error){
                     alert(JSON.stringify(response.data));
                 }else{
-                    // location.href = "/sign_in";
+                    location.href = "/sign_in";
                 }
             }).catch(error => {
                 console.log(error);
