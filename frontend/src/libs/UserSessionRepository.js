@@ -32,5 +32,6 @@ export default class UserSessionRepository {
 
     clear(){
         this.localStorage.removeItem(ACCESS_TOKEN_KEY);
+        this.localStorage.removeItem(ACCOUNT_TYPE_KEY);
     }
 };
