@@ -11,13 +11,19 @@ class Authenticate extends Middleware
 {
     public function handle($request, Closure $next, ...$guards)
     {
-        if($request->hasHeader('Authorization')){
-            return $next($request);
+        if(!$request->hasHeader('Authorization')){
+            return response()->json([
+                "error" => "Authorization header not found."
+            ]);
+        }
+
+        if(!auth('api')->check()){
+            return response()->json([
+                "error" => "Invalid token."
+            ]);
         }
         
-        return response()->json([
-            "error" => "Authorization header not found."
-        ]);
+        return $next($request);
     }
 
     /**
