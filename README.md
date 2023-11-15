@@ -34,6 +34,11 @@ Then since this is laravel you need to generate new key so run
 php artisan key:generate
 ```
 
+and Generate the secret key for JWT
+
+```bash
+php artisan jwt:secret
+```
 
 And for the frontend you need to change directory to the frontend
 ```bash
