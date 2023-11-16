@@ -12,6 +12,7 @@ import axios from 'axios';
 import { FreeLancerPortfolioVue } from './components/freelancer/portfolio';
 import { FreeLancerServicesVue } from './components/freelancer/services';
 import { FreeLancerCreateServiceVue } from './components/freelancer/services/create';
+import { LoadingVue } from './components/loading';
 import setupAxios from './libs/ProtectAPI';
 
 
@@ -61,6 +62,7 @@ router.beforeEach(async (to, from) => {
 });
 
 app.component("Icon", Icon);
+app.component("Loading", LoadingVue);
 
 app.use(router);
 app.mount('#app');

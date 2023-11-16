@@ -15,6 +15,7 @@ const styles = {
 
 export default {
     setup(){
+        const isLoading = ref(false);
         const restUserSession = new RestUserSession(axios);
 
         const username = ref('');
@@ -26,6 +27,7 @@ export default {
         const confirm_password = ref('');
 
         const signUp = () => {
+            isLoading.value = true;
             restUserSession.register({
                 username: username.value,
                 first_name: first_name.value, 
@@ -35,6 +37,7 @@ export default {
                 password: password.value,
                 confirm_password: confirm_password.value,
             }).then(response => {
+                isLoading.value = false;
                 console.log(response);
                 if(response.error){
                     alert(JSON.stringify(response.data));
@@ -42,6 +45,7 @@ export default {
                     location.href = "/sign_in";
                 }
             }).catch(error => {
+                isLoading.value = false;
                 console.log(error);
                 alert('Bad credentials');
             });
@@ -57,6 +61,7 @@ export default {
             password,
             confirm_password,
             signUp,
+            isLoading,
         };
     }
 }
