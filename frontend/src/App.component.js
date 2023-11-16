@@ -1,9 +1,15 @@
-import { defineComponent } from "vue";
+import { defineComponent, onMounted, provide, ref } from "vue";
+import ToastsManager from "./libs/ToastsManager";
 
 export default defineComponent({
     name: 'AppVue',
     props: {},
     setup() {
-        return { };
+        let toastManager = ref(new ToastsManager());
+        provide("toastManager", toastManager);
+
+        return { 
+            toasts: toastManager.value.toasts,
+        };
     },
 });

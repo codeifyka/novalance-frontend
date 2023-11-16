@@ -1,6 +1,6 @@
 import RestUserSession from "@/libs/RestUserSession";
 import axios from "axios";
-import { ref } from "vue";
+import { inject, ref } from "vue";
 
 const styles = {
     container: "w-full h-screen flex flex-col items-center bg-gray-900",
@@ -15,6 +15,8 @@ const styles = {
 
 export default {
     setup(){
+        let toastManager = inject("toastManager");
+
         const isLoading = ref(false);
         const restUserSession = new RestUserSession(axios);
 
@@ -25,6 +27,17 @@ export default {
         const account_type = ref('freelancer');
         const password = ref('');
         const confirm_password = ref('');
+
+        const handleErrorMessage = (error) => {
+            let keys = Object.keys(error);
+            let t = 0;
+            for(let key of keys){
+                setTimeout(() => {
+                    toastManager.value.alertError(`${error[key]}`);
+                }, t);
+                t += 300;
+            }
+        }
 
         const signUp = () => {
             isLoading.value = true;
@@ -40,8 +53,9 @@ export default {
                 isLoading.value = false;
                 console.log(response);
                 if(response.error){
-                    alert(JSON.stringify(response.data));
+                    handleErrorMessage(response.data);
                 }else{
+                    toastManager.value.alertSuccess("Sign up successfuly.");
                     location.href = "/sign_in";
                 }
             }).catch(error => {

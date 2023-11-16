@@ -14,6 +14,7 @@ import { FreeLancerServicesVue } from './components/freelancer/services';
 import { FreeLancerCreateServiceVue } from './components/freelancer/services/create';
 import { LoadingVue } from './components/loading';
 import setupAxios from './libs/ProtectAPI';
+import { ToastVue } from './components/toast';
 
 
 const app = createApp(App);
@@ -63,6 +64,7 @@ router.beforeEach(async (to, from) => {
 
 app.component("Icon", Icon);
 app.component("Loading", LoadingVue);
+app.component("Toast", ToastVue);
 
 app.use(router);
 app.mount('#app');

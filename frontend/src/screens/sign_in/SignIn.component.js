@@ -1,16 +1,21 @@
 import RestUserSession from "@/libs/RestUserSession";
 import UserSessionRepository from "@/libs/UserSessionRepository";
 import axios from "axios";
-import { ref } from "vue";
+import { inject, ref } from "vue";
 
 export default {
     setup(){
+        let toastManager = inject("toastManager");
         const isLoading = ref(false);
         const restUserSession = new RestUserSession(axios);
         const userSessionRepository = new UserSessionRepository(localStorage);
         
         const email = ref('');
         const password = ref('');
+
+        const handleErrorMessage = (error) => {
+            toastManager.value.alertError(error);
+        }
 
         const signIn = () => {
             isLoading.value = true;
@@ -22,12 +27,15 @@ export default {
                 console.log(response);
                 if(response.access_token){
                     userSessionRepository.save({ access_token: response.access_token, account_type: response.account_type });
-                    location.href = "/";
+                    toastManager.value.alertSuccess("Sign in successfuly.");
+                    setTimeout(() => {
+                        location.href = "/";
+                    }, 3000);
                 }
             }).catch(error => {
                 isLoading.value = false;
                 console.log(error);
-                alert('Bad credentials');
+                handleErrorMessage('Bad credentials');
             });
         }
 
