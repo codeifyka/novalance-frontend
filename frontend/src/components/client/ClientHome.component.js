@@ -1,5 +1,5 @@
-import backgroundImage from '../../assets/bg_client.png';
-import logo from '../../assets/images/logo.png';
+import backgroundImage from '@/assets/bg_client.png';
+import logo from '@/assets/images/logo.png';
 export default {
   setup() {
     function handleMouseOver(){
