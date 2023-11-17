@@ -14,11 +14,8 @@ import { FreeLancerServicesVue } from './components/freelancer/services';
 import { FreeLancerCreateServiceVue } from './components/freelancer/services/create';
 import { LoadingVue } from './components/loading';
 import setupAxios from './libs/ProtectAPI';
-<<<<<<< Updated upstream
 import { ToastVue } from './components/toast';
-=======
 import { ClientCreateJobVue } from './components/client/jobs/create'
->>>>>>> Stashed changes
 
 
 const app = createApp(App);
