@@ -40,6 +40,11 @@ and Generate the secret key for JWT
 php artisan jwt:secret
 ```
 
+also you need to link the storage to show the public images, just run this command
+```bash
+php artisan storage:link
+```
+
 And for the frontend you need to change directory to the frontend
 ```bash
 cd frontend
