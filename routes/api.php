@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\FilesUploadController;
+use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\ServicesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -34,7 +35,9 @@ Route::group([
     'prefix' => 'user'
 ], function () {
     Route::get('/services',[ServicesController::class, 'getSelfAll']);
+    Route::get('/projects',[ProjectsController::class, 'getSelfAll']);
     Route::get('/{username}/services',[ServicesController::class, 'getAll']);
+    Route::get('/{username}/projects',[ProjectsController::class, 'getAll']);
 });
 
 
@@ -43,6 +46,11 @@ Route::get('/categories',[CategoriesController::class, 'getAll']);
 Route::group(['prefix' => 'services'], function () {
     Route::post('upload_images',[FilesUploadController::class, 'uploadServicesImages']);
     Route::post('create',[ServicesController::class, 'create']);
+});
+
+Route::group(['prefix' => 'projects'], function () {
+    Route::post('upload_images',[FilesUploadController::class, 'uploadServicesImages']);
+    Route::post('create',[ProjectsController::class, 'create']);
 });
 
 Route::group([

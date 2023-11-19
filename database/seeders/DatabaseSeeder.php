@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             PricesTableSeeder::class,
             CategoriesTableSeeder::class,
             ServiceTableSeeder::class,
+            ProjectSeeder::class,
         ]);
     
     }
