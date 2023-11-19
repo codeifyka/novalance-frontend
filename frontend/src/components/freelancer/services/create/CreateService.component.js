@@ -7,6 +7,7 @@ export default {
     components: { FreeLancerHeaderVue },
     setup(){
         const axios = inject('axios');
+        let toastManager = inject("toastManager");
 
         const title = ref('');
         const description = ref('');
@@ -66,10 +67,11 @@ export default {
             });
 
             if(response.data){
-                // FIXME: Should redirect to user services.
-                window.location.href = '/';
+                toastManager.value.alertSuccess('Service created successfuly');
+                window.location.href = `/services`;
+                console.log(response.data);
             }else{
-                alert('Something went wrong!');
+                toastManager.value.alertError('Something went wrong!');
                 console.log(response);
             }
         }
