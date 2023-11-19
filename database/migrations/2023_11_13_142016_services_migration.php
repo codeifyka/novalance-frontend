@@ -19,7 +19,6 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('price_id');
             $table->integer('rate'); // 1 to 5
-            $table->string('images'); // This must group of images url seperated via comma 
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('category_id')->references('id')->on('categories');

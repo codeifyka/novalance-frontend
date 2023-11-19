@@ -27,7 +27,6 @@ class ServiceFactory extends Factory
             'category_id' => 1,
             'price_id' => 1,
             'rate' => random_int(1,5),
-            'images' => '',
         ];
     }
 }

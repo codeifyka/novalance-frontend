@@ -14,10 +14,22 @@ class ServicesController extends Controller
     {
         $user = auth('api')->user(); 
         $services = DB::table('services')->
-        select('title','prices.value as price','rate','categories.name as category','currency_code', 'images')->
+        select('services.id as id','title','prices.value as price','rate','categories.name as category','currency_code')->
             join('prices','prices.id','=','services.price_id')->
             join('categories','categories.id','=','services.category_id')->
         where('user_id','=',$user->id)->get();
+
+        foreach($services as $service){
+            $images = DB::table('services_images')->select('*')->where('service_id','=',$service->id)->get();
+            $arr = [];
+            foreach($images as $img){
+                array_push($arr, [
+                    "id" => $img->id,
+                    "url" => asset('storage/'.$img->path),
+                ]);
+            }
+            $service->images = $arr;
+        }
 
         return response()->json([
             "data" => $services,
@@ -37,10 +49,22 @@ class ServicesController extends Controller
         }
 
         $services = DB::table('services')->
-        select('title','prices.value as price','rate','categories.name as category','currency_code', 'images')->
+        select('services.id as id','title','prices.value as price','rate','categories.name as category','currency_code')->
             join('prices','prices.id','=','services.price_id')->
             join('categories','categories.id','=','services.category_id')->
         where('user_id','=',$users[0]->id)->get();
+        
+        foreach($services as $service){
+            $images = DB::table('services_images')->select('*')->where('service_id','=',$service->id)->get();
+            $arr = [];
+            foreach($images as $img){
+                array_push($arr, [
+                    "id" => $img->id,
+                    "url" => asset('storage/'.$img->path),
+                ]);
+            }
+            $service->images = $arr;
+        }
 
         return response()->json([
             "data" => $services,
@@ -49,11 +73,6 @@ class ServicesController extends Controller
 
     public function create(Request $request)
     {
-        $imgs = '';
-        foreach($request["images"] as $img){
-            $imgs .= ','.$img; 
-        }
-
         $categories = Category::query()->get(['*'])->where('name','=',$request['category']);
         if(count($categories) == 0){
             return response()->json([
@@ -73,9 +92,15 @@ class ServicesController extends Controller
             "user_id" => auth('api')->user()['id'],
             "category_id" => $categories[0]['id'],
             "price_id" => $price['id'],
-            "images" => $imgs,
             "rate" => 0
         ]);
+
+        foreach($request["images"] as $img){
+            DB::table('services_images')->insert([
+                "path" => $img,
+                "service_id" => $service->id
+            ]);
+        }
 
         return response()->json([
             "data" => $service
