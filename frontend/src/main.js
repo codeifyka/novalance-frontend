@@ -17,6 +17,7 @@ import setupAxios from './libs/ProtectAPI';
 import { ToastVue } from './components/toast';
 import { ClientCreateJobVue } from './components/client/jobs/create'
 import { FreeLancerCreateProjectVue } from './components/freelancer/portfolio/create';
+import { ProfileVue } from './components/client/profile'
 
 
 const app = createApp(App);
@@ -32,6 +33,7 @@ const routes = [
     { path: '/create_project', component: FreeLancerCreateProjectVue },
     { path: '/portfolio/:username', component: FreeLancerPortfolioVue },
     { path: '/create_job', component: ClientCreateJobVue },
+    { path: '/client/profile', component: ProfileVue },
 ];
 
 const router = createRouter({
