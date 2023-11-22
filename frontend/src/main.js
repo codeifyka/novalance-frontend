@@ -18,6 +18,7 @@ import { ToastVue } from './components/toast';
 import { ClientCreateJobVue } from './components/client/jobs/create'
 import { FreeLancerCreateProjectVue } from './components/freelancer/portfolio/create';
 import { ProfileVue } from './components/client/profile'
+import { FreeLancerServicePreviewVue } from './components/freelancer/services/preview';
 
 
 const app = createApp(App);
@@ -29,6 +30,7 @@ const routes = [
     { path: '/services', component: FreeLancerServicesVue },
     { path: '/create_service', component: FreeLancerCreateServiceVue },
     { path: '/services/:username', component: FreeLancerServicesVue },
+    { path: '/service/:id', component: FreeLancerServicePreviewVue },
     { path: '/portfolio', component: FreeLancerPortfolioVue },
     { path: '/create_project', component: FreeLancerCreateProjectVue },
     { path: '/portfolio/:username', component: FreeLancerPortfolioVue },
