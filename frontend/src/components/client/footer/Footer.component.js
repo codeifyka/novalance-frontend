@@ -1,5 +1,7 @@
+import {ref} from 'vue'
 export default {
     setup(){
-        return { }
+        let icons = ref(["mingcute:github-fill","ri:facebook-fill","ri:linkedin-fill"])
+        return { icons, }
     }
 }
