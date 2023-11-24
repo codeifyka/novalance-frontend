@@ -35,6 +35,40 @@ class ServicesController extends Controller
             "data" => $services,
         ]);
     }
+
+    public function getById(Request $request)
+    {
+        $service_id = $request->id;
+
+        $services = DB::table('services')->
+        select('services.id as id','title','description','prices.value as price','rate','categories.name as category','currency_code')->
+            join('prices','prices.id','=','services.price_id')->
+            join('categories','categories.id','=','services.category_id')->
+        where('services.id','=',$service_id)->get();
+        
+        foreach($services as $service){
+            $images = DB::table('services_images')->select('*')->where('service_id','=',$service->id)->get();
+            $arr = [];
+            foreach($images as $img){
+                array_push($arr, [
+                    "id" => $img->id,
+                    "url" => asset('storage/'.$img->path),
+                ]);
+            }
+            $service->images = $arr;
+        }
+
+        
+        if(count($services) == 0){
+            return response()->json([
+                "data" => null,
+            ]);
+        }
+
+        return response()->json([
+            "data" => $services[0],
+        ]);
+    }
     
     public function getAll(Request $request)
     {
@@ -49,7 +83,7 @@ class ServicesController extends Controller
         }
 
         $services = DB::table('services')->
-        select('services.id as id','title','prices.value as price','rate','categories.name as category','currency_code')->
+        select('services.id as id','title','description','prices.value as price','rate','categories.name as category','currency_code')->
             join('prices','prices.id','=','services.price_id')->
             join('categories','categories.id','=','services.category_id')->
         where('user_id','=',$users[0]->id)->get();

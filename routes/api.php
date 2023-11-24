@@ -46,6 +46,8 @@ Route::get('/categories',[CategoriesController::class, 'getAll']);
 Route::group(['prefix' => 'services'], function () {
     Route::post('upload_images',[FilesUploadController::class, 'uploadServicesImages']);
     Route::post('create',[ServicesController::class, 'create']);
+    Route::get('{id}',[ServicesController::class, 'getById']);
+
 });
 
 Route::group(['prefix' => 'projects'], function () {

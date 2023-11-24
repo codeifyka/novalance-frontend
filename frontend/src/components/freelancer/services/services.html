@@ -6,9 +6,9 @@
         <div class="uppercase font-semibold text-lg text-purple-800">Services:</div>
         <div class="w-full flex py-4">
             <div class="w-3/4 flex items-center flex-wrap">
-                <div class="w-1/4 flex flex-col justify-between mb-8" v-for="service in services">
+                <a :href="`/service/${service.id}`" class="w-1/4 flex flex-col justify-between mb-8" v-for="service in services">
                     <Service :service="service"/>
-                </div>
+                </a>
             </div>
         </div>  
     </div>
