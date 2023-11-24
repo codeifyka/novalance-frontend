@@ -21,6 +21,8 @@ import { ProfileVue } from './components/client/profile'
 import { FreeLancerServicePreviewVue } from './components/freelancer/services/preview';
 import { ClientServicesVue } from './components/client/services'
 import { FreeLancerProjectPreviewVue } from './components/freelancer/portfolio/preview';
+import { ServiceVue } from '@/components/childcomponent/service';
+import { ClientSingleJobPostPreviewVue } from '@/components/client/jobs/preview';
 
 
 const app = createApp(App);
@@ -40,6 +42,8 @@ const routes = [
     { path: '/create_job', component: ClientCreateJobVue },
     { path: '/client/profile', component: ProfileVue },
     { path: '/our_services', component: ClientServicesVue },
+    { path: '/job_post_preview', component: ClientSingleJobPostPreviewVue },
+
 ];
 
 const router = createRouter({
@@ -78,6 +82,7 @@ router.beforeEach(async (to, from) => {
 app.component("Icon", Icon);
 app.component("Loading", LoadingVue);
 app.component("Toast", ToastVue);
+app.component("Service", ServiceVue);
 
 app.use(router);
 app.mount('#app');
