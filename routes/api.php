@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\FilesUploadController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\ServicesController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,7 @@ Route::group([
     'middleware' => 'auth:sanctum',
     'prefix' => 'user'
 ], function () {
+    Route::get('/',[UserController::class, 'getInfo']);
     Route::get('/services',[ServicesController::class, 'getSelfAll']);
     Route::get('/projects',[ProjectsController::class, 'getSelfAll']);
     Route::get('/{username}/services',[ServicesController::class, 'getAll']);

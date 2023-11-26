@@ -15,4 +15,9 @@ export default class RestUserSession {
     async checkAuth(access_token){
         return this.axiosInstance.get('/api/auth/me',{ headers: { Authorization: `Bearer ${access_token}` }}).then(response => response.data);
     }
+
+    async getInfo(){
+        // NOTE: To use this function you must use inject("axios") to setup the Authorization header by default.
+        return this.axiosInstance.get('/api/user').then(response => response.data);
+    }
 };
