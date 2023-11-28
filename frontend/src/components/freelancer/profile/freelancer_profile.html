@@ -1,4 +1,5 @@
 <div class="w-full h-screen overflow-auto flex flex-col items-center bg-purple-50 freelancer-background">
+    <Loading v-if="isLoading" />
     <div class="w-11/12 flex flex-col items-center">
         <FreeLancerHeaderVue target="profile" />
     </div>
@@ -12,20 +13,20 @@
             <div class="w-11/12 flex flex-col items-center my-8">
                 <div class="w-3/4 flex items-center justify-between mb-4">
                     <div class="flex-grow bg-purple-200/60 rounded-lg mr-4 shadow-lg">
-                        <input class="py-2 bg-purple-200/60 px-4 rounded-lg placeholder:text-purple-300" placeholder="First name" v-model="user.first_name" />
+                        <input class="py-2 bg-purple-200/60 px-4 rounded-lg placeholder:text-purple-300 w-full outline-none focus:bg-purple-300 text-purple-500" placeholder="First name" v-model="user.first_name" />
                     </div>
                     <div class="flex-grow bg-purple-200/60 rounded-lg ml-4 shadow-lg">
-                        <input class="py-2 bg-purple-200/60 px-4 rounded-lg placeholder:text-purple-300" placeholder="Last name" v-model="user.last_name" />
+                        <input class="py-2 bg-purple-200/60 px-4 rounded-lg placeholder:text-purple-300 w-full outline-none focus:bg-purple-300 text-purple-500" placeholder="Last name" v-model="user.last_name" />
                     </div>
                 </div>
                 <div class="w-3/4 bg-purple-200/60 rounded-lg shadow-lg mb-4">
-                    <input class="py-2 bg-purple-200/60 px-4 rounded-lg placeholder:text-purple-300" placeholder="Username" v-model="user.username" />
+                    <input class="py-2 bg-purple-200/60 px-4 rounded-lg placeholder:text-purple-300 w-full outline-none focus:bg-purple-300 text-purple-500" placeholder="Username" v-model="user.username" />
                 </div>
                 <div class="w-3/4 bg-purple-200/60 rounded-lg shadow-lg mb-4">
-                    <input class="py-2 bg-purple-200/60 px-4 rounded-lg placeholder:text-purple-300" placeholder="Email" v-model="user.email" />
+                    <input class="py-2 bg-purple-200/60 px-4 rounded-lg placeholder:text-purple-300 w-full outline-none focus:bg-purple-300 text-purple-500" placeholder="Email" v-model="user.email" disabled />
                 </div>
                 <div class="w-3/4 flex flex-col items-end mt-8">
-                    <button class="bg-purple-500 text-purple-50 px-16 py-2 rounded-lg font-semibold uppercase">Save</button>
+                    <button @click="save" class="bg-purple-500 hover:bg-purple-600 text-purple-50 px-16 py-2 rounded-lg font-semibold uppercase">Save</button>
                 </div>
             </div>
         </div>  

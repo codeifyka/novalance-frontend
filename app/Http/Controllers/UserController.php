@@ -11,7 +11,7 @@ class UserController extends Controller
     {
         $user_id = auth('api')->user()->id;
         
-        $users = DB::table('users')->select('id','username')->where('id','=', $user_id)->get(); 
+        $users = DB::table('users')->select('id','username','first_name','last_name','email')->where('id','=', $user_id)->get(); 
         if(count($users) == 0){
             return response()->json([
                 "error" => "You are not allowed"
@@ -28,6 +28,27 @@ class UserController extends Controller
                 "services" => $services,
                 "projects" => $projects,
             ],
+        ]);
+    }
+
+    public function updateInfo(Request $request)
+    {        
+        $users = DB::table('users')->select('id','username','first_name','last_name','email')->where('username','=', $request['username'])->get(); 
+        if(count($users) > 0 && $users[0]->username != auth('api')->user()->username){
+            return response()->json([
+                "error" => "Username already in use"
+            ]);
+        }
+
+        // username already used
+        DB::table('users')->where('id','=',auth('api')->user()->id)->update([
+            'username' => $request['username'],
+            'first_name' => $request['first_name'],
+            'last_name' => $request['last_name']
+        ]);
+        
+        return response()->json([
+            "data" => auth('api')->user(),
         ]);
     }
 }

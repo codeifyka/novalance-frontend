@@ -20,4 +20,9 @@ export default class RestUserSession {
         // NOTE: To use this function you must use inject("axios") to setup the Authorization header by default.
         return this.axiosInstance.get('/api/user').then(response => response.data);
     }
+
+    async updateUserInfo(user){
+        // NOTE: To use this function you must use inject("axios") to setup the Authorization header by default.
+        return this.axiosInstance.post('/api/user', user).then(response => response.data);
+    }
 };

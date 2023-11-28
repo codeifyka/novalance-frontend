@@ -36,6 +36,7 @@ Route::group([
     'prefix' => 'user'
 ], function () {
     Route::get('/',[UserController::class, 'getInfo']);
+    Route::post('/',[UserController::class, 'updateInfo']);
     Route::get('/services',[ServicesController::class, 'getSelfAll']);
     Route::get('/projects',[ProjectsController::class, 'getSelfAll']);
     Route::get('/{username}/services',[ServicesController::class, 'getAll']);
