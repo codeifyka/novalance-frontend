@@ -11,9 +11,9 @@
                 <div class="w-full flex flex-col">
                     <div class="flex items-center justify-between mt-8 mb-2">
                         <div class="text-lg font-semibold text-purple-600">{{service.title}}</div>
-                        <div class="font-semibold text-green-500">${{service.price}}</div>
+                        <div class="font-semibold text-green-500">${{service.price.value}}</div>
                     </div>
-                    <div class="text-purple-400 font-medium text-xs pt-1">{{service.category}}</div>
+                    <div class="text-purple-400 font-medium text-xs pt-1">{{service.category.name}}</div>
                     <div class="pt-1 flex items-center text-purple-500">
                         <Icon icon="material-symbols:star" v-for="i in service.rate" />
                         <Icon icon="material-symbols:star-outline" v-for="i in (5 - service.rate)" />
