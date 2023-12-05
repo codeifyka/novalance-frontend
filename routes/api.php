@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\FilesUploadController;
+use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\UserController;
@@ -58,6 +59,8 @@ Route::group(['prefix' => 'projects'], function () {
     Route::post('create',[ProjectsController::class, 'create']);
     Route::get('{id}',[ProjectsController::class, 'getById']);
 });
+
+Route::Resource('job',JobPostController::class);
 
 Route::group([
 
