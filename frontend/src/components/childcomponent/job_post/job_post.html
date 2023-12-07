@@ -15,9 +15,9 @@
                 </li>
             </ul>
         </div>
-        <div :class="[colors.text ,'text-lg' ,'font-semibold', 'px-4 ','py-2']">{{job.title}}</div>
+        <router-link :to="'/job_post_preview/' + job.id"  :class="[colors.text ,'text-lg' ,'font-semibold', 'px-4 ','py-2','cursor-pointer']">{{job.title}}</router-link>
         <div class="flex items-center my-2">
-            <div class="px-4 py-2 text-xs font-semibold text-green-600 uppercase">FIXED {{job.budjet}}</div>
+            <div class="px-4 py-2 text-xs font-semibold text-green-600 uppercase">FIXED {{job.budjet}}$</div>
         </div>
         <div :class="['px-4', 'py-2', 'text-sm', colors.text]">
             {{job.description}}

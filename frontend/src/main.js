@@ -44,7 +44,7 @@ const routes = [
     { path: '/create_job', component: ClientCreateJobVue },
     { path: '/client/profile', component: ProfileVue },
     { path: '/all_services', component: ClientServicesVue },
-    { path: '/job_post_preview', component: ClientSingleJobPostPreviewVue },
+    { path: '/job_post_preview/:id', component: ClientSingleJobPostPreviewVue },
     { path: '/my_jobs', component: ClientMyjobsVue },
     { path: '/profile', component: FreeLancerProfileVue },
 ];

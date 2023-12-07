@@ -5,32 +5,31 @@
             <h1 class="text-2xl font-bold text-regal-purple text-start mt-5">Post Job</h1>
             <div>
                 <div class="my-2">
-                    <h1 class="font-bold text-xl">Job Title</h1>
+                    <h1 class="font-bold text-xl">{{job.title}}</h1>
                 </div>
                 <div class="my-2">
                 <h1 class="font-bold text-xl text-regal-purple"> Description :</h1>
-                    <p class="font-normal">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p class="font-normal">{{job.description}}</p>
                 </div>
                 <div class="flex my-2 items-center">
                     <h1 class="font-bold text-xl text-regal-purple mr-2"> Skills :</h1>
-                    <div class="bg-purple-400 text-purple-800 px-4 py-px rounded-full text-xs mr-2">Tag</div>
-                    <div class="bg-purple-400 text-purple-800 px-4 py-px rounded-full text-xs mr-2">Tag</div>
+                    <div class="bg-purple-400 text-purple-800 px-4 py-px rounded-full text-xs mr-2">{{job.experience_level}}</div>
                 </div>
                 <div class="flex my-2 items-center">
                     <h1 class="font-bold text-xl text-regal-purple mr-2"> Size :</h1>
-                    <h2 class="font-semibold">mediem</h2>
+                    <h2 class="font-semibold">{{job.size}}</h2>
                 </div>
                 <div class="flex my-2 items-center">
                     <h1 class="font-bold text-xl text-regal-purple mr-2"> Level of experience :</h1>
-                    <h2 class="font-semibold">beginner</h2>
+                    <h2 class="font-semibold">{{job.experience_level}}</h2>
                 </div>
                 <div class="flex my-2 items-center">
                     <h1 class="font-bold text-xl text-regal-purple mr-2"> Project budget :</h1>
-                    <h2 class="font-semibold">1000$</h2>
+                    <h2 class="font-semibold">{{job.budjet}}</h2>
                 </div>
                 <div class="flex my-2 items-center">
                     <h1 class="font-bold text-xl text-regal-purple mr-2"> Expected delivery time (Days) :</h1>
-                    <h2 class="font-semibold">12days</h2>
+                    <h2 class="font-semibold">{{job.expected_delivery_time}}</h2>
                 </div>
                 <div class="flex my-2">
                     <h1 class="font-bold text-xl text-regal-purple"> Illustrative files :</h1>
@@ -38,22 +37,7 @@
             </div>
         </div>
         <div class="w-2/5  mt-40 ">
-   
-            <div class="w-11/12 flex flex-col items-center my-4">
-                <div class="w-full flex flex-col bg-purple-50/60 shadow-md rounded-lg py-4">
-                    <div class="text-regal-purple text-lg font-semibold px-4 py-2">Job Title</div>
-                    <div class="flex items-center my-2">
-                        <div class="px-4 py-2 text-xs font-semibold text-green-600 uppercase">FIXED $200</div>
-                    </div>
-                    <div class="px-4 py-2 text-sm text-regal-purple">
-                        {{"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not ..."}}
-                    </div>
-                    <div class="my-2 px-4 flex items-center">
-                        <div class="bg-purple-400 text-purple-800 px-4 py-px rounded-full text-xs mr-2">Tag</div>
-                        <div class="bg-purple-400 text-purple-800 px-4 py-px rounded-full text-xs mr-2">Tag</div>
-                    </div>
-                </div>
-            </div>
+            <JobPostVue :job="job" :key="job.id" :colors="colors" />
         </div>
     </main>
     <h1 class="font-bold opacity-50 text-center pb-10 text-lg">© 2023 Novalance. All rights reserved.</h1>
