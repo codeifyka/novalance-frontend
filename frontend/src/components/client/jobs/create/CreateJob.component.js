@@ -42,10 +42,10 @@ export default {
         }
       } catch (err){
         toastManager.value.alertError(err.response.data.messages)
-        let messages = err.response.data.messages;
-        let Props = Object.getOwnPropertyNames(messages)
-        console.log(Props)
-        console.log(err.response.data.messages)
+        // let messages = err.response.data.messages;
+        // let Props = Object.getOwnPropertyNames(messages)
+        // console.log(Props)
+        console.log(err)
       }
       
     }

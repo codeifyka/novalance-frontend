@@ -1,6 +1,5 @@
 import { FreeLancerHeaderVue } from '@/components/freelancer/header';
 import { JobPostVue } from '@/components/childcomponent/job_post';
-import{ref} from 'vue'
 import RestUserSession from '@/libs/RestUserSession';
 import { inject, onMounted, ref } from 'vue';
 
