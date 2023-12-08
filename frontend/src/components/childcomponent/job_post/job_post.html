@@ -5,10 +5,10 @@
         </div>
         <div class="py-5 px-2 w-44 h-40 bg-purple-50 shadow-lg absolute top-10 right-14" v-if="menuValue">
             <ul>
-                <li class="flex items-center mb-2 p-2 transition-colors duration-300 rounded-lg hover:bg-purple-100 hover:bg-opacity-75 cursor-pointer">
+                <router-link :to="'/update_job/' + job.id" class="flex items-center mb-2 p-2 transition-colors duration-300 rounded-lg hover:bg-purple-100 hover:bg-opacity-75 cursor-pointer">
                     <Icon class="text-regal-purple" icon="basil:edit-solid" />
                     <span>Edit job post</span>
-                </li>
+                </router-link>
                 <li @click="deleteJob" class="flex items-center mb-2 p-2 transition-colors duration-300 rounded-lg hover:bg-purple-100 hover:bg-opacity-75 cursor-pointer">
                     <Icon class="text-regal-purple" icon="material-symbols:delete" />
                     <span>Delete job post</span>

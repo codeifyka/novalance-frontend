@@ -25,6 +25,7 @@ import { ServiceVue } from '@/components/childcomponent/service';
 import { ClientSingleJobPostPreviewVue } from '@/components/client/jobs/preview';
 import { ClientMyjobsVue } from '@/components/client/jobs/my_jobs';
 import { FreeLancerProfileVue } from './components/freelancer/profile';
+import { ClientUpdateJobVue } from './components/client/jobs/update';
 
 
 const app = createApp(App);
@@ -47,6 +48,7 @@ const routes = [
     { path: '/job_post_preview/:id', component: ClientSingleJobPostPreviewVue },
     { path: '/my_jobs', component: ClientMyjobsVue },
     { path: '/profile', component: FreeLancerProfileVue },
+    { path: '/update_job/:id', component: ClientUpdateJobVue },
 ];
 
 const router = createRouter({

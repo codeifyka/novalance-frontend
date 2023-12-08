@@ -90,21 +90,37 @@ class JobPostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $JobPost_update = JobPost::findOrFail($id);  
-        $JobPost_update->title = strip_tags( $request->input('title'));
-        $JobPost_update->description = strip_tags( $request->input('description'));
-        $JobPost_update->size = strip_tags( $request->input('size'));
-        $JobPost_update->experience_level = strip_tags( $request->input('experience_level'));
-        $JobPost_update->expected_delivery_time = strip_tags( $request->input('expected_delivery_time'));
-        $JobPost_update->budjet = strip_tags( $request->input('budjet'));
-        if($request->input('illustrative_files'))
-        $JobPost_update->illustrative_files = strip_tags( $request->input('illustrative_files'));
-        $JobPost_update->save();
-        return response()->json([
-            'data'=>$JobPost_update,
-            'message'=>'Deleted successfully',            
-        ]);
-
+        try {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'expected_delivery_time' => 'required|integer'  ,
+                'budjet' =>'required|integer' ,
+                'size' =>'required' ,
+                'level' =>'required' ,
+                'skills' =>'required' ,
+            ]);
+            $JobPost_update = JobPost::findOrFail($id);  
+            $JobPost_update->title = strip_tags( $request->input('title'));
+            $JobPost_update->description = strip_tags( $request->input('description'));
+            $JobPost_update->size = strip_tags( $request->input('size'));
+            $JobPost_update->experience_level = strip_tags( $request->input('level'));
+            $JobPost_update->expected_delivery_time = strip_tags( $request->input('expected_delivery_time'));
+            $JobPost_update->budjet = strip_tags( $request->input('budjet'));
+            $category = Category::where('name', $request->input('skills'))->first();
+            $JobPost_update->category_id = $category->id; 
+            if($request->input('illustrative_files'))
+            $JobPost_update->illustrative_files = strip_tags( $request->input('illustrative_files'));
+            else          $JobPost_update->illustrative_files = 'file.pdf';
+            $JobPost_update->save();     
+            return response()->json(['data'=>$JobPost_update]);
+        }catch (ValidationException $e) {
+            // Handle validation errors
+            return response()->json([
+                'error' => 'Validation failed',
+                'messages' => $e->errors(),
+            ], 422);
+        } 
     }
 
     /**
