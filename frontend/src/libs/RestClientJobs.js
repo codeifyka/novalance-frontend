@@ -3,7 +3,7 @@ export default class RestClientJobs{
         this.axiosInstance = axiosInstance;
     }
 
-    async getAll(){
+    async getMyJobs(){
         return this.axiosInstance.get('/api/job/').then(Response => Response.data)
     }
 
@@ -21,5 +21,9 @@ export default class RestClientJobs{
 
     async delete(id){
         return this.axiosInstance.delete(`/api/job/${id}`).then(Response => Response.data)
+    }
+
+    async getAll(){
+        return this.axiosInstance.get('/api/user/job/getAll').then(Response => Response.data)
     }
 }

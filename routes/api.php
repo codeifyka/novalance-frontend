@@ -42,6 +42,8 @@ Route::group([
     Route::get('/projects',[ProjectsController::class, 'getSelfAll']);
     Route::get('/{username}/services',[ServicesController::class, 'getAll']);
     Route::get('/{username}/projects',[ProjectsController::class, 'getAll']);
+    Route::get('job/getAll', [UserController::class, 'getAllJobs']);//i have problem with jobcontroller recources thats why i wrote here
+
 });
 
 
@@ -60,7 +62,7 @@ Route::group(['prefix' => 'projects'], function () {
     Route::get('{id}',[ProjectsController::class, 'getById']);
 });
 
-Route::Resource('job',JobPostController::class);
+Route::resource('job', JobPostController::class);
 
 Route::group([
 

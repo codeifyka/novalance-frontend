@@ -16,7 +16,7 @@ export default {
     })
     const fetchData = async () => {
       try {
-        const response = await restClientJobs.getAll();
+        const response = await restClientJobs.getMyJobs();
 
         if (response.data) {
           Jobs.value = response.data;

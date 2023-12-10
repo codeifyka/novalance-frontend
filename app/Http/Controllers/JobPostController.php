@@ -135,4 +135,11 @@ class JobPostController extends Controller
             'msg' => 'Deleted successfully',
         ]);
     }
+
+    public function getAll()
+    {
+        // $Jobs = JobPost::all();
+        return response()->json(['data'=>'succes']);
+    }
+  
 }

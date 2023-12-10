@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\JobPost;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -42,5 +43,11 @@ class UserController extends Controller
         return response()->json([
             "data" => auth('api')->user(),
         ]);
+    }
+
+    public function getAllJobs()
+    {
+        $Jobs = JobPost::all();
+        return response()->json(['data'=>$Jobs]);
     }
 }
