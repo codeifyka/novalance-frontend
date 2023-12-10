@@ -1,28 +1,34 @@
-import { Icon } from '@iconify/vue';
+import axios from 'axios';
 import { createApp } from 'vue';
+import { createRouter, createWebHistory } from 'vue-router';
+
 import './style.css';
 import App from './App.vue';
-import { createRouter, createWebHistory } from 'vue-router';
+
 import { HomeVue } from './screens/home';
 import { SignInVue } from './screens/sign_in';
 import { SignUpVue } from './screens/sign_up';
+import { JobPreviewVue } from './screens/job';
+import { ServicePreviewVue } from './screens/service';
+import { ProjectPreviewVue } from './screens/project';
+import { ChatVue } from './screens/chat';
+import { ChatPreviewVue } from './screens/chat/preview';
+
+import setupAxios from './libs/ProtectAPI';
 import UserSessionRepository from './libs/UserSessionRepository';
 import RestUserSession from './libs/RestUserSession';
-import axios from 'axios';
+
+import { Icon } from '@iconify/vue';
 import { FreeLancerPortfolioVue } from './components/freelancer/portfolio';
 import { FreeLancerServicesVue } from './components/freelancer/services';
 import { FreeLancerCreateServiceVue } from './components/freelancer/services/create';
 import { LoadingVue } from './components/loading';
-import setupAxios from './libs/ProtectAPI';
 import { ToastVue } from './components/toast';
 import { ClientCreateJobVue } from './components/client/jobs/create'
 import { FreeLancerCreateProjectVue } from './components/freelancer/portfolio/create';
 import { ProfileVue } from './components/client/profile'
-import { FreeLancerServicePreviewVue } from './components/freelancer/services/preview';
 import { ClientServicesVue } from './components/client/services'
-import { FreeLancerProjectPreviewVue } from './components/freelancer/portfolio/preview';
 import { ServiceVue } from '@/components/childcomponent/service';
-import { ClientSingleJobPostPreviewVue } from '@/components/client/jobs/preview';
 import { ClientMyjobsVue } from '@/components/client/jobs/my_jobs';
 import { FreeLancerProfileVue } from './components/freelancer/profile';
 import { ClientUpdateJobVue } from './components/client/jobs/update';
@@ -31,21 +37,26 @@ import { ClientUpdateJobVue } from './components/client/jobs/update';
 const app = createApp(App);
 
 const routes = [
+    // shared routes
     { path: '/', component: HomeVue },
     { path: '/sign_in', component: SignInVue },
     { path: '/sign_up', component: SignUpVue },
+    { path: '/job/:id', component: JobPreviewVue },
+    { path: '/service/:id', component: ServicePreviewVue },
+    { path: '/project/:id', component: ProjectPreviewVue },
+    { path: '/chat', component: ChatVue },
+    { path: '/chat/:id', component: ChatPreviewVue },
+    
+    // other routes
     { path: '/services', component: FreeLancerServicesVue },
     { path: '/create_service', component: FreeLancerCreateServiceVue },
     { path: '/services/:username', component: FreeLancerServicesVue },
-    { path: '/service/:id', component: FreeLancerServicePreviewVue },
     { path: '/portfolio', component: FreeLancerPortfolioVue },
     { path: '/create_project', component: FreeLancerCreateProjectVue },
     { path: '/portfolio/:username', component: FreeLancerPortfolioVue },
-    { path: '/project/:id', component: FreeLancerProjectPreviewVue },
     { path: '/create_job', component: ClientCreateJobVue },
     { path: '/client/profile', component: ProfileVue },
     { path: '/all_services', component: ClientServicesVue },
-    { path: '/job_post_preview/:id', component: ClientSingleJobPostPreviewVue },
     { path: '/my_jobs', component: ClientMyjobsVue },
     { path: '/profile', component: FreeLancerProfileVue },
     { path: '/update_job/:id', component: ClientUpdateJobVue },
