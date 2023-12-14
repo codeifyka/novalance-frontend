@@ -29,3 +29,15 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+.hide-scrollbar::-webkit-scrollbar {
+    width: 0;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #4F4F4F;
+  }
+
+  .hide-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: transparent;
+  }

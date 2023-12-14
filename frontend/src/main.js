@@ -32,6 +32,7 @@ import { ServiceVue } from '@/components/childcomponent/service';
 import { ClientMyjobsVue } from '@/components/client/jobs/my_jobs';
 import { FreeLancerProfileVue } from './components/freelancer/profile';
 import { ClientUpdateJobVue } from './components/client/jobs/update';
+import { ClientChatVue } from './components/client/chat';
 
 
 const app = createApp(App);
@@ -60,6 +61,7 @@ const routes = [
     { path: '/my_jobs', component: ClientMyjobsVue },
     { path: '/profile', component: FreeLancerProfileVue },
     { path: '/update_job/:id', component: ClientUpdateJobVue },
+    { path: '/chat_client_freelancer/', component: ClientChatVue },
 ];
 
 const router = createRouter({

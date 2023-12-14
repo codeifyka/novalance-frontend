@@ -1,10 +1,11 @@
 import { FreelancerChatVue } from "@/components/freelancer/chat";
+import { ClientChatVue } from "@/components/client/chat";
 import UserSessionRepository from "@/libs/UserSessionRepository";
 import { defineComponent, onMounted, ref } from "vue";
 
 export default defineComponent({
     name: 'ChatVue',
-    components: { FreelancerChatVue },
+    components: { FreelancerChatVue,ClientChatVue},
     props: {},
     setup() {
         let account_type = ref(null);

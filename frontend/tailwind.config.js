@@ -8,6 +8,7 @@ export default {
       extend: {
         colors: {
           'regal-purple':'#38213F',
+          'nice-purple':'#9F89C2'
         },
       },
     },
