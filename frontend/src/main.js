@@ -47,8 +47,6 @@ const routes = [
     { path: '/project/:id', component: ProjectPreviewVue },
     { path: '/chat', component: ChatVue },
     { path: '/chat/:id', component: ChatPreviewVue },
-    
-    // other routes
     { path: '/services', component: FreeLancerServicesVue },
     { path: '/create_service', component: FreeLancerCreateServiceVue },
     { path: '/services/:username', component: FreeLancerServicesVue },

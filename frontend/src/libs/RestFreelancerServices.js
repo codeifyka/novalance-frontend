@@ -10,6 +10,10 @@ export default class RestFreelancerServices {
         return this.axiosInstance.get(`/api/user/${username}/services`).then(response => response.data);
     }
 
+    async getAll2(){
+        return this.axiosInstance.get(`/api/getAll2`).then(response => response.data);
+    }    
+
     async getById(service_id){
         return this.axiosInstance.get(`/api/services/${service_id}`).then(response => response.data);
     }

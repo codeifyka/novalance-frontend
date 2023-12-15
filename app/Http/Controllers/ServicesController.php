@@ -50,6 +50,14 @@ class ServicesController extends Controller
         ]);
     }
 
+    public function getAll2(Request $request)
+    {
+        $services = Service::with(['price','category','images'])->get();
+        return response()->json([
+            "data" => $services,
+        ]);
+    }
+
     public function create(Request $request)
     {
         $categories = Category::where('name','=',$request['category'])->get();

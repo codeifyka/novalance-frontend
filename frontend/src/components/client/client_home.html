@@ -56,7 +56,9 @@
             Welcome, Salah! Let's start <br> with your first job post.
         </h1>
         <div class="flex mt-5 ">
-            <button class="border-2 rounded-md  text-white font-bold border-white bg-transparent px-8">Get started</button>
+            <router-link to="/my_jobs" >
+                <button class="border-2 py-2 rounded-md cursor-pointer text-white font-bold border-white bg-transparent px-8 hover:opacity-70 focus:opacity-100">Get started </button>
+            </router-link>
             <div class="flex  rounded-lg bg-white bg-opacity-30 ml-5 py-2 px-6">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" class="text-white mr-2"><path fill="currentColor" d="m29 27.586l-7.552-7.552a11.018 11.018 0 1 0-1.414 1.414L27.586 29ZM4 13a9 9 0 1 1 9 9a9.01 9.01 0 0 1-9-9Z"/></svg>
                 <input type="text" name="" id="" class="bg-transparent  focus:border-none active:border-none outline-none text-bold text-white placeholder:text-white"  placeholder="Quick search.." >
