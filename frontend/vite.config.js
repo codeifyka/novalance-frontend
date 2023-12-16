@@ -12,6 +12,10 @@ export default defineConfig({
             '/storage': {
                 target: 'http://127.0.0.1:8000',
             },
+            '/ws': {
+                target: 'ws://127.0.0.1:8001',
+                ws: true,                
+            }
         }
     },
     resolve: {

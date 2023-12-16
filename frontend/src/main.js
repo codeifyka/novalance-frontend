@@ -100,5 +100,14 @@ app.component("Loading", LoadingVue);
 app.component("Toast", ToastVue);
 app.component("Service", ServiceVue);
 
+// WebSocket
+const ws_host = import.meta.env.MODE == "development" ? "127.0.0.1:8001" : window.location.host; 
+const ws = new WebSocket(`ws://${ws_host}/ws`);
+
+ws.onopen = (ev) => { console.log("WebSocket connection is open."); }
+
+app.provide("ws", ws);
+
+
 app.use(router);
 app.mount('#app');
