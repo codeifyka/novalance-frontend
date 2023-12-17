@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory;
+
+    public function jobPosts()
+    {
+        return $this->belongsToMany(JobPost::class, 'job_category', 'category_id', 'job_post_id');
+    }
 }

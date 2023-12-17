@@ -1,8 +1,8 @@
 import { ClientHeaderVue } from '@/components/client/header';
 import { ClientFooterVue } from '@/components/client/footer';
+import RestCategories from "@/libs/RestCategories";
 import RestClientJobs from "@/libs/RestClientJobs";
-
-import {ref , inject} from 'vue'
+import {ref , inject,onMounted} from 'vue'
 export default {
   components: { ClientHeaderVue , ClientFooterVue  },
   setup() {   
@@ -10,18 +10,18 @@ export default {
     // Data
     const title = ref('')
     const description = ref('')
-    const skills = ref('')
+    const skills = ref([])
     const selectedSize = ref('')
     const selectedLevel = ref('')
     const budjet = ref('')
     const time = ref('')
     const files = ref('file.pdf')
     let toastManager = inject("toastManager");
-
+    let restCategories = new RestCategories(axios)
+    
     let onSubmit = async() =>{
-      // console.log(skills.value)
-      let restClientJobs = new RestClientJobs(axios)
       try {
+        let restClientJobs = new RestClientJobs(axios)
         let response = await  restClientJobs.create({
           title:title.value,
           description:description.value,
@@ -46,14 +46,31 @@ export default {
         // let Props = Object.getOwnPropertyNames(messages)
         // console.log(Props)
         console.log(err)
+      } 
+    }
+    
+    let categories = ref([])
+
+    onMounted(async () => {
+      let response = await restCategories.getAll();
+      console.log(response);
+      if(response.data){
+          categories.value = response.data;
       }
-      
+    });
+
+    function addSkill(ev){
+      let newSkill = ev.srcElement.value
+      const foundObject = skills.value.find(obj => obj.name === newSkill);
+      if( foundObject){
+        skills.value = skills.value.filter(skill => skill !== foundObject);
+      }else{
+        skills.value.push({name:newSkill,value:true})
+      }
     }
 
-
-
     return {
-      title ,description ,skills ,selectedSize,selectedLevel, budjet, time,files ,onSubmit 
+      title ,description ,skills ,selectedSize,selectedLevel, budjet, time,files ,onSubmit ,categories ,addSkill
     };
   },
 };

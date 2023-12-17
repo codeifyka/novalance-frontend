@@ -47,7 +47,8 @@ class UserController extends Controller
 
     public function getAllJobs()
     {
-        $Jobs = JobPost::all();
-        return response()->json(['data'=>$Jobs]);
+        $jobs = JobPost::with('categories')->get();
+    
+        return response()->json(['data' => $jobs]);
     }
 }

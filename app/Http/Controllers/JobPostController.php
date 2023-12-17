@@ -16,8 +16,10 @@ class JobPostController extends Controller
     public function index()
     {
         $user = auth('api')->user();
-        $Jobs = JobPost::where('user_id', $user->id)->get();
+        $Jobs = JobPost::with(['categories'])->where('user_id', $user->id)->get();
         return response()->json(['data'=>$Jobs]);
+
+
     }
 
     /**
@@ -50,14 +52,20 @@ class JobPostController extends Controller
             $job->size = strip_tags( $request->input('size'));
             $job->experience_level = strip_tags( $request->input('level'));
             $job->user_id = $user->id;
-            $category = Category::where('name', $request->input('skills'))->first();
-            $job->category_id = $category->id; 
+            // $category = Category::where('name', $request->input('skills'))->first();
+            // $job->category_id = $category->id; 
+
             $job->expected_delivery_time = strip_tags( $request->input('expected_delivery_time'));
             $job->budjet = strip_tags( $request->input('budjet'));
             if($request->input('illustrative_files'))
             $job->illustrative_files = strip_tags( $request->input('illustrative_files'));
             else          $job->illustrative_files = 'file.pdf';
-            $job->save();     
+            $job->save(); 
+            $categories= $request->input('skills');
+            foreach ($categories as $item){
+                $category = Category::where('name', $item['name'])->first();
+                $job->categories()->attach($category->id); 
+            }   
             return response()->json(['data'=>$job]);
         }catch (ValidationException $e) {
             // Handle validation errors
@@ -73,7 +81,9 @@ class JobPostController extends Controller
      */
     public function show(string $id)
     {
-        $JobPost = JobPost::findOrFail($id);
+        // $JobPost = JobPost::findOrFail($id);
+        $JobPost = JobPost::with(['categories'])->findOrFail($id);
+
         return response()->json(['data'=>$JobPost]);
     }
 
@@ -141,5 +151,5 @@ class JobPostController extends Controller
         // $Jobs = JobPost::all();
         return response()->json(['data'=>'succes']);
     }
-  
+    
 }

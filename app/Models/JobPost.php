@@ -19,4 +19,12 @@ class JobPost extends Model
         'illustrative_files',
         'category_id'
     ];
+
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'job_category', 'job_post_id', 'category_id');
+    }
+    
+    
 }

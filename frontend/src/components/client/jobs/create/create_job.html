@@ -24,11 +24,13 @@
             </div>
             <div class="mb-5">
                 <h1 class="font-semibold text-2xl mb-3 rounded-lg">Select skills for your job:</h1>
-                <select name="" id=""  v-model="skills" class="bg-purple-200 py-2 px-5 w-4/5 outline-none focus:border-none rounded-lg">
+                <select  class="bg-purple-200 py-2 px-5 w-4/5 outline-none focus:border-none rounded-lg" multiple>
                     <option value="" selected>All skills</option>
-                    <option value="Web Develepment">Web Develepment</option>
-                    <option value="Design">Design</option>
+                    <option :value="category.name" v-for="category in categories" @click="addSkill">{{category.name}}</option>
                 </select>
+                <br>
+                <div class="text-white inline-block m-2 font-bold bg-purple-800 px-4 py-1 rounded-full text-xs mr-2" v-for="skill in skills">{{skill.name}}</div>
+
             </div>
             <div class="mb-5">
                 <h1 class="font-semibold text-2xl mb-3">Consider the size of your job:</h1>

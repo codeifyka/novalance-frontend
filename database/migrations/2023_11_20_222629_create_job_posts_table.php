@@ -19,11 +19,9 @@ return new class extends Migration
             $table->string('experience_level',255);
             $table->unsignedBigInteger('budjet');
             $table->unsignedInteger('expected_delivery_time');
-            $table->unsignedBigInteger('category_id');
             $table->string('illustrative_files',255);
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
-            $table->foreign('category_id')->references('id')->on('categories');
             $table->foreign('user_id')->references('id')->on('users');
         });
     }

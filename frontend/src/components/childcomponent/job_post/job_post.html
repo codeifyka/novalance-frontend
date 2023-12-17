@@ -23,8 +23,7 @@
             {{job.description}}
         </div>
         <div class="my-2 px-4 flex items-center">
-            <div class="bg-purple-400 text-purple-800 px-4 py-px rounded-full text-xs mr-2">{{job.category_id}}</div>
-            <!-- <div class="bg-purple-400 text-purple-800 px-4 py-px rounded-full text-xs mr-2">Tag</div> -->
+            <div class="text-white font-bold bg-purple-800 px-4 py-1 rounded-full text-xs mr-2" v-for="category in job.categories">{{category.name}}</div>
         </div>
     </div>
 </div>
