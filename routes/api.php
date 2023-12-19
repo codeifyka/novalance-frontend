@@ -47,23 +47,29 @@ Route::group([
 });
 
 
-Route::get('/categories',[CategoriesController::class, 'getAll']);
 
-Route::group(['prefix' => 'services'], function () {
+Route::group([
+    'prefix' => 'services',
+    'middleware' => 'auth:sanctum',], function () {
     Route::post('upload_images',[FilesUploadController::class, 'uploadServicesImages']);
     Route::post('create',[ServicesController::class, 'create']);
     Route::get('{id}',[ServicesController::class, 'getById']);
+    Route::get('search/{title}',[ServicesController::class, 'searchByTitle']);
 });
-Route::get('/getAll2',[ServicesController::class, 'getAll2']);
 
+Route::group(['middleware' => 'auth:sanctum'], function(){
+    Route::get('/categories',[CategoriesController::class, 'getAll']);
+    Route::get('/getAll2',[ServicesController::class, 'getAll2']);
+    Route::resource('job', JobPostController::class);
+});
 
-Route::group(['prefix' => 'projects'], function () {
+Route::group([  'prefix' => 'projects', 
+                'middleware' => 'auth:sanctum',],
+    function () {
     Route::post('upload_images',[FilesUploadController::class, 'uploadServicesImages']);
     Route::post('create',[ProjectsController::class, 'create']);
     Route::get('{id}',[ProjectsController::class, 'getById']);
 });
-
-Route::resource('job', JobPostController::class);
 
 Route::group([
 

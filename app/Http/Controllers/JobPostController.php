@@ -52,8 +52,6 @@ class JobPostController extends Controller
             $job->size = strip_tags( $request->input('size'));
             $job->experience_level = strip_tags( $request->input('level'));
             $job->user_id = $user->id;
-            // $category = Category::where('name', $request->input('skills'))->first();
-            // $job->category_id = $category->id; 
 
             $job->expected_delivery_time = strip_tags( $request->input('expected_delivery_time'));
             $job->budjet = strip_tags( $request->input('budjet'));

@@ -12,6 +12,10 @@ export default class RestUserSession {
         return this.axiosInstance.post('/api/auth/register', user).then(response => response.data);
     }
 
+    async logout(){
+        return this.axiosInstance.post('/api/auth/logout').then(response => response.data);
+    }
+
     async checkAuth(access_token){
         return this.axiosInstance.get('/api/auth/me',{ headers: { Authorization: `Bearer ${access_token}` }}).then(response => response.data);
     }

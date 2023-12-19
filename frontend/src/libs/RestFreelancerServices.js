@@ -40,4 +40,7 @@ export default class RestFreelancerServices {
     async create(service){
         return await this.axiosInstance.post('/api/services/create', service).then(response => response.data);
     }
+    async searchByTitle(query){
+        return this.axiosInstance.get(`/api/services/search/${query}`,query).then(response => response.data);
+    }
 };

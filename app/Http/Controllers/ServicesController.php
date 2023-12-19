@@ -94,4 +94,17 @@ class ServicesController extends Controller
         ]);
     }
 
+    function searchByTitle(Request $request){
+        $services = Service::with(['price','category','images'])->where('title','=', $request['title'])->get();
+        if(count($services) == 0){
+            return response()->json([
+                "data" => null,
+            ]);
+        }
+
+        return response()->json([
+            "data" => $services,
+        ]);
+    }
+
 }

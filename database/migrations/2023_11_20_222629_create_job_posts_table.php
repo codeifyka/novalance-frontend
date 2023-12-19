@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('job_posts', function (Blueprint $table) {
             $table->id();
-            $table->string('title',255);
-            $table->string('description',255);
-            $table->string('size',255);
-            $table->string('experience_level',255);
+            $table->string('title');
+            $table->string('description');
+            $table->string('size');
+            $table->string('experience_level');
             $table->unsignedBigInteger('budjet');
             $table->unsignedInteger('expected_delivery_time');
-            $table->string('illustrative_files',255);
+            $table->string('illustrative_files');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
