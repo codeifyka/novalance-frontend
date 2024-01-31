@@ -61,6 +61,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::get('/categories',[CategoriesController::class, 'getAll']);
     Route::get('/getAll2',[ServicesController::class, 'getAll2']);
     Route::resource('job', JobPostController::class);
+    Route::post('job/upload_files',[FilesUploadController::class, 'uploadJobPostFiles']);
 });
 
 Route::group([  'prefix' => 'projects', 

@@ -13,7 +13,7 @@
                 </p>
             </div>
         </div>
-        <div class="w-3/5  mt-40 ">
+        <form @submit.prevent="onSubmit" class="w-3/5  mt-40 " enctype="multipart/form-data">
             <div class="mb-5">
                 <h1 class="font-semibold text-2xl mb-3">Job Title:</h1>
                 <input v-model="title" type="text" class="bg-purple-200 rounded-lg py-2 px-5 w-4/5 outline-none placeholder:text-slate-900 placeholder:font-normal placeholder:text-base" placeholder="Job Title ...">
@@ -79,12 +79,12 @@
             </div>
             <div class="mb-5">
                 <h1 class="font-semibold text-2xl mb-3">Illustrative files </h1>
-                <input  type="file" class="bg-purple-200 rounded-lg py-2 px-5 w-4/5">
+                <input @change="handleFileChange" type="file" class="bg-purple-200 rounded-lg py-2 px-5 w-4/5" multiple>
             </div>
             <div class="flex justify-end w-4/5 mb-5">
-                <button @click="onSubmit" class="px-10 py-2 bg-regal-purple cursor-pointer border-none focus:ring-2 focus:ring-regal-purple rounded-xl text-white hover:opacity-90">Post a job</button>
+                <button  class="px-10 py-2 bg-regal-purple cursor-pointer border-none focus:ring-2 focus:ring-regal-purple rounded-xl text-white hover:opacity-90">Post a job</button>
             </div>
-        </div>
+        </form>
     </main>
     <ClientFooterVue />
 </div>

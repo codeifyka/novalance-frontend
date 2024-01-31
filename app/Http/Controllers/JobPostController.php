@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\files;
 use App\Models\JobPost;
 use App\Models\Category;
 use App\Models\Job_post;
+use App\Models\jobPostFiles;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -13,6 +15,7 @@ class JobPostController extends Controller
     /**
      * Display a listing of the resource.
      */
+    use files;
     public function index()
     {
         $user = auth('api')->user();
@@ -36,6 +39,10 @@ class JobPostController extends Controller
     public function store(Request $request)
     {
         try {
+            $file = $request->file('files');
+            $file_name = time().'_'.'file'.'_'.$file->getClientOriginalName();
+            $file->move('uploads/job_files', $file_name);
+            $file = 'uploads/illustrative_files/'.$file_name;
             $request->validate([
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
@@ -52,19 +59,18 @@ class JobPostController extends Controller
             $job->size = strip_tags( $request->input('size'));
             $job->experience_level = strip_tags( $request->input('level'));
             $job->user_id = $user->id;
-
             $job->expected_delivery_time = strip_tags( $request->input('expected_delivery_time'));
             $job->budjet = strip_tags( $request->input('budjet'));
-            if($request->input('illustrative_files'))
-            $job->illustrative_files = strip_tags( $request->input('illustrative_files'));
-            else          $job->illustrative_files = 'file.pdf';
+            if($file){
+                $job->illustrative_files = $file;
+            }  
             $job->save(); 
-            $categories= $request->input('skills');
-            foreach ($categories as $item){
+            $categories = json_decode($request->skills, true);
+            foreach ($categories as $item) {
                 $category = Category::where('name', $item['name'])->first();
-                $job->categories()->attach($category->id); 
-            }   
-            return response()->json(['data'=>$job]);
+                    $job->categories()->attach($category->id); 
+            }
+            return response()->json([$categories]);
         }catch (ValidationException $e) {
             // Handle validation errors
             return response()->json([

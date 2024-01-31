@@ -12,7 +12,14 @@ export default class RestClientJobs{
     }
 
     async create(job){
-        return this.axiosInstance.post('/api/job',job).then(Response => Response.data)
+            
+        return this.axiosInstance.post('/api/job',job,  
+            { headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        },
+        ).then(Response => Response.data)
+        
     }
 
     async update(id,job){
@@ -25,5 +32,17 @@ export default class RestClientJobs{
 
     async getAll(){
         return this.axiosInstance.get('/api/user/job/getAll').then(Response => Response.data)
+    }
+
+    async uploadFiles(files){
+        let formData = new FormData();
+        for(let i = 0; i < files.length; i++){
+            formData.append(`file${i + 1}`, files[i]);
+        }
+        return await this.axiosInstance.post('/api/job/upload_files', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        }).then(response => response.data);
     }
 }
