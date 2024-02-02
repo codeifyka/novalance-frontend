@@ -33,6 +33,7 @@ import { ClientMyjobsVue } from '@/components/client/jobs/my_jobs';
 import { FreeLancerProfileVue } from './components/freelancer/profile';
 import { ClientUpdateJobVue } from './components/client/jobs/update';
 import { ClientChatVue } from './components/client/chat';
+import { ProposalVue } from './components/client/proposals';
 
 
 const app = createApp(App);
@@ -60,6 +61,7 @@ const routes = [
     { path: '/profile', component: FreeLancerProfileVue },
     { path: '/update_job/:id', component: ClientUpdateJobVue },
     { path: '/chat_client_freelancer/', component: ClientChatVue },
+    { path: '/proposals_client/', component: ProposalVue },
 ];
 
 const router = createRouter({
