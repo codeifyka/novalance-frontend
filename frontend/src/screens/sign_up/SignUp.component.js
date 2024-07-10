@@ -3,14 +3,14 @@ import axios from "axios";
 import { inject, ref } from "vue";
 
 const styles = {
-    container: "w-full h-screen flex flex-col items-center bg-gray-900",
-    inner: "w-1/3 rounded-md p-8 my-auto",
-    headTitle: "text-xl text-gray-50 font-semibold",
+    container: "w-full h-screen flex flex-col items-center bg-regal-purple",
+    inner: "w-full lg:w-1/3 rounded-md p-8 my-auto",
+    headTitle: "text-2xl lg:text-2xl text-gray-50 font-semibold",
     form: "grid grid-rows-5 grid-cols-2 gap-2 my-10",
     long_input: "bg-transparent text-gray-300 font-semibold border-gray-500 placeholder:text-gray-500 border-b p-2 col-span-2 w-full mx-auto outline-none",
-    input: "bg-transparent text-gray-300 font-semibold border-gray-500 placeholder:text-gray-500 border-b p-2 w-full mx-auto outline-none",
-    signInBtn: "text-blue-500 hover:text-blue-600 cursor-pointer",
-    signUpBtn: "px-16 py-2 uppercase text-gray-50 font-semibold rounded-full bg-blue-600 hover:bg-blue-700 cursor-pointer  w-fit mx-auto",
+    input: "bg-transparent text-gray-300 font-semibold border-gray-500 placeholder:text-gray-500 border-b p-2 col-span-2 lg:col-span-1 w-full mx-auto outline-none",
+    signInBtn: "text-nice-purple hover:text-nice-purple/50 cursor-pointer text-nowrap col-span-2 lg:col-span-1",
+    signUpBtn: "px-16 py-2 uppercase text-nice-regal-purple font-semibold rounded-full bg-nice-purple hover:bg-nice-purple/50 cursor-pointer w-full lg:w-fit text-center mx-auto",
 };
 
 export default {
