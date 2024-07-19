@@ -13,6 +13,8 @@
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/free-regular-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "@vueuse/core": "^10.11.0",
+    "@vueuse/motion": "^2.2.3",
     "axios": "^1.6.0",
     "jsonwebtoken": "^9.0.2",
     "vue": "^3.3.4",

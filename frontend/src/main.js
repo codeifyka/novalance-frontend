@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
+import { MotionPlugin } from '@vueuse/motion'
 
 import './style.css';
 import App from './App.vue';
@@ -34,13 +35,15 @@ import { FreeLancerProfileVue } from './components/freelancer/profile';
 import { ClientUpdateJobVue } from './components/client/jobs/update';
 import { ClientChatVue } from './components/client/chat';
 import { ProposalVue } from './components/client/proposals';
+import { LandingPageVue } from './screens/landing_page';
 
 
 const app = createApp(App);
 
 const routes = [
     // shared routes
-    { path: '/', component: HomeVue },
+    { path: '/', component: LandingPageVue },
+    { path: '/home', component: HomeVue },
     { path: '/sign_in', component: SignInVue },
     { path: '/sign_up', component: SignUpVue },
     { path: '/job/:id', component: JobPreviewVue },
@@ -70,7 +73,7 @@ const router = createRouter({
 });
 
 
-const UNPROTECTED_ROUTES = ['/sign_in', '/sign_up'];
+const UNPROTECTED_ROUTES = ['/','/sign_in', '/sign_up'];
 
 router.beforeEach(async (to, from) => {
     if(!UNPROTECTED_ROUTES.includes(to.path)){
@@ -110,6 +113,6 @@ ws.onopen = (ev) => { console.log("WebSocket connection is open."); }
 
 app.provide("ws", ws);
 
-
 app.use(router);
+app.use(MotionPlugin)
 app.mount('#app');
