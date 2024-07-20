@@ -1,70 +1,15 @@
-<div class="h-screen w-screen bg-cover bg-center" :style="{ backgroundImage: `url(${backgroundImagePath})` }">
-    <nav class="w-full h-20 flex justify-between">
-        <router-link to="/" class="w-1/4 h-full flex justify-center items-center cursor-pointer">
-            <img :src="logo" class="mr-1" alt="">
-            <h1 class="text-white text-xl font-bold inline-block">Novalance</h1>
-        </router-link>
-        <div class="w-2/4 flex items-center  justify-around">
-            <router-link to="/all_services" class="flex flex-col">
-                <div class="text-white flex cursor-pointer">   
-                    <svg xmlns="http://www.w3.org/2000/svg"  class="mr-2" height="24" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M176 88v40H336V88c0-4.4-3.6-8-8-8H184c-4.4 0-8 3.6-8 8zm-48 40V88c0-30.9 25.1-56 56-56H328c30.9 0 56 25.1 56 56v40h28.1c12.7 0 24.9 5.1 33.9 14.1l51.9 51.9c9 9 14.1 21.2 14.1 33.9V304H384V288c0-17.7-14.3-32-32-32s-32 14.3-32 32v16H192V288c0-17.7-14.3-32-32-32s-32 14.3-32 32v16H0V227.9c0-12.7 5.1-24.9 14.1-33.9l51.9-51.9c9-9 21.2-14.1 33.9-14.1H128zM0 416V336H128v16c0 17.7 14.3 32 32 32s32-14.3 32-32V336H320v16c0 17.7 14.3 32 32 32s32-14.3 32-32V336H512v80c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64z"/></svg>      
-                    Services
-                </div>
-            </router-link>
-            <div @click="isShow=!isShow" class="text-white relative flex cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" height="24" viewBox="0 0 576 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M0 64C0 28.7 28.7 0 64 0H224V128c0 17.7 14.3 32 32 32H384V288H216c-13.3 0-24 10.7-24 24s10.7 24 24 24H384V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V64zM384 336V288H494.1l-39-39c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l80 80c9.4 9.4 9.4 24.6 0 33.9l-80 80c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l39-39H384zm0-208H256V0L384 128z"/></svg>
-                Jobs
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m12 15l-5-5h10l-5 5Z" class="text-white"/></svg>
-                <div class="py-5 px-2 w-40 h-36 bg-regal-purple shadow-lg absolute top-12 transition-all duration-200  rounded-lg"   v-if="isShow">
-                    <ul class="text-white">
-                        <router-link to="/my_jobs"  class="flex items-center mb-2 p-1 transition-colors duration-300 rounded-lg hover:bg-purple-100 hover:bg-opacity-75 cursor-pointer">
-                            <Icon icon="eos-icons:service" class="mr-2"/>
-                            <span>Our Jobs</span>
-                        </router-link>
-                        <router-link to="/create_job"  class="flex items-center mb-2 p-1 transition-colors duration-300 rounded-lg hover:bg-purple-100 hover:bg-opacity-75 cursor-pointer">
-                            <Icon icon="basil:edit-solid" class="mr-2"/>
-                            <span>Create Job Post</span>
-                        </router-link>
-                        <router-link to="/proposals_client"  class="flex items-center mb-2 p-1 transition-colors duration-300 rounded-lg hover:bg-purple-100 hover:bg-opacity-75 cursor-pointer">
-                            <Icon icon="mdi:deal" class="mr-2"/>
-                            <span>Proposals</span>
-                        </router-link>
-                    </ul>
-                </div>
-            </div>
-            <router-link to="chat_client_freelancer/" class="text-white flex cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="24" height="24" viewBox="0 0 15 15"><path fill="currentColor" d="M7.5 0A7.498 7.498 0 0 0 0 7.495a7.498 7.498 0 0 0 7.5 7.496c1.306 0 2.91-.328 4.054-.947l2.79.922a.5.5 0 0 0 .63-.634l-.926-2.771c.672-1.173.952-2.706.952-4.066A7.498 7.498 0 0 0 7.5 0Z"/></svg>
-                Chat
-            </router-link>
-            <div @click="isShow2=!isShow2" class="text-white flex relative cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M12 4a8 8 0 0 0-6.96 11.947A4.99 4.99 0 0 1 9 14h6a4.99 4.99 0 0 1 3.96 1.947A8 8 0 0 0 12 4Zm7.943 14.076A9.959 9.959 0 0 0 22 12c0-5.523-4.477-10-10-10S2 6.477 2 12a9.958 9.958 0 0 0 2.057 6.076l-.005.018l.355.413A9.98 9.98 0 0 0 12 22a9.947 9.947 0 0 0 5.675-1.765a10.055 10.055 0 0 0 1.918-1.728l.355-.413l-.005-.018ZM12 6a3 3 0 1 0 0 6a3 3 0 0 0 0-6Z" clip-rule="evenodd"/></svg>
-                Profile
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m12 15l-5-5h10l-5 5Z" class="text-white"/></svg>
-                <div class="py-5 px-2 w-40 h-28 bg-regal-purple shadow-lg absolute top-12 right-1 transition-all duration-200  rounded-lg"   v-if="isShow2">
-                    <ul class="text-white">
-                        <router-link to="/client/profile"  class="flex items-center mb-2 p-1 transition-colors duration-300 rounded-lg hover:bg-purple-100 hover:bg-opacity-75 cursor-pointer">
-                            <Icon icon="iconamoon:profile-circle-fill" class="mr-2"/>
-                            <span>My Profile</span>
-                        </router-link>
-                        <button @click="logout"  class="flex items-center mb-2 p-1 transition-colors duration-300 rounded-lg hover:bg-purple-100 hover:bg-opacity-75 cursor-pointer">
-                            <Icon icon="clarity:logout-solid" class="mr-2"/>
-                            <span>Logout</span>
-                        </button>
-                    </ul>
-                </div>
-            </div>          
-        </div>
-    </nav>
-    <menu class="flex flex-col justify-center items-center h-5/6">
-        <h1 class="text-white text-4xl font-bold inline-block">
+<div class="h-screen  bg-cover bg-center" :style="{ backgroundImage: `url(${backgroundImagePath})` }">
+    <ClientHeaderVue isHomePath="true"/>
+    <menu class="flex flex-col justify-center items-center h-5/6 w-screen">
+        <h1 class="text-white text-4xl font-bold mx-8">
             Welcome, Salah! Let's start <br> with your first job post.
         </h1>
-        <div class="flex mt-5 ">
-            <router-link to="/my_jobs" >
-                <button class="border-2 py-2 rounded-md cursor-pointer text-white font-bold border-white bg-transparent px-8 hover:opacity-70 focus:opacity-100">Get started </button>
+        <div class="flex w-full lg:w-auto mt-5 flex-col lg:flex-row gap-4 lg:gap-0">
+            <router-link to="/my_jobs w-screen" class="lg:mx-0 mx-8">
+                <button class="border-4 lg:border-2 py-2 rounded-md cursor-pointer w-full text-white font-bold border-white bg-transparent px-8 hover:opacity-70 focus:opacity-100">Get started </button>
             </router-link>
-            <div class="flex  rounded-lg bg-white bg-opacity-30 ml-5 py-2 px-6">
-                <router-link :to="path">
+            <div class=" rounded-lg hidden lg:flex bg-white bg-opacity-30 ml-5 py-2 px-6">
+                <router-link :to="path" >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" class="text-white mr-2 mt-1"><path fill="currentColor" d="m29 27.586l-7.552-7.552a11.018 11.018 0 1 0-1.414 1.414L27.586 29ZM4 13a9 9 0 1 1 9 9a9.01 9.01 0 0 1-9-9Z"/></svg>
                 </router-link>
                 <input type="text" v-model="title" class="bg-transparent  focus:border-none active:border-none outline-none text-bold text-white placeholder:text-white"  placeholder="Quick search.." >

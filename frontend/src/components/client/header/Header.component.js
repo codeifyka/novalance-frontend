@@ -3,6 +3,9 @@ import RestUserSession from "@/libs/RestUserSession";
 import {ref,inject} from 'vue'
 import axios from "axios";  
 export default {
+    props :{
+        isHomePath: Boolean
+    },
     setup(){
         let toastManager = inject("toastManager");
         let isShow = ref(false)
@@ -11,6 +14,11 @@ export default {
         const restUserSession = new RestUserSession(axios);
         const handleErrorMessage = (error) => {
             toastManager.value.alertError(error);
+        }
+        const showMobileMenu = ref(false);
+
+        function toggleMenu() {
+            showMobileMenu.value = !showMobileMenu.value;
         }
 
         const logout = () => {
@@ -27,6 +35,6 @@ export default {
                 handleErrorMessage('Bad credentials');
             });
         }
-        return { logo ,isShow ,isShow2 , logout}
+        return { logo ,isShow ,isShow2 , logout, showMobileMenu, toggleMenu}
     }
 }
