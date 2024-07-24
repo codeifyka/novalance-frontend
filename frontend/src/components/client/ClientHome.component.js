@@ -3,8 +3,10 @@ import logo from '@/assets/images/logo.png';
 import RestUserSession from "@/libs/RestUserSession";
 import {ref,inject,computed} from 'vue'
 import axios from "axios";  
+import { ClientHeaderVue } from './header';
 
 export default {
+  components: {ClientHeaderVue},
   setup() {
     
     let isShow = ref(false)
@@ -24,7 +26,7 @@ export default {
           isLoading.value = false;
           console.log(response);
           if(response.message){
-              location.href = "/";
+              location.href = "/home";
           }
       }).catch(error => {
           isLoading.value = false;

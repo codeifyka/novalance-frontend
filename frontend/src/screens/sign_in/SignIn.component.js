@@ -29,7 +29,7 @@ export default {
                     userSessionRepository.save({ access_token: response.access_token, account_type: response.account_type });
                     toastManager.value.alertSuccess("Sign in successfuly.");
                     setTimeout(() => {
-                        location.href = "/";
+                        location.href = "/home";
                     }, 3000);
                 }
             }).catch(error => {

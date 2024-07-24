@@ -1,9 +1,5 @@
 import logo from '@/assets/images/logo.png';
 import { inject, onMounted, ref, onBeforeUnmount } from 'vue';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default {
     setup() {
