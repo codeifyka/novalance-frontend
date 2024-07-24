@@ -10,6 +10,11 @@ npm run build
 
 cd ../
 
+cd websocket-server
+
+echo "# Installing dependencies..."
+npm install
+
 echo "# JWT Secret Generate..."
 php artisan jwt:secret
 
@@ -19,6 +24,11 @@ php artisan storage:link
 echo "# Start the PHP application in the background"
 php artisan serve --host=0.0.0.0 --port=8000 &
 
+cd websocket-server
+echo "# Start the websocket server"
+npm run dev
+
+cd ../
 
 cd frontend
 
