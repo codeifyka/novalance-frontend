@@ -1,7 +1,7 @@
 const PORT = 8001;
-const {  WebSocketServer } = require('ws');
+const { WebSocketServer } = require('ws');
 
-let ws = new WebSocketServer({ port: PORT, path: '/ws' },() => {
+let ws = new WebSocketServer({ port: PORT, path: '/ws' }, () => {
     console.log(`Server is up running on ${PORT}`);
 });
 
@@ -12,12 +12,27 @@ ws.on("connection", (client, request) => {
     client.id = ID++;
     console.log(`new client: ${ID}`);
     
-    client.send("Hello from server");
-    client.on("message",(message)=>{
-        client.send(`your message: ${JSON.stringify(message)}`);
-    })
+    client.send(JSON.stringify({ message: "Hello from server" }));
+    
+    client.on("message", (message) => {
+    let parsedMessage;
+    try {
+    parsedMessage = JSON.parse(message);
+    } catch (error) {
+        console.error('Invalid JSON received:', message);
+        return;
+    }
+    
+    const responseMessage = {
+        type: 'message',
+        userId: parsedMessage.userId,
+        message: parsedMessage.message,
+        channelId: parsedMessage.channelId,
+    };
+    client.send(JSON.stringify(responseMessage));
+    });
 });
 
 ws.on("close", (client, request) => {
-    console.log(`new client: ${client.id}`);
+    console.log(`client disconnected: ${client.id}`);
 });

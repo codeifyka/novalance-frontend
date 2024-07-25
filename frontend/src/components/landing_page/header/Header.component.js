@@ -10,8 +10,6 @@ export default {
 
         const handleScroll = (entries) => {
             entries.forEach(entry => {
-                console.log(entry.isIntersecting)
-                console.log(scrollNavbar.value)
                 if (!entry.isIntersecting) {
                     scrollNavbar.value = true;
                 } else {

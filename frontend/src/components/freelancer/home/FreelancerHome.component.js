@@ -10,7 +10,7 @@ export default {
 
         const colors = ref({
             'text':'text-purple-700',
-            'background':"bg-purple-50/60",
+            'background':"bg-violet-50/60",
         })
 
         const axios = inject("axios");

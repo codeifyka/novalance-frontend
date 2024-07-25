@@ -1,4 +1,4 @@
-<div class="w-full bg-purple-50">
+<div class="w-full bg-violet-50">
     <ClientHeaderVue />
     <main class=" flex w-full">
         <div class="w-2/5 mt-40 flex flex-col items-center">
@@ -16,20 +16,20 @@
         <form @submit.prevent="onSubmit" class="w-3/5  mt-40 " enctype="multipart/form-data">
             <div class="mb-5">
                 <h1 class="font-semibold text-2xl mb-3">Job Title:</h1>
-                <input v-model="title" type="text" class="bg-purple-200 rounded-lg py-2 px-5 w-4/5 outline-none placeholder:text-slate-900 placeholder:font-normal placeholder:text-base" placeholder="Job Title ...">
+                <input v-model="title" type="text" class="bg-violet-200 rounded-lg py-2 px-5 w-4/5 outline-none placeholder:text-slate-900 placeholder:font-normal placeholder:text-base" placeholder="Job Title ...">
             </div>
             <div class="mb-5">
                 <h1  class="font-semibold text-2xl mb-3">Job Description:</h1>
-                <textarea v-model="description" cols="78" rows="8" class="p-2 bg-purple-200 outline-none rounded-lg"></textarea>
+                <textarea v-model="description" cols="78" rows="8" class="p-2 bg-violet-200 outline-none rounded-lg"></textarea>
             </div>
             <div class="mb-5">
                 <h1 class="font-semibold text-2xl mb-3 rounded-lg">Select skills for your job:</h1>
-                <select  class="bg-purple-200 py-2 px-5 w-4/5 outline-none focus:border-none rounded-lg" multiple>
+                <select  class="bg-violet-200 py-2 px-5 w-4/5 outline-none focus:border-none rounded-lg" multiple>
                     <option value="" selected>All skills</option>
                     <option :value="category.name" v-for="category in categories" @click="addSkill">{{category.name}}</option>
                 </select>
                 <br>
-                <div class="text-white inline-block m-2 font-bold bg-purple-800 px-4 py-1 rounded-full text-xs mr-2" v-for="skill in skills">{{skill.name}}</div>
+                <div class="text-white inline-block m-2 font-bold bg-violet-800 px-4 py-1 rounded-full text-xs mr-2" v-for="skill in skills">{{skill.name}}</div>
 
             </div>
             <div class="mb-5">
@@ -75,11 +75,11 @@
             </div>
             <div class="mb-5">
                 <h1 class="font-semibold text-2xl mb-3">Expected delivery time (Days)</h1>
-                <input v-model="time" type="text" class="bg-purple-200 rounded-lg py-2 px-5 w-4/5 outline-none placeholder:text-slate-900 placeholder:font-normal placeholder:text-base" placeholder="days ...">
+                <input v-model="time" type="text" class="bg-violet-200 rounded-lg py-2 px-5 w-4/5 outline-none placeholder:text-slate-900 placeholder:font-normal placeholder:text-base" placeholder="days ...">
             </div>
             <div class="mb-5">
                 <h1 class="font-semibold text-2xl mb-3">Illustrative files </h1>
-                <input @change="handleFileChange" type="file" class="bg-purple-200 rounded-lg py-2 px-5 w-4/5" multiple>
+                <input @change="handleFileChange" type="file" class="bg-violet-200 rounded-lg py-2 px-5 w-4/5" multiple>
             </div>
             <div class="flex justify-end w-4/5 mb-5">
                 <button  class="px-10 py-2 bg-regal-purple cursor-pointer border-none focus:ring-2 focus:ring-regal-purple rounded-xl text-white hover:opacity-90">Post a job</button>

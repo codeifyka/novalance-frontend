@@ -9,7 +9,7 @@ use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\ProposalController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -86,3 +86,12 @@ Route::group([
     Route::get('me', [AuthController::class, 'me']);
 
 });
+
+
+Route::group(
+    [  'prefix' => 'proposals', 'middleware' => 'auth:sanctum'],
+    function () {
+        Route::post('/create', [ProposalController::class, 'store']);
+        Route::get('/{job_post_id}', [ProposalController::class, 'getByJobPostAndFreelancer']);
+    }
+);

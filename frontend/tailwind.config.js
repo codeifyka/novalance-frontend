@@ -9,7 +9,8 @@ export default {
         colors: {
           'regal-purple':'#38213F',
           'purple':'#6B21A8',
-          'nice-purple':'#9F89C2'
+          'nice-purple':'#9F89C2',
+          'text-spc-purple':'#C084FC'
         },
       },
     },
