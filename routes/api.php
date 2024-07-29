@@ -43,7 +43,7 @@ Route::group([
     Route::get('/{username}/services',[ServicesController::class, 'getAll']);
     Route::get('/{username}/projects',[ProjectsController::class, 'getAll']);
     Route::get('job/getAll', [UserController::class, 'getAllJobs']);//i have problem with jobcontroller recources thats why i wrote here
-
+    Route::get('/{user_id}', [UserController::class, 'getUserById']);
 });
 
 
@@ -91,7 +91,9 @@ Route::group([
 Route::group(
     [  'prefix' => 'proposals', 'middleware' => 'auth:sanctum'],
     function () {
+        Route::get('/getMyProposals', [ProposalController::class, 'getMyProposals']);
         Route::post('/create', [ProposalController::class, 'store']);
         Route::get('/{job_post_id}', [ProposalController::class, 'getByJobPostAndFreelancer']);
+        Route::put('{id}/accept', [ProposalController::class, 'acceptProposal']);
     }
 );
