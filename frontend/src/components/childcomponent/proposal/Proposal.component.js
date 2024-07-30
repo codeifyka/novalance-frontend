@@ -30,7 +30,7 @@ export default {
         }
 
         const getFreelancer = async ()  =>  {
-            let response = await restClientProposals.getFreelancerInfo(proposal.freelancer_id)
+            let response = await restClientProposals.getUserInfo(proposal.freelancer_id)
             if(response.data){
                 proposal.freelancer_image = response.data.username
                 freelancer.value = response.data

@@ -1,10 +1,11 @@
 import { ClientProposalVue } from "@/components/client/proposals";
+import { FreelancerProposalVue } from "@/components/freelancer/proposal";
 import UserSessionRepository from "@/libs/UserSessionRepository";
 import { defineComponent, onMounted, ref } from "vue";
 
 export default defineComponent({
     name: 'ProposalVue',
-    components: { ClientProposalVue },
+    components: { ClientProposalVue, FreelancerProposalVue },
     props: {},
     setup() {
         let account_type = ref(null);

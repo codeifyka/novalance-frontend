@@ -93,6 +93,7 @@ Route::group(
     function () {
         Route::get('/getMyProposals', [ProposalController::class, 'getMyProposals']);
         Route::post('/create', [ProposalController::class, 'store']);
+        Route::get('/getFreelancerProposals', [ProposalController::class, 'getFreelancerProposals']);
         Route::get('/{job_post_id}', [ProposalController::class, 'getByJobPostAndFreelancer']);
         Route::put('{id}/accept', [ProposalController::class, 'acceptProposal']);
     }

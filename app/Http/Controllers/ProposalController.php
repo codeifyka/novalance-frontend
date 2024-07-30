@@ -72,4 +72,14 @@ class ProposalController extends Controller
         }
 
     }
+
+    public function getFreelancerProposals(): JsonResponse
+    {
+        $user = auth('api')->user();
+
+        // Get proposals for the job posts
+        $proposals = Proposal::where('freelancer_id', $user->id)->get();
+        
+        return response()->json($proposals, 200);
+    }
 }
