@@ -140,6 +140,10 @@ export default {
       }
   }
 
+  const toggleChatScreen = () => {
+    emit('chatState','toggleChat')
+  }
+
     return {
       messages,
       newMessage,
@@ -151,7 +155,8 @@ export default {
       menuIsShow,
       openModal,
       isModalOpen,
-      handleSend
+      handleSend,
+      toggleChatScreen
     };
   },
 };

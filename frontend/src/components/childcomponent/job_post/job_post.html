@@ -1,9 +1,9 @@
-<div class="w-11/12 flex flex-col items-center my-4">   
+<div class="md:w-11/12 flex flex-col items-center my-4">   
     <div  :class="['w-full','relative','flex','flex-col',colors.background,'shadow-md','rounded-lg','py-4']">
         <div @click="menu" class="absolute grid place-content-center p-5 w-1 h-1 cursor-pointer transition-colors duration-200 rounded-full hover:bg-violet-100 top-5 right-5" v-if="account_type=='client'">
             <Icon icon="charm:menu-kebab" :class="[colors.text]"/>
         </div>
-        <div class="py-5 px-2 w-44 h-40 bg-violet-50 shadow-lg absolute top-10 right-14" v-if="menuValue">
+        <div v-motion-pop-visible class="py-5 px-2 w-44 h-40 bg-violet-50 shadow-lg absolute top-10 right-14" v-if="menuValue">
             <ul>
                 <router-link :to="'/update_job/' + job.id" class="flex items-center mb-2 p-2 transition-colors duration-300 rounded-lg hover:bg-violet-100 hover:bg-opacity-75 cursor-pointer">
                     <Icon class="text-regal-purple" icon="basil:edit-solid" />

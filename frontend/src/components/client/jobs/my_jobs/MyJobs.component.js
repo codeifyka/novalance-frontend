@@ -8,7 +8,7 @@ export default {
   components: { ClientHeaderVue , ClientFooterVue ,JobPostVue },
   setup() {   
     const axios = inject('axios');
-    let Jobs = ref([])
+    let Jobs = ref(null)
     let restClientJobs = new RestClientJobs(axios)
     const colors = ref({
       'text':'text-regal-brown',
@@ -19,7 +19,7 @@ export default {
         const response = await restClientJobs.getMyJobs();
 
         if (response.data) {
-          Jobs.value = response.data;
+          Jobs.value = response.data || [];
           console.log(response.data)
         } else {
           console.log(response);

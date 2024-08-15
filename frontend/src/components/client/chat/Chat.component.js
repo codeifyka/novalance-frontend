@@ -2,7 +2,6 @@ import { ClientHeaderVue } from '@/components/client/header';
 import { ref, onMounted, inject } from 'vue';
 import RestChat from '@/libs/RestChat';
 import { ClientChatRoomVue } from './chat_room';
-import RestUserSession from '@/libs/RestUserSession';
 
 export default {
   components: { ClientHeaderVue, ClientChatRoomVue },
@@ -11,6 +10,7 @@ export default {
     const restChat = new RestChat(axios)
     const freelancers = ref(null)
     const currentUser = ref(null)
+    const chatScreenState = ref(true)
 
     const getFreelancers = async () => {
       try{
@@ -30,6 +30,7 @@ export default {
 
     const ChangeCurrentUser = (chat_id) => {
       currentUser.value = freelancers.value.find(fr => fr.id == chat_id);
+      toggleChatScreen()
     }
 
     const handleMessage = (message) => {
@@ -41,11 +42,18 @@ export default {
       })
     }
 
+    const toggleChatScreen = (message) => {
+      chatScreenState.value = !chatScreenState.value 
+    }
+  
+
     return {
       freelancers,
       currentUser,
       ChangeCurrentUser,
-      handleMessage
+      handleMessage,
+      chatScreenState,
+      toggleChatScreen
     };
   },
 };

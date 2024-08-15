@@ -8,10 +8,8 @@ export default {
   components: { ClientHeaderVue , ClientFooterVue  },
   setup() {   
     
-    let services = ref([]);
+    const services = ref(null);
     let route = useRoute();
-   
-    // console.log(jobId)
     const axios = inject('axios');
     const restFreelancerServices = new RestFreelancerServices(axios);
 
@@ -20,7 +18,7 @@ export default {
       if (!query){
         let response = await restFreelancerServices.getAll2();
         if(response.data){
-            services.value = response.data;
+            services.value = response.data || [];
         }
       }
       else{

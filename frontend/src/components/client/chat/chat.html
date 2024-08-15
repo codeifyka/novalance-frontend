@@ -1,11 +1,11 @@
 <div class="w-full h-screen  bg-violet-50 text-purple">
     <ClientHeaderVue />
     <div class=" fixed top-0 mt-20 flex items-center  w-full ">
-        <div class=" w-4/12 rounded-br-3xl bg-violet-50" style=" height: 30.2rem; ">
+        <div class="w-full md:w-4/12 rounded-br-3xl bg-violet-50 h-[30.2rem] md:block" :class="chatScreenState? 'hidden' : 'block'">
             <h1 class="text-xl  py-2 px-7 font-bold mb-5">CHAT</h1>
             <h1 class="text-lg  px-7 font-semibold my-2">RECENT CHAT</h1>
             <div class="overflow-y-auto hide-scrollbar h-80">
-                <div      
+                <div 
                     v-for="freelancer in freelancers" 
                     @click="ChangeCurrentUser(freelancer.id)"
                     :key="freelancer.freelancer.id" 
@@ -19,6 +19,6 @@
                 </div>
             </div>
         </div>
-        <ClientChatRoomVue :freelancer="currentUser" @received-message="handleMessage" v-if="currentUser"/>
+        <ClientChatRoomVue :class="chatScreenState? 'block' : 'hidden'" :freelancer="currentUser" @chatState="toggleChatScreen" @received-message="handleMessage" v-if="currentUser"/>
     </div>
 </div>
