@@ -7,7 +7,7 @@ export default {
     components: { FreeLancerHeaderVue },
     setup(){
         let route = useRoute();
-        let projects = ref([]);
+        let projects = ref(null);
         
         const axios = inject('axios');
         const restFreelancerProjects = new RestFreelancerProjects(axios);
@@ -16,7 +16,7 @@ export default {
             let response = await restFreelancerProjects.getAll(route.params.username);
             console.log(response);
             if(response.data){
-                projects.value = response.data;
+                projects.value = response.data || [];
             }
         });
 

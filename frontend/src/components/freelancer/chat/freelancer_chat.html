@@ -6,7 +6,7 @@
     <div class="w-11/12 flex-grow overflow-auto flex flex-col my-16 bg-gray-50/60 rounded-lg p-4">
         <div class="uppercase font-semibold text-lg text-purple-800">Chat:</div>
         <div class="w-full flex-grow overflow-auto flex flex-row items-center">
-            <div class="w-1/5 h-full flex flex-col items-start">
+            <div class="md:w-1/5 w-full md:block h-full flex flex-col items-start" :class="chatScreenState? 'hidden' : 'block'">
                 <div class="w-full text-purple-800 text-sm font-semibold py-2">RECENT CHATS:</div>
                 <div class="w-11/12 flex flex-col items-center">
                     <div 
@@ -25,7 +25,7 @@
                     </div>
                 </div>
             </div>
-            <ChatRoomVue :client="currentUser" v-if="currentUser" @received-message="handleMessage"/>
+            <ChatRoomVue :client="currentUser" :class="chatScreenState? 'block' : 'hidden'" @chatState="toggleChatScreen" v-if="currentUser" @received-message="handleMessage"/>
         </div>  
     </div>
 </div>

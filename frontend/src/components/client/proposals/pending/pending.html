@@ -12,5 +12,5 @@
     </div>
     <hr class="font-semibold text-gray-300 md:mx-16">
     <div v-if="!proposals">Loading...</div>
-    <ProposalVue v-for="proposal in proposals" :proposal="proposal" status="pending"/>
+    <ProposalVue v-for="proposal in proposals" :proposal="proposal" background="bg-white" status="pending"/>
 </div>

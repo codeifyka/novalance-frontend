@@ -4,8 +4,8 @@
     </div>
     <div class="w-11/12 flex-grow flex flex-col my-16 bg-violet-50/60 rounded-lg p-4">
         <div class="uppercase font-semibold text-lg text-purple-800">Create Service:</div>
-        <div class="w-full flex py-4">
-            <div class="w-3/5 flex flex-col">
+        <div class="w-full flex flex-col gap-8 md:gap-0 md:flex-row py-4">
+            <div class="md:w-3/5 w-full flex flex-col">
                 <input 
                     v-model="title"
                     placeholder="Title"
@@ -34,8 +34,8 @@
                     @click="onSubmit"
                     class="bg-violet-500 text-center py-2 rounded-lg text-purple-50 font-semibold mt-4">CREATE</div>
             </div>
-            <div class="w-2/5 flex flex-col items-end">
-                <div class="w-11/12 flex flex-col rounded-lg">
+            <div class="md:w-2/5 w-full flex flex-col items-end">
+                <div class="md:w-11/12 w-full flex flex-col rounded-lg">
                     <div class="w-full h-60 bg-violet-200 rounded-lg">
                         <img :src="images[0] || '/default_service_thumbnail.jpg'" class="w-full h-full object-cover rounded-lg" />
                     </div>

@@ -13,16 +13,16 @@ export default {
         const isLoading = ref(false);
         const status = ref('active');
         const restClientProposals = new RestProposals(axios);
-        const pendingProposals = ref([])
-        const doneProposals = ref([])
-        const activeProposals = ref([])
+        const pendingProposals = ref(null)
+        const doneProposals = ref(null)
+        const activeProposals = ref(null)
     
         onMounted(async () => {
             let response = await restClientProposals.getFreelancerProposals();
             if(response){
-                pendingProposals.value = response.filter(p=> p.status === 'pending');
-                doneProposals.value = response.filter(p=> p.status === 'done');
-                activeProposals.value = response.filter(p=> p.status === 'active');
+                pendingProposals.value = response.filter(p=> p.status === 'pending') || [];
+                doneProposals.value = response.filter(p=> p.status === 'done') || [];
+                activeProposals.value = response.filter(p=> p.status === 'active') || [];
             }
         });
         const changeSection = (statusValue) => {

@@ -1,5 +1,5 @@
 <Loading v-if="isLoading" />
-<div class="p-3 items-center bg-white flex justify-between my-10 md:mx-16 rounded-md" >
+<div :class="background" class="p-3 items-center flex justify-between my-10 md:mx-16 rounded-md" >
     <div class="flex justify-around gap-2 w-2/5">
         <div class="h-10 w-10 flex justify-center items-center text-lg capitalize rounded-full bg-slate-500 text-white cursor-pointer" @click="openModal" >{{getFirstLetter(proposal.freelancer_image) }}</div>
         <p class="font-semibold w-2/3 underline opacity-80">{{proposal.job_title}}</p>

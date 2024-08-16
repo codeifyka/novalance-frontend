@@ -9,7 +9,7 @@ export default {
     setup(){
 
         const colors = ref({
-            'text':'text-purple-700',
+            'text':'text-violet-700',
             'background':"bg-violet-50/60",
         })
 
@@ -17,13 +17,13 @@ export default {
         const restUserSession = new RestUserSession(axios);
         let user_info = ref({ user: { username: "undefined" }, services: 0, projects: 0, sells: 0 });
 
-        let Jobs = ref([])
+        let Jobs = ref(null)
         let restClientJobs = new RestClientJobs(axios)
         const fetchData = async () => {
             try {
                 const response = await restClientJobs.getAll();
                 if (response.data) {
-                Jobs.value = response.data;
+                Jobs.value = response.data || [];
                 console.log(response.data)
                 } else {
                 console.log(response);

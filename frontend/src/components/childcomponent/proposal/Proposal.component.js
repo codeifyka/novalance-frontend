@@ -5,7 +5,8 @@ import { ModalVue } from './modal';
 export default {
     props: {
         proposal: Object,
-        status: 'pending' | 'active' | 'done' 
+        status: 'pending' | 'active' | 'done' ,
+        background: String
     },
     components: {
         ModalVue,

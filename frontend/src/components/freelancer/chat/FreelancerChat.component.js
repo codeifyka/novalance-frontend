@@ -17,6 +17,7 @@ export default {
         const restChat = new RestChat(axios)
         const clients = ref(null)
         const currentUser = ref(null)
+        const chatScreenState = ref(true)
 
         const getClients = async () => {
             try {
@@ -32,6 +33,7 @@ export default {
 
         const ChangeCurrentUser = (chat_id) => {
             currentUser.value = clients.value.find(fr => fr.id == chat_id);
+            toggleChatScreen()
         }
 
         const handleMessage = (message) => {
@@ -41,7 +43,11 @@ export default {
                     console.log(client)
                 }
             })
-        }      
+        }    
+        
+        const toggleChatScreen = (message) => {
+            chatScreenState.value = !chatScreenState.value 
+        }
 
         onMounted(async() => {
             getClients()
@@ -53,7 +59,9 @@ export default {
             clients,
             currentUser,
             ChangeCurrentUser,
-            handleMessage
+            handleMessage,
+            chatScreenState,
+            toggleChatScreen
         };
 
     }
