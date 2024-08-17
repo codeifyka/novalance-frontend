@@ -1,8 +1,19 @@
 const PORT = 8001;
 const { WebSocketServer } = require('ws');
+const fs = require('fs');
+const https = require('https');
 
-let ws = new WebSocketServer({ port: PORT, path: '/ws' }, () => {
-    console.log(`Server is up running on ${PORT}`);
+// Create an HTTPS server
+const server = https.createServer({
+    cert: fs.readFileSync('./fullchain.pem'),
+    key: fs.readFileSync('./privkey.pem'),
+});
+
+// Create a WebSocket server using the HTTPS server
+const ws = new WebSocketServer({ server });
+
+server.listen(8001, () => {
+    console.log('WebSocket server running on wss://localhost:8001');
 });
 
 let ID = 0;
