@@ -2,15 +2,17 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 export default defineConfig({
     plugins: [vue()],
     server: {
         proxy: {
             '/api': {
-                target: 'http://127.0.0.1:8000',
+                target: isProduction ? 'https://novalance.onrender.com' : 'http://127.0.0.1:8000',
             },
             '/storage': {
-                target: 'http://127.0.0.1:8000',
+                target: isProduction ? 'https://novalance.onrender.com' : 'http://127.0.0.1:8000',
             },
             '/ws': {
                 target: 'wss://localhost:8001',
