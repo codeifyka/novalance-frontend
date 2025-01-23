@@ -1,64 +1,7 @@
-# Novalance
+# Vue 3 + Vite
 
-**PREVIEW:** https://novalance.onrender.com
+This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
 
-## How to start
+## Recommended IDE Setup
 
-First clone the repo
-
-```bash
-git clone https://github.com/kadik23/Novalance <directory-name>
-```
-
-Then change directory to that project
-
-```bash
-cd <directory-name>
-```
-
-Then you need to create a copy of **.env.example** and name it **.env** or run this command
-
-```bash
-copy .env.example .env
-```
-
-then install all necessary composer dependencies by running
-
-```bash
-composer install
-```
-
-Then since this is laravel you need to generate new key so run
-
-```bash
-php artisan key:generate
-```
-
-and Generate the secret key for JWT
-
-```bash
-php artisan jwt:secret
-```
-
-also you need to link the storage to show the public images, just run this command
-```bash
-php artisan storage:link
-```
-
-And for the frontend you need to change directory to the frontend
-```bash
-cd frontend
-```
-
-then run
-
-```bash
-npm install
-```
-
-then you can run the development server, make sure you have laravel server running in another terminal so the frontend can intract with the api.
-
-```bash
-npm run dev
-```
-
+- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
