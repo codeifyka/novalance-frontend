@@ -1,19 +1,76 @@
-<div class="h-screen  bg-cover bg-center" :style="{ backgroundImage: `url(${backgroundImagePath})` }">
+<div class="bg-white min-h-screen ">
     <ClientHeaderVue isHomePath="true"/>
-    <menu class="flex flex-col justify-center items-center h-5/6 w-screen">
-        <h1 class="text-white text-4xl font-bold mx-8">
-            Welcome, Salah! Let's start <br> with your first job post.
-        </h1>
-        <div class="flex w-full lg:w-auto mt-5 flex-col lg:flex-row gap-4 lg:gap-0">
-            <router-link to="/my_jobs" class="lg:mx-0 mx-8 ">
-                <button class="border-4 lg:border-2 py-2 rounded-md cursor-pointer w-full text-white font-bold border-white bg-transparent px-8 hover:opacity-70 focus:opacity-100">Get started </button>
-            </router-link>
-            <div class=" rounded-lg hidden lg:flex bg-white bg-opacity-30 ml-5 py-2 px-6">
-                <router-link :to="path" >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" class="text-white mr-2 mt-1"><path fill="currentColor" d="m29 27.586l-7.552-7.552a11.018 11.018 0 1 0-1.414 1.414L27.586 29ZM4 13a9 9 0 1 1 9 9a9.01 9.01 0 0 1-9-9Z"/></svg>
-                </router-link>
-                <input type="text" v-model="title" class="bg-transparent  focus:border-none active:border-none outline-none text-bold text-white placeholder:text-white"  placeholder="Quick search.." >
+    <div class="flex flex-col gap-8 mx-8 md:mx-24 pt-24">
+        <div class="flex flex-col md:flex-row gap-8 md:gap-0 justify-between text-black w-full">
+            <div class="flex flex-col gap-2">
+                <div class="font-semibold">All Services</div>
+                <div class="text-sm opacity-70">Your goals, our talents. Discover services that fit your requirements <br class="hidden md:block"> and make projects happen.</div>
             </div>
+            <div class="relative">
+                <button
+                  @click="toggleSortMenu"
+                  class="text-primary border border-primary rounded-md flex justify-center w-fit items-center gap-2.5 text-sm px-6 py-1.5 hover:bg-primary hover:text-white transition-colors duration-150 font-semibold h-fit"
+                >
+                  {{ currentSort }}
+                  <Icon icon="ep:arrow-down-bold" width="16" height="16" />
+                </button>
+                <div
+                  v-if="showSortMenu"
+                  class="absolute bg-white shadow-md border rounded-md mt-2 w-40 z-10"
+                >
+                  <div
+                    v-for="(option, index) in sortOptions"
+                    :key="index"
+                    class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                    @click="applySort(option)"
+                  >
+                    {{ option }}
+                  </div>
+                </div>
+              </div>
+            </div>
+        <div class="flex flex-col md:flex-row gap-16">
+            <div class="flex flex-col gap-8">
+                <div class="flex flex-col gap-2">
+                    <div class="font-medium">Search</div>
+                    <div class=" rounded-lg flex bg-primary/10 w-fit border-[0.5px] shadow-sm py-0.5">
+                        <input type="text" v-model="title" class="bg-transparent focus:border-none active:border-none outline-none rounded-md text-bold text-black placeholder:text-black placeholder:text-sm px-2 placeholder:text-opacity-70 w-60 md:w-64"  placeholder="Quick search.." >
+                        <router-link :to="path" >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" class="text-black mr-2 mt-1"><path fill="currentColor" d="m29 27.586l-7.552-7.552a11.018 11.018 0 1 0-1.414 1.414L27.586 29ZM4 13a9 9 0 1 1 9 9a9.01 9.01 0 0 1-9-9Z"/></svg>
+                        </router-link>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-4">
+                    <div class="font-medium">Categories</div>
+                    <div class="text-sm">
+                        <div class="flex gap-4">
+                            <div class="opacity-50 w-60">Web Development</div>
+                            <div class="font-semibold">20</div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="opacity-50 w-60">Web Development</div>
+                            <div class="font-semibold">20</div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="opacity-50 w-60">Web Development</div>
+                            <div class="font-semibold">20</div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="opacity-50 w-60">Web Development</div>
+                            <div class="font-semibold">20</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center items-center w-full">
+                <Loading v-if="!services" />
+                <div v-else class="flex flex-wrap gap-8">
+                    <div v-if="services.length === 0" class="m-auto">No services available at the moment.</div>
+                    <div v-for="service in services" :key="service.id">
+                        <ServiceVue v-motion-slide-visible-once-top :service="service" />
+                    </div>
+                </div>
+            </div>        
         </div>
-    </menu>
+    </div>
 </div>

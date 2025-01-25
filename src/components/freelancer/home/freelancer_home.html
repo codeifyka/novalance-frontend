@@ -19,8 +19,8 @@
             <div class="md:w-1/3 w-full md:h-full order-1 md:order-2 my-4 md:my-0 flex flex-col items-center">
                 <div class="w-full bg-violet-50/60 shadow-lg rounded-lg flex flex-col items-center py-4">
                     <div class="h-16 w-16 bg-violet-200 rounded-full"></div>
-                    <div class="text-violet-900 text-sm py-2 font-semibold">{{user_info.user.username}}</div>
-                    <div class="text-violet-900 text-xs py-2">{{user_info.user.bio || 'Freelancer'}}</div>
+                    <div class="text-violet-900 text-sm py-2 font-semibold">{{user_info?.user.username}}</div>
+                    <div class="text-violet-900 text-xs py-2">{{user_info?.user.bio || 'Freelancer'}}</div>
                     <div class="w-1/2 flex items-center my-8">
                         <div class="w-1/2 flex flex-col text-sm">
                             <div class="flex items-center text-violet-500 font-medium">
@@ -34,9 +34,9 @@
                             </div>
                         </div>
                         <div class="w-1/2 flex flex-col text-sm items-center">
-                            <div class="text-violet-600 ml-4 font-semibold">{{user_info.services || 0}}</div>
-                            <div class="text-violet-600 ml-4 font-semibold">{{user_info.sells || 0}}</div>
-                            <div class="text-violet-600 ml-4 font-semibold">{{user_info.projects || 0}}</div>
+                            <div class="text-violet-600 ml-4 font-semibold">{{user_info?.services || 0}}</div>
+                            <div class="text-violet-600 ml-4 font-semibold">{{user_info?.sells || 0}}</div>
+                            <div class="text-violet-600 ml-4 font-semibold">{{user_info?.projects || 0}}</div>
                         </div>
                     </div>
 

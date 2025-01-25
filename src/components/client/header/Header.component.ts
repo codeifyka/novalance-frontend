@@ -1,6 +1,6 @@
 import logo from '@/assets/images/logo.png';
 import RestUserSession from "@/libs/RestUserSession";
-import { ref, inject, type Ref } from 'vue'
+import { ref, inject, type Ref, onMounted } from 'vue'
 import axios from "axios";
 import type ToastsManager from '@/libs/ToastsManager';
 export default {
@@ -17,10 +17,16 @@ export default {
             toastManager?.value.alertError(error);
         }
         const showMobileMenu = ref(false);
+        let user = ref<User | null>(null);
 
         function toggleMenu() {
             showMobileMenu.value = !showMobileMenu.value;
         }
+
+        onMounted(async () => {
+            let restUserSession = new RestUserSession(axios!);
+            user.value = (await restUserSession.getInfo()).value!.user;
+        });
 
         const logout = () => {
             isLoading.value = true;
@@ -33,6 +39,6 @@ export default {
                 handleErrorMessage('Bad credentials');
             });
         }
-        return { logo, isShow, isShow2, logout, showMobileMenu, toggleMenu }
+        return { logo, isShow, isShow2, logout, showMobileMenu, toggleMenu, user }
     }
 }
