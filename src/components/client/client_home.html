@@ -66,7 +66,7 @@
                 <Loading v-if="!services" />
                 <div v-else class="flex flex-wrap gap-8">
                     <div v-if="services.length === 0" class="m-auto">No services available at the moment.</div>
-                    <div v-for="service in services" :key="service.id">
+                    <div v-for="service in services" :key="service.id" class="w-full md:w-5/12">
                         <ServiceVue v-motion-slide-visible-once-top :service="service" />
                     </div>
                 </div>
