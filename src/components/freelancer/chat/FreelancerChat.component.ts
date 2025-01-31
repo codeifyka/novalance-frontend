@@ -1,5 +1,5 @@
 import { FreeLancerHeaderVue } from '@/components/freelancer/header';
-import { JobPostVue } from '@/components/childcomponent/job_post';
+import { JobPostVue } from '@/components/job_post';
 import { inject, onMounted, ref } from 'vue';
 import RestChat from '@/libs/RestChat';
 import { ChatRoomVue } from './chat_room';

@@ -1,4 +1,4 @@
-import { ProposalVue } from '@/components/childcomponent/proposal';
+import { ProposalVue } from '@/components/proposal';
 import { ClientHeaderVue } from '@/components/client/header';
 
 export default {

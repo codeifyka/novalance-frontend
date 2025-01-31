@@ -1,6 +1,6 @@
 import { ClientHeaderVue } from '@/components/client/header';
 import { ClientFooterVue } from '@/components/client/footer';
-import { JobPostVue } from '@/components/childcomponent/job_post';
+import { JobPostVue } from '@/components/job_post';
 import RestClientJobs from "@/libs/RestClientJobs";
 import { ref, inject, onMounted } from 'vue'
 import type { AxiosInstance } from 'axios';

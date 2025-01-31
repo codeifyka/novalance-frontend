@@ -1,5 +1,5 @@
 import { FreeLancerHeaderVue } from '@/components/freelancer/header';
-import { JobPostVue } from '@/components/childcomponent/job_post';
+import { JobPostVue } from '@/components/job_post';
 import RestUserSession from '@/libs/RestUserSession';
 import RestClientJobs from "@/libs/RestClientJobs";
 import { inject, onMounted, ref } from 'vue';

@@ -29,7 +29,7 @@ import { ClientCreateJobVue } from './components/client/jobs/create'
 import { FreeLancerCreateProjectVue } from './components/freelancer/portfolio/create';
 import { ProfileVue } from './components/client/profile'
 import { ClientServicesVue } from './components/client/services'
-import { ServiceVue } from './components/childcomponent/service';
+import { ServiceVue } from './components/service';
 import { ClientMyjobsVue } from './components/client/jobs/my_jobs';
 import { FreeLancerProfileVue } from './components/freelancer/profile';
 import { ClientUpdateJobVue } from './components/client/jobs/update';

@@ -3,7 +3,7 @@ import logo from "@/assets/images/logo.png";
 import RestUserSession from "@/libs/RestUserSession";
 import { ref, inject, computed, type Ref, onMounted } from "vue";
 import { ClientHeaderVue } from "./header";
-import { ServiceVue } from "../childcomponent/service";
+import { ServiceVue } from "../service";
 import type ToastsManager from "@/libs/ToastsManager";
 import type { AxiosInstance } from "axios";
 import RestFreelancerServices from "@/libs/RestFreelancerServices";
