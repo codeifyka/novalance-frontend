@@ -1,0 +1,24 @@
+<div class="w-full flex flex-col items-center border-t-2 py-4 border-gray-200">
+  <div :class="['w-full','flex justify-between items-center','py-4']">
+    <div class="flex  gap-4 w-[30%]">
+      <img
+        src="/default_service_thumbnail.jpg"
+        class="w-3/5 h-full object-cover rounded-lg"
+      />
+      <div class="flex flex-col justify-between">
+        <div class="flex flex-col">
+          <div class="font-bold">Service Title</div>
+          <div class="text-green-600">$200</div>
+        </div>
+        <div class="underline text-primary text-sm cursor-pointer hover:opacity-75">view service</div>
+      </div>
+    </div>
+    <div>
+      <button
+        class="bg-primary text-white text-sm rounded-xl px-8 py-1 font-semibold hover:bg-opacity-75"
+      >
+        Open chat
+      </button>
+    </div>
+  </div>
+</div>
