@@ -1,0 +1,24 @@
+<div class="w-full min-h-screen overflow-auto flex flex-col items-center bg-white">
+    <ClientHeaderVue />
+    <Loading v-if="service === null" />
+    <div class="flex flex-col justify-start mt-28 mx-8 md:mx-24 mb-8" v-if="service !== null">
+        <div class="w-full flex flex-col md:flex-row justify-between">
+            <div class="md:w-3/5 order-2 md:order-1 w-full flex items-center flex-wrap">
+                <SliderVue v-if="service?.images.length > 0" :images="service?.images" />
+                <SliderVue v-if="service?.images.length == 0" :images="[{ id: 1, url: '/default_service_thumbnail.jpg' }, { id: 2, url: '/default_service_thumbnail.jpg' }, { id: 3, url: '/default_service_thumbnail.jpg' },  { id: 4, url: '/default_service_thumbnail.jpg' }]" />
+                <div class="w-full flex flex-col">
+                    <div class="flex items-center justify-between mt-8 mb-2">
+                        <div class="text-lg font-semibold capitalize">{{service?.title}}</div>
+                        <div class="font-semibold text-green-500">${{service?.price.value}}</div>
+                    </div>
+                    <div class="text-sm py-4">{{service?.description}}</div>
+                    <div class="bg-primary self-end px-16 w-fit text-center py-2 rounded-lg text-violet-50 font-semibold mt-8">BUY</div>
+                </div>
+            </div>
+            <div class="md:w-1/4 order-1 md:order-2 w-full flex flex-col items-end">
+                <Service v-if="service?.id == $route.params.id" :service="service" />
+            </div>
+        </div>  
+    </div>
+    <ClientFooterVue />
+</div>
