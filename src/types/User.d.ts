@@ -31,4 +31,5 @@ interface UserInfo {
     user: User;
     services: number;
     projects: number;
+    sells: number;
 }
