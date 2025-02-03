@@ -1,8 +1,6 @@
 <Loading v-if="isLoading" />
-<div :class="background" class="p-3 items-center flex justify-between my-10 md:mx-16 rounded-md">
-    <div class="flex justify-around gap-2 w-2/5">
-        <div class="h-10 w-10 flex justify-center items-center text-lg capitalize rounded-full bg-slate-500 text-white cursor-pointer"
-            @click="openModal">{{getFirstLetter(freelancer?.username) }}</div>
+<div :class="background" class="px-3 items-center flex justify-between mt-4 mb-10 rounded-md">
+    <div class="w-2/5">
         <p class="font-semibold w-2/3 underline opacity-80">{{jobPost?.title}}</p>
     </div>
     <div class="flex justify-around gap-2 text-gray-300 md:w-[35%]" v-if="status == 'pending'">
@@ -33,7 +31,9 @@
             </div>
         </div>
     </div>
-    <div class="flex justify-around gap-2 text-gray-300 md:w-1/5" v-else="status == 'active'">
+    <div class="flex justify-around gap-2 text-gray-300 md:w-5/12" v-else="status == 'active'">
+        <span class="text-green-500 capitalize">{{proposal.status}}</span>
+        <span class="text-green-500">{{jobPost?.budjet}}$</span>
         <p class="flex flex-col items-center">
             <span>{{startedAtDay}}</span>
             <span>{{startedAtTime}}</span>
