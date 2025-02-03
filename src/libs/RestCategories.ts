@@ -13,4 +13,10 @@ export default class RestCategories {
             .get(`/api/categories`)
             .then(Utils.handleResponse<string, Category[]>);
     }
+
+    async getAllByJobPost(job_post_id:number): Promise<Result<string, Category[]>> {
+        return this.axiosInstance
+            .get(`/api/categories/${job_post_id}`)
+            .then(Utils.handleResponse<string, Category[]>);
+    }
 };

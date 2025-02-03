@@ -1,4 +1,4 @@
-import { ProposalVue } from "@/components/childcomponent/proposal";
+import { ProposalVue } from "@/components/proposal";
 
 export default {
   components: { ProposalVue  },

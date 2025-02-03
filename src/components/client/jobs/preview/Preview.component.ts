@@ -2,7 +2,7 @@ import { ClientHeaderVue } from '@/components/client/header';
 import { ClientFooterVue } from '@/components/client/footer';
 import RestClientJobs from "@/libs/RestClientJobs";
 import { useRoute } from "vue-router";
-import { JobPostVue } from '@/components/childcomponent/job_post';
+import { JobPostVue } from '@/components/job_post';
 import { inject, ref, onMounted } from 'vue'
 import type { AxiosInstance } from 'axios';
 export default {

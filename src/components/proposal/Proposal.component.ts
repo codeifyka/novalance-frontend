@@ -67,7 +67,7 @@ export default defineComponent({
         const openModal = () => {
             isModalOpen.value = true;
         }
-
+console.log(proposal)
         onMounted(() => {
             getJobPost()
             getFreelancer()
@@ -150,6 +150,7 @@ export default defineComponent({
             startedAtTime,
             endedAtDay,
             endedAtTime,
+            jobPost
         };
 
     }

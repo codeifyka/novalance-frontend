@@ -1,4 +1,4 @@
-<div class="w-full  bg-violet-50">
+<!-- <div class="w-full  bg-violet-50">
     <ClientHeaderVue />
     <div class="mt-20 flex items-center w-full">
         <div class="m-4 md:m-16 w-full rounded-sm bg-white">
@@ -64,5 +64,158 @@
         </div>
     </div>
     <h1 class="font-bold opacity-50 text-center pb-10 text-lg">© 2023 Novalance. All rights reserved.</h1>
-    <!-- <ClientFooterVue /> -->
+    <ClientFooterVue />
+</div> -->
+<div class="bg-white min-h-screen">
+  <Loading v-if="isLoading" />
+  <ClientHeaderVue isHomePath="true" />
+  <div class="flex flex-col justify-center mx-8 md:mx-24 py-24">
+    <div class="flex flex-col justify-center gap-8">
+      <div class="font-bold text-xl">Settings</div>
+      <div class="flex flex-col items-start md:flex-row justify-between">
+        <div class="flex flex-row md:flex-col gap-4">
+          <div class="flex items-center gap-2 cursor-pointer">
+            <div class="w-4 h-1.5 md:w-1.5 md:h-4 bg-primary"></div>
+            <div class="text-xs">Edit Profiles</div>
+          </div>
+          <div class="flex items-center gap-2 cursor-pointer">
+            <div class="w-4 h-1.5 md:w-1.5 md:h-4 bg-black/25"></div>
+            <div class="text-xs">Other Settings</div>
+          </div>
+        </div>
+        <div class="flex flex-col md:w-2/3">
+          <div class="flex flex-col gap-2">
+            <div class="font-semibold">Edit Profile</div>
+            <div class="text-xs font-semibold opacity-70">
+              Fill the details about your job post
+            </div>
+          </div>
+          <div class="flex flex-col items-center mt-10 mb-5">
+            <div
+              class="mx-auto capitalize text-3xl bg-violet-500 flex items-center justify-center rounded-full w-20 h-20 text-center font-bold mb-3"
+            >
+              {{user?.first_name[0]}}
+            </div>
+            <h1 class="mb-3">{{user?.first_name}} {{user?.last_name}}</h1>
+            <div class="flex gap-4">
+              <span class="text-xs opacity-80 capitalize">
+                {{user?.country}}
+              </span>
+              <span class="text-xs opacity-80 capitalize"
+                >{{user?.account_type}}</span
+              >
+            </div>
+          </div>
+          <div class="flex flex-col gap-4">
+            <div class="flex gap-8 items-center w-full">
+              <div
+                class="flex flex-col gap-2 w-full"
+                v-if="user"
+              >
+                <span>First Name</span>
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  v-model="user.first_name"
+                  class="border outline-black/75 w-full py-1 px-2 h-fit rounded-xl"
+                />
+              </div>
+              <div
+                class="flex flex-col gap-2 w-full"
+                v-if="user"
+              >
+                <span>Last Name</span>
+                <input
+                  type="text"
+                  placeholder="Last Name"
+                  v-model="user.last_name"
+                  class="border outline-black/75 w-full py-1 px-2 h-fit rounded-xl"
+                />
+              </div>
+            </div>
+            <div class="flex gap-8 items-center">
+              <div
+                class="flex flex-col gap-2 w-full"
+                v-if="user"
+              >
+                <span>Telephone</span>
+                <input
+                  type="text"
+                  placeholder="Telephone"
+                  v-model="user.telephone"
+                  class="border outline-black/75 w-full py-1 px-2 h-fit rounded-xl"
+                />
+              </div>
+              <div
+                class="flex flex-col gap-2 w-full"
+                v-if="user"
+              >
+                <span>Country</span>
+                <input
+                  type="text"
+                  placeholder="Country"
+                  v-model="user.country"
+                  class="border outline-black/75 w-full py-1 px-2 h-fit rounded-xl"
+                />
+              </div>
+            </div>
+            <div class="flex gap-8 items-center">
+              <div
+                class="flex flex-col gap-2 w-full"
+                v-if="user"
+              >
+                <span>Account Type</span>
+                <input
+                  type="text"
+                  disabled
+                  placeholder="Account Type"
+                  v-model="user.account_type"
+                  class="border outline-black/75 w-full py-1 px-2 h-fit rounded-xl"
+                />
+              </div>
+              <div
+                class="flex flex-col gap-2 w-full"
+                v-if="user"
+              >
+                <span>Gender</span>
+                <input
+                  type="text"
+                  placeholder="Gender"
+                  v-model="user.gender"
+                  class="border outline-black/75 w-full py-1 px-2 h-fit rounded-xl"
+                />
+              </div>
+            </div>
+            <div class="flex gap-8 items-center">
+              <div
+                class="flex flex-col gap-2 w-full"
+                v-if="user && user.email"
+              >
+                <span>Email</span>
+                <input
+                  type="text"
+                  placeholder="Email"
+                  v-model="user.email"
+                  class="border outline-black/75 w-full py-1 px-2 h-fit rounded-xl"
+                />
+              </div>
+              <div class="flex flex-col gap-2 w-full items-center">
+                <span class="font-semibold hover:text-primary cursor-pointer"
+                  >Change Password</span
+                >
+              </div>
+            </div>
+            <div class="w-full flex items-center justify-end mt-8">
+              <button
+                @click="save"
+                class="bg-primary w-1/2 text-white rounded-xl px-8 py-1.5 font-semibold hover:bg-opacity-75"
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

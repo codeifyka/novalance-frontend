@@ -4,7 +4,7 @@ import RestProposals from "@/libs/RestProposals";
 import { SliderVue } from "@/components/slider";
 import { inject, onMounted, ref, type Ref } from "vue";
 import { useRoute } from "vue-router";
-import { JobPostVue } from '@/components/childcomponent/job_post';
+import { JobPostVue } from '@/components/job_post';
 import { ModalVue } from '@/components/modal';
 import type ToastsManager from '@/libs/ToastsManager';
 import type { AxiosInstance } from 'axios';

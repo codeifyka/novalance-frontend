@@ -15,7 +15,7 @@ interface JobPost {
 interface CreateJobPost {
     title: string;
     description: string;
-    skills: string;
+    skills: Category[];
     level: string;
     size: number;
     budjet: number;

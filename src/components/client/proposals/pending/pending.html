@@ -1,5 +1,5 @@
 <div>
-    <div class="flex justify-between text-gray-300 my-2 md:mx-16 mt-16 font-medium">
+    <div class="flex justify-between bg-gray-100 rounded-lg py-2 mt-8 px-4 font-medium">
         <div class="md:w-1/5 flex justify-around gap-2">
             <span>Freelancer</span>
             <span>Job Title</span>
@@ -12,5 +12,8 @@
     </div>
     <hr class="font-semibold text-gray-300 md:mx-16">
     <div v-if="!proposals">Loading...</div>
-    <ProposalVue v-for="proposal in proposals" :proposal="proposal" background="bg-white" status="pending"/>
+    <div v-if="proposals.length === 0" class="mx-8 py-4 md:mx-auto">No proposals found</div>
+    <div v-else>
+        <ProposalVue v-for="proposal in proposals" :proposal="proposal" background="bg-white" status="pending"/>
+    </div>
 </div>

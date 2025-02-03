@@ -19,7 +19,7 @@ export default {
     let time = ref('')
     let files = ref<File[]>([])
     let categories = ref<Category[]>([])
-
+    const isLoading = ref(false);
     let toastManager = inject<Ref<ToastsManager>>("toastManager");
     let restCategories = new RestCategories(axios!)
 
@@ -30,8 +30,13 @@ export default {
       }
     });
 
+    let cancelOperation = () => {
+      window.location.href = '/home';
+    }
+
     let onSubmit = async () => {
       try {
+        isLoading.value = true;
         let restClientJobs = new RestClientJobs(axios!)
         let formData = new FormData();
         formData.append('files', files.value[0]);
@@ -48,8 +53,9 @@ export default {
         if (response.data) {
           console.log(response.data)
           toastManager?.value.alertSuccess('Job post created successfuly');
+          isLoading.value = false;
           setTimeout(() => {
-            // window.location.href='/my_jobs'
+            window.location.href = '/my_jobs';    
           }, 2000);
         }
       } catch (err) {
@@ -105,6 +111,8 @@ export default {
       addSkill,
       handleFileChange,
       uploadImages,
+      cancelOperation,
+      isLoading
     };
   },
 };
