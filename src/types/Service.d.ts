@@ -6,6 +6,9 @@ interface Service {
     category_id: number;
     price_id: number;
     rate: number;
+    images?: ServiceImage[];
+    category?: Category;
+    price?: Price;
     created_at: string;
     updated_at: string;
 }
