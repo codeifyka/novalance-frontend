@@ -9,7 +9,7 @@ export default defineComponent({
         provide("toastManager", toastManager);
 
         return {
-            toasts: toastManager?.value.toasts,
+            toasts: toastManager?.value.toasts
         };
     },
 });

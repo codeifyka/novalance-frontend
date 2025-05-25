@@ -46,9 +46,9 @@
                 </div>
                 <div class="w-1/4 flex flex-col gap-16">
                     <div class="flex flex-col gap-4">
-                        <div
+                        <router-link :to="`/job/${job.id}/submit_proposal`"
                             class="py-2 bg-primary border border-primary rounded-full text-white font-semibold text-center">
-                            Apply now</div>
+                            Apply now</router-link>
                         <div
                             class="py-2 flex items-center justify-center gap-2 border border-primary rounded-full text-primary font-semibold text-center">
                             <Icon icon="mdi:heart-outline" />
@@ -100,7 +100,7 @@ export default {
         const axios = inject<AxiosInstance>('axios');
         const restClientJobs = new RestClientJobs(axios!);
         const restProposals = new RestProposals(axios!);
-        let job = ref<JobPost | null>(null)
+        let job = ref<JobPost | null>(null);
 
         onMounted(async () => {
             let response = await restClientJobs.getById(Number(route.params.id));
