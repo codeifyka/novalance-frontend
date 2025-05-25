@@ -2,19 +2,15 @@
     <div class="w-full min-h-screen">
         <RouterView v-slot="{ Component }">
             <template v-if="Component">
-                <Transition mode="out-in">
-                    <KeepAlive>
-                        <Suspense>
-                            <component :is="Component"></component>
+                <Suspense>
+                    <component :is="Component"></component>
 
-                            <template #fallback>
-                                <div class="w-full h-screen flex flex-col items-center justify-center">
-                                    <div class="text-black">Loading...</div>
-                                </div>
-                            </template>
-                        </Suspense>
-                    </KeepAlive>
-                </Transition>
+                    <template #fallback>
+                        <div class="w-full h-screen flex flex-col items-center justify-center">
+                            <div class="text-black">Loading...</div>
+                        </div>
+                    </template>
+                </Suspense>
             </template>
         </RouterView>
         <Toast :toasts="toasts" />

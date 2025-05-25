@@ -13,7 +13,7 @@ export default class RestProposals {
         return this.axiosInstance.post('/api/proposals/create', proposal).then(Utils.handleResponse<string, Proposal>);
     }
 
-    async getByFreelancerJobId(job_id: number): Promise<Result<string, Proposal[]>> {
+    async getByProposalByJobId(job_id: number): Promise<Result<string, Proposal[]>> {
         return this.axiosInstance.get(`/api/proposals/${job_id}`).then(Utils.handleResponse<string, Proposal[]>);
     }
 
