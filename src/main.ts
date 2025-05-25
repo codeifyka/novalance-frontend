@@ -40,10 +40,13 @@ import { ClientMyPurchasesVue } from './components/client/my_purchases';
 =======
 import { FreelancerSubmitProposalVue } from './components/freelancer/proposal/submit';
 import { LoadingSpinnerVue } from './components/loading_spinner';
+<<<<<<< HEAD
 >>>>>>> 82fcbcf (Add Submit Proposal Page)
+=======
+import { RootSuspenseVue } from "./components/root_suspense";
+>>>>>>> f80dfb5 (Fix some issues)
 
-
-const app = createApp(App);
+const app = createApp(RootSuspenseVue);
 
 const routes: RouteRecordRaw[] = [
     // shared routes

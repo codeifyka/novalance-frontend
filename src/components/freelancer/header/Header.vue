@@ -16,22 +16,20 @@
             </a>
             <div class="flex items-center gap-2">
                 <Icon icon="material-symbols:notifications" class="h-4 w-4 object-contain" />
-                <div class="w-5 h-5 rounded-full bg-gray-900"></div>
+                <div class="w-6 h-6 rounded-full">
+                    <img class="w-full h-full rounded-full object-cover" :src="DEFAULT_PROFILE_PICTURE"
+                        alt="profile picture">
+                </div>
             </div>
-
         </div>
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+import { DEFAULT_PROFILE_PICTURE } from '@/consts';
 
-export default defineComponent({
-    props: {
-        target: String,
-    },
-    setup(props) {
-        return { target: props.target };
-    }
-});
+const props = defineProps<{ target: string }>();
+const target = props.target;
+// TODO: Handle Page Selection
+target;
 </script>

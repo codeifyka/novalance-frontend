@@ -15,7 +15,6 @@ export default {
         const userSessionRepository = new UserSessionRepository(localStorage);
 
         onMounted(async () => {
-            console.log("job: " + job)
             account_type.value = await userSessionRepository.getAccountType();
         });
         const menuValue = ref(false)

@@ -1,6 +1,5 @@
 <template>
     <div class="w-full h-screen overflow-auto flex flex-col items-center py-4">
-        <Loading v-if="!Jobs" />
         <div class="w-11/12 flex flex-col items-center gap-16">
             <FreeLancerHeaderVue target="home" />
             <div class="w-full flex flex-row gap-16">
@@ -13,12 +12,15 @@
                         </div>
                     </div>
                     <div class="w-full h-px bg-gray-200"></div>
-                    <JobPostVue v-motion-slide-visible-once-top :colors="colors" :job="job" v-for="job in Jobs" />
+                    <JobPostVue v-motion-slide-visible-once-top :colors="colors" :job="job" v-for="job in jobs" />
                 </div>
                 <div class="w-1/3 flex flex-col items-center">
                     <div class="w-full flex flex-col items-center border rounded-2xl py-8 px-8 gap-8">
                         <div class="flex flex-col items-center gap-2">
-                            <div class="h-28 w-28 bg-gray-100 rounded-full"></div>
+                            <div class="h-28 w-28 rounded-full">
+                                <img class="w-full h-full rounded-full object-cover" :src="DEFAULT_PROFILE_PICTURE"
+                                    alt="profile picture">
+                            </div>
                             <div class="text-black text-base">{{ user_info?.user.username }}</div>
                         </div>
                         <div class="flex items-center gap-16">
@@ -46,8 +48,9 @@
                                 <Icon icon="uil:angle-down" class="text-xl" />
                             </div>
                             <div class="w-full flex flex-col gap-2 px-4">
-                                <router-link to="proposals" class="text-xs text-black underline">my proposals</router-link>
-                                <div class="text-xs text-black underline pb-1">4 submited proposals</div>
+                                <router-link to="proposals" class="text-xs text-black underline">my
+                                    proposals</router-link>
+                                <div class="text-xs text-black underline pb-1">{{user_info?.proposals}} submited proposals</div>
                             </div>
                         </div>
                     </div>
@@ -57,50 +60,27 @@
     </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { FreeLancerHeaderVue } from '@/components/freelancer/header';
 import { JobPostVue } from '@/components/childcomponent/job_post';
-import RestUserSession from '@/libs/RestUserSession';
 import RestClientJobs from "@/libs/RestClientJobs";
-import { inject, onMounted, ref } from 'vue';
+import { inject, ref } from 'vue';
 import type { AxiosInstance } from 'axios';
+import { DEFAULT_PROFILE_PICTURE } from '@/consts';
 
-export default {
-    components: { FreeLancerHeaderVue, JobPostVue },
-    setup() {
+const colors = ref({
+    'text': 'text-violet-700',
+    'background': "bg-violet-50/60",
+})
 
-        const colors = ref({
-            'text': 'text-violet-700',
-            'background': "bg-violet-50/60",
-        })
+const axios = inject<AxiosInstance>("axios");
+const user_info = inject<UserInfo>("user_info");
+const jobs = ref<JobPost[]>([]);
 
-        const axios = inject<AxiosInstance>("axios");
-        const restUserSession = new RestUserSession(axios!);
-        let user_info = ref<UserInfo | null>(null);
+const restClientJobs = new RestClientJobs(axios!)
+const getJobsResult = await restClientJobs.getAll();
+if (getJobsResult.isSuccess()) {
+    jobs.value = getJobsResult.value! || [];
+}
 
-        let Jobs = ref<JobPost[]>([])
-        let restClientJobs = new RestClientJobs(axios!)
-        const fetchData = async () => {
-            try {
-                const response = await restClientJobs.getAll();
-                if (response.isSuccess()) {
-                    Jobs.value = response.value! || [];
-                    console.log(response.value);
-                } else {
-                    console.log(response);
-                }
-            } catch (error) {
-                console.error('An error occurred:', error);
-            }
-        };
-
-        onMounted(async () => {
-            user_info.value = (await restUserSession.getInfo()).value!;
-            fetchData()
-        });
-
-        return { user_info, colors, fetchData, Jobs };
-
-    }
-};
 </script>
