@@ -25,7 +25,7 @@
                 <div class="w-full flex flex-col" v-for="project in projects">
                     <a :href="`/project/${project.id}`" class="w-full flex flex-col gap-2">
                         <div class="w-full flex flex-col">
-                            <img :src="project.images[0]?.url || '/default_project_thumbnail.jpg'"
+                            <img :src="project.images && project.images?.length > 0 ? project.images[0]?.url: '/default_project_thumbnail.jpg'"
                                 class="w-full h-full object-cover rounded-lg" />
                         </div>
                         <div class="text-black text-base font-medium">{{ project.title }}</div>

@@ -62,11 +62,11 @@
 
 <script lang="ts" setup>
 import { FreeLancerHeaderVue } from '@/components/freelancer/header';
-import { JobPostVue } from '@/components/childcomponent/job_post';
 import RestClientJobs from "@/libs/RestClientJobs";
 import { inject, ref } from 'vue';
 import type { AxiosInstance } from 'axios';
 import { DEFAULT_PROFILE_PICTURE } from '@/consts';
+import { JobPostVue } from '@/components/job_post';
 
 const colors = ref({
     'text': 'text-violet-700',
