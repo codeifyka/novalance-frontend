@@ -28,10 +28,12 @@ provide("toastManager", toastManager);
 
 const axios = inject<AxiosInstance>("axios");
 
-const restUserSession = new RestUserSession(axios!)
-const getUserInfoResult = await restUserSession.getInfo();
-if (getUserInfoResult.isSuccess()) {
-    provide("user_info", getUserInfoResult.value);
+if (axios) {
+    const restUserSession = new RestUserSession(axios!)
+    const getUserInfoResult = await restUserSession.getInfo();
+    if (getUserInfoResult.isSuccess()) {
+        provide("user_info", getUserInfoResult.value);
+    }
 }
 
 const toasts = toastManager?.value.toasts;
