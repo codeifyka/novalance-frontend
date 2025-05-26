@@ -1,10 +1,8 @@
-import axios from 'axios';
 import { createApp } from 'vue';
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
 import { MotionPlugin } from '@vueuse/motion'
 
 import './style.css';
-import App from './App.vue';
 
 import { HomeVue } from './screens/home';
 import { SignInVue } from './screens/sign_in';
@@ -14,11 +12,6 @@ import { ServicePreviewVue } from './screens/service';
 import { ProjectPreviewVue } from './screens/project';
 import { ChatVue } from './screens/chat';
 import { ChatPreviewVue } from './screens/chat/preview';
-
-import setupAxios from './libs/ProtectAPI.ts';
-import UserSessionRepository from './libs/UserSessionRepository';
-import RestUserSession from './libs/RestUserSession';
-
 import { Icon } from '@iconify/vue';
 import { FreeLancerPortfolioVue } from './components/freelancer/portfolio';
 import { FreeLancerServicesVue } from './components/freelancer/services';
@@ -36,17 +29,20 @@ import { ClientUpdateJobVue } from './components/client/jobs/update';
 import { LandingPageVue } from './screens/landing_page';
 import { ProposalsVue } from './screens/proposal';
 import { ClientMyPurchasesVue } from './components/client/my_purchases';
+import { FreelancerSubmitProposalVue } from './components/freelancer/proposal/submit';
+import { LoadingSpinnerVue } from './components/loading_spinner';
+import { RootSuspenseVue } from "./components/root_suspense";
 
+const app = createApp(RootSuspenseVue);
 
-const app = createApp(App);
-
-const routes = [
+const routes: RouteRecordRaw[] = [
     // shared routes
     { path: '/', component: LandingPageVue },
     { path: '/home', component: HomeVue },
     { path: '/sign_in', component: SignInVue },
     { path: '/sign_up', component: SignUpVue },
     { path: '/job/:id', component: JobPreviewVue },
+    { path: '/job/:id/submit_proposal', component: FreelancerSubmitProposalVue, },
     { path: '/service/:id', component: ServicePreviewVue },
     { path: '/project/:id', component: ProjectPreviewVue },
     { path: '/chat', component: ChatVue },
@@ -74,36 +70,9 @@ const router = createRouter({
     routes,
 });
 
-
-const UNPROTECTED_ROUTES = ['/', '/sign_in', '/sign_up'];
-
-router.beforeEach(async (to) => {
-    if (!UNPROTECTED_ROUTES.includes(to.path)) {
-        let userSessionRepository = new UserSessionRepository(localStorage);
-        let restUserSession = new RestUserSession(axios!);
-        let access_token = userSessionRepository.getAccessToken();
-
-        if (!access_token) {
-            return { path: '/sign_in' };
-        }
-
-        try {
-            let response = await restUserSession.checkAuth(access_token);
-            if (response.isFailure()) {
-                userSessionRepository.clear();
-                return { path: 'sign_in' };
-            }
-
-            app.provide('axios', setupAxios(access_token));
-        } catch (error) {
-            console.log(error);
-        }
-
-    }
-});
-
 app.component("Icon", Icon);
 app.component("Loading", LoadingVue);
+app.component("LoadingSpinner", LoadingSpinnerVue);
 app.component("Toast", ToastVue);
 app.component("Service", ServiceVue);
 
@@ -118,5 +87,5 @@ ws.onopen = () => { console.log("WebSocket connection is open."); }
 app.provide("ws", ws);
 
 app.use(router);
-app.use(MotionPlugin)
+app.use(MotionPlugin);
 app.mount('#app');

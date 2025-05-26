@@ -1,3 +1,35 @@
-<template src="./header.html"></template>
+<template>
+    <div class="w-full flex items-center justify-between">
+        <a href="/home" class="text-black text-2xl font-bold">NovaLance</a>
+        <div class="flex items-center gap-16">
+            <a href="/chat_client_freelancer" class="text-black text-base flex items-center gap-2">
+                <Icon icon="teenyicons:chat-outline" class="h-4 w-4 object-contain" />
+                <div class="ml-1">Messages</div>
+            </a>
+            <a href="/services"
+                :class="`text-base flex items-center gap-2 ${target == 'services' ? 'text-primary font-medium' : 'text-black'}`">
+                <Icon icon="icons8:services" class="h-4 w-4 object-contain" />
+                <div>My Services</div>
+            </a>
+            <a href="/portfolio"
+                :class="`text-base flex items-center gap-2 ${target == 'portfolio' ? 'text-primary font-medium' : 'text-black'}`">
+                <Icon icon="bytesize:portfolio" class="h-4 w-4 object-contain" />
+                <div class="ml-1">My Projects</div>
+            </a>
+            <div class="flex items-center gap-2">
+                <Icon icon="material-symbols:notifications" class="h-4 w-4 object-contain" />
+                <div class="w-6 h-6 rounded-full">
+                    <img class="w-full h-full rounded-full object-cover" :src="DEFAULT_PROFILE_PICTURE"
+                        alt="profile picture">
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
 
-<script src="./Header.component.ts" />
+<script lang="ts" setup>
+import { DEFAULT_PROFILE_PICTURE } from '@/consts';
+
+const props = defineProps<{ target: string }>();
+const target = props.target;
+</script>

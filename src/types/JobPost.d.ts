@@ -8,6 +8,7 @@ interface JobPost {
     expected_delivery_time: string;
     illustrative_files: string;
     user_id: number;
+    categories?: Category[];
     created_at: string;
     updated_at: string;
 }

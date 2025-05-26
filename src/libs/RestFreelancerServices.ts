@@ -9,7 +9,7 @@ export default class RestFreelancerServices {
         this.axiosInstance = axiosInstance;
     }
 
-    async getAll(username: string): Promise<Result<string, Service[]>> {
+    async getAll(username?: string): Promise<Result<string, Service[]>> {
         if (!username) {
             return this.axiosInstance.get(`/api/user/services`).then(Utils.handleResponse<string, Service[]>);
         }
