@@ -179,7 +179,7 @@ async function submitForm() {
         formErrors.cover_letter = "Cover Letter is required.";
     }
 
-    const isValidForm = Object.values(formErrors).length == 0;
+    const isValidForm = Object.values(formErrors).filter(item => item.length > 0).length == 0;
     if (!isValidForm) {
         isFormLoading.value = false;
         return;
