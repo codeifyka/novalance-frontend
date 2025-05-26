@@ -6,11 +6,13 @@
                 <Icon icon="teenyicons:chat-outline" class="h-4 w-4 object-contain" />
                 <div class="ml-1">Messages</div>
             </a>
-            <a href="/services" class="text-black text-base flex items-center gap-2">
+            <a href="/services"
+                :class="`text-base flex items-center gap-2 ${target == 'services' ? 'text-primary font-medium' : 'text-black'}`">
                 <Icon icon="icons8:services" class="h-4 w-4 object-contain" />
                 <div>My Services</div>
             </a>
-            <a href="/portfolio" class="text-black text-base flex items-center gap-2">
+            <a href="/portfolio"
+                :class="`text-base flex items-center gap-2 ${target == 'portfolio' ? 'text-primary font-medium' : 'text-black'}`">
                 <Icon icon="bytesize:portfolio" class="h-4 w-4 object-contain" />
                 <div class="ml-1">My Projects</div>
             </a>
@@ -30,6 +32,4 @@ import { DEFAULT_PROFILE_PICTURE } from '@/consts';
 
 const props = defineProps<{ target: string }>();
 const target = props.target;
-// TODO: Handle Page Selection
-target;
 </script>
