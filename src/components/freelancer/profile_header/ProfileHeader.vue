@@ -14,9 +14,9 @@
                         {{ user_info?.user.last_name }}</div>
                 </div>
             </div>
-            <a href="/create_service"
+            <a :href="target == 'portfolio' ? '/create_project' : '/create_service'"
                 class="text-white bg-primary rounded-full px-16 py-2 font-medium cursor-pointer hover:bg-purple">
-                Create Service</a>
+                {{ target == "portfolio" ? "Create Project" : "Create Service" }}</a>
         </div>
     </div>
 </template>
