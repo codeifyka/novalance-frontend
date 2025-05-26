@@ -74,7 +74,7 @@
                     <div class="w-full flex items-start gap-4 p-8">
                         <div class="w-1/6 flex flex-col gap-4">
                             <div class="text-base font-semibold">Description</div>
-                            <div class="text-base text-gray-400">Explain the job details and what you're looking for.
+                            <div class="text-base text-gray-400">Explain the service details and what you're looking for.
                             </div>
                         </div>
                         <div class="w-5/6">
