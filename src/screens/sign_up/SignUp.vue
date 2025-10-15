@@ -5,19 +5,21 @@
             <img src="@/assets/signup.png" class="w-full h-full object-cover">
         </div>
         <div class="w-full md:w-1/2 h-full flex items-center justify-center bg-white">
-            <div class="flex flex-col gap-4 items-center w-full mx-8 md:mx-16 lg:mx-32">
-                <div class="flex flex-col gap-2">
-                    <div class="font-bold text-xl md:text-3xl">Join as Client Or FreeLancer</div>
-                    <div class="opacity-50 text-xs">Create an accunt in our platform</div>
+            <div class="w-full flex flex-col gap-16  items-center px-24">
+                <div class="w-full flex flex-col gap-4">
+                    <div class="font-bold text-xl md:text-4xl">Join as Client Or FreeLancer</div>
+                    <div class="text-gray-400 text-base">Create an accunt in our platform</div>
                 </div>
-                <div @click="setAccountType('client')"
-                    class="px-16 py-2 text-gray-50 font-semibold rounded-md bg-primary hover:bg-opacity-75 cursor-pointer text-sm w-full text-center mx-auto">
-                    Client</div>
-                <div>Or</div>
-                <div @click="setAccountType('freelancer')"
-                    class="px-16 py-2 text-gray-50 font-semibold rounded-md bg-primary hover:bg-opacity-75 cursor-pointer text-sm w-full text-center mx-auto">
-                    Free Lancer</div>
-                <div class="text-xs flex gap-1 font-semibold">
+                <div class="w-full flex flex-col items-center gap-4">
+                    <div @click="setAccountType('client')"
+                        class="px-16 py-2 text-gray-50 font-medium rounded-md bg-primary hover:bg-opacity-75 cursor-pointer w-full text-center mx-auto">
+                        Client</div>
+                    <div>Or</div>
+                    <div @click="setAccountType('freelancer')"
+                        class="px-16 py-2 text-gray-50 font-medium rounded-md bg-primary hover:bg-opacity-75 cursor-pointer w-full text-center mx-auto">
+                        Free Lancer</div>
+                </div>
+                <div class="w-full flex gap-1">
                     <div>Already have an account?</div>
                     <a href="/sign_in" class="text-primary hover:text-opacity/50 cursor-pointer">Sign In</a>
                 </div>
@@ -71,7 +73,7 @@
                     </div>
                 </div>
                 <div @click="signUp"
-                    class="px-16 py-2 text-gray-50 font-semibold rounded-md bg-primary hover:bg-opacity-75 cursor-pointer text-sm w-full text-center mx-auto">
+                    class="px-16 py-2 text-gray-50 font-semibold rounded-md bg-primary hover:bg-opacity-75 cursor-pointer w-full text-center mx-auto">
                     Sign Up</div>
                 <div class="text-xs flex gap-1 font-semibold">
                     <div>Already have an account?</div>
