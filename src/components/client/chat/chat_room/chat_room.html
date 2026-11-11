@@ -24,14 +24,14 @@
     <div class="flex flex-col h-5/6">
         <div class="mb-2 h-5/6 overflow-scroll" ref="messagesRef" >
             <Loading v-if="isLoading" />
-            <div v-for="message in messages" :key="message.id" :class=" message.sender === user.id ? 'flex justify-end items-center':'flex justify-start items-center ' " v-if="user">
-                <span class="font-light mr-2 flex items-center" v-show="message.sender == user.id"><Icon icon="material-symbols:done" width="20" height="20" />{{(message.created_at).substring(12,16)}}</span>
-                <div class=" px-5 py-1 my-5 rounded-2xl shadow-lg flex flex-col items-end text-sm text-white bg-[#9333EA]"  v-if="message.sender == user.id"> 
+            <div v-for="message in messages" :key="message.id" :class=" message.sender === user?.id ? 'flex justify-end items-center':'flex justify-start items-center ' " v-if="user">
+                <span class="font-light mr-2 flex items-center" v-show="message.sender == user?.id"><Icon icon="material-symbols:done" width="20" height="20" />{{(message.created_at).substring(12,16)}}</span>
+                <div class=" px-5 py-1 my-5 rounded-2xl shadow-lg flex flex-col items-end text-sm text-white bg-[#9333EA]"  v-if="message.sender == user?.id"> 
                     <span class="mr-2">{{ message.message }} </span>
                 </div>                
                 <div class="w-8 h-8 rounded-full bg-violet-600 mx-3" v-else></div>
-                <span class=" px-5 py-1 my-5 rounded-xl shadow-lg bg-white"  v-show="message.sender !== user.id">{{ message.message }} </span>
-                <span class="font-light text-xs ml-2" v-show="message.sender !== user.id">{{(message.created_at).substring(12,16)}}</span>                
+                <span class=" px-5 py-1 my-5 rounded-xl shadow-lg bg-white"  v-show="message.sender !== user?.id">{{ message.message }} </span>
+                <span class="font-light text-xs ml-2" v-show="message.sender !== user?.id">{{(message.created_at).substring(12,16)}}</span>                
             </div>
         </div>
         

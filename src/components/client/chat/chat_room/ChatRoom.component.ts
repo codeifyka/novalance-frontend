@@ -33,7 +33,7 @@ export default defineComponent({
     const { freelancer } = toRefs(props);
 
     const connect = () => {
-      if (!ws) {
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
         return;
       }
 
@@ -42,11 +42,9 @@ export default defineComponent({
 
     const sendMessage = async () => {
       if (newMessage.value.trim() !== '') {
-        if (!ws) {
-          return;
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ type: 'message', userId: user.value?.id, message: newMessage.value, channelId: freelancer.value?.freelancer_id, JobPostId: JobPost.value?.id }));
         }
-
-        ws.send(JSON.stringify({ type: 'message', userId: user.value?.id, message: newMessage.value, channelId: freelancer.value?.freelancer_id, JobPostId: JobPost.value?.id }));
         const res = await restChat.storeMessage(newMessage.value, freelancer.value?.id);
         if (res.isSuccess()) {
           newMessage.value = '';

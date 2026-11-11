@@ -3,11 +3,13 @@ import RestChat from '@/libs/RestChat';
 import RestClientJobs from '@/libs/RestClientJobs';
 import RestUserSession from '@/libs/RestUserSession';
 import { ModalVue } from './modal';
+import Loading from '@/components/loading/Loading.component';
 import type { AxiosInstance } from 'axios';
 
 export default defineComponent({
   components: {
     ModalVue,
+    Loading,
   },
   props: {
     client: {
@@ -25,14 +27,17 @@ export default defineComponent({
 
     const resClientJobPost = new RestClientJobs(axios!);
     const JobPost = ref<JobPost | null>(null);
-    const user = ref<User | null>(null);
+    let user = ref<User | null>(null);
     const restChat = new RestChat(axios!);
     const menuIsShow = ref(false);
     const isModalOpen = ref(false);
     const isLoading = ref(false);
 
     const connect = () => {
-      ws?.send(JSON.stringify({
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        return;
+      }
+      ws.send(JSON.stringify({
         type: 'connect',
         userId: user.value?.id,
         channelId: client.value.client.id,
@@ -42,13 +47,15 @@ export default defineComponent({
 
     const sendMessage = async () => {
       if (newMessage.value.trim() !== '') {
-        ws?.send(JSON.stringify({
-          type: 'message',
-          userId: user.value?.id,
-          message: newMessage.value,
-          channelId: client.value.client.id,
-          JobPostId: JobPost.value?.id,
-        }));
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({
+            type: 'message',
+            userId: user.value?.id,
+            message: newMessage.value,
+            channelId: client.value.client.id,
+            JobPostId: JobPost.value?.id,
+          }));
+        }
         const res = await restChat.storeMessage(newMessage.value, client.value.id);
         if (res.isSuccess()) {
           newMessage.value = '';
@@ -77,6 +84,7 @@ export default defineComponent({
         const res = await restChat.getAllMessages(client.value.id);
         if (res.isSuccess()) {
           messages.value = res.value!;
+          console.log(messages.value)
         }
       } catch (err) {
         console.log(err);
@@ -129,7 +137,7 @@ export default defineComponent({
             const date = new Date();
             const Isosdate = date.toISOString();
             message.created_at = Isosdate;
-            messages.value = [...messages.value, message];
+            messages.value = Array.isArray(messages.value) ? [...messages.value, message] : [message];
             nextTick(() => {
               if (messagesRef.value) {
                 messagesRef.value.scrollTop = messagesRef.value.scrollHeight;
@@ -147,6 +155,16 @@ export default defineComponent({
       }
     });
 
+    const formatTime = (dateString: string) => {
+      const date = new Date(dateString);
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const formattedHours = hours % 12 || 12;
+      const formattedMinutes = minutes.toString().padStart(2, '0');
+      return `${formattedHours}:${formattedMinutes} ${ampm}`;
+    };
+
     const toggleChatScreen = () => {
       emit('chatState', 'toggleChat')
     }
@@ -162,7 +180,8 @@ export default defineComponent({
       openModal,
       isModalOpen,
       isLoading,
-      toggleChatScreen
+      toggleChatScreen,
+      formatTime
     };
   },
 });
