@@ -13,7 +13,7 @@ export default defineComponent({
     },
     emits: ['close', 'send'],
     setup(props, { emit }) {
-        const expiryDate = ref(props.end_date.substring(0, 10) || null)
+        const expiryDate = ref(props.end_date?.substring(0, 10) || null)
         const closeModal = () => {
             emit('close');
         };
