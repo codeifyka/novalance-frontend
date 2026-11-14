@@ -16,8 +16,12 @@ export default class RestFreelancerServices {
         return this.axiosInstance.get(`/api/user/${username}/services`).then(Utils.handleResponse<string, Service[]>)
     }
 
-    async getAll2(): Promise<Result<string, Service[]>> {
-        return this.axiosInstance.get(`/api/getAll2`).then(Utils.handleResponse<string, Service[]>);
+    async getAll2(params?: ServiceQueryParams): Promise<Result<string, Service[]>> {
+        return this.axiosInstance.get(`/api/getAll2`, { params }).then(Utils.handleResponse<string, Service[]>);
+    }
+
+    async getPaginated(params: ServiceQueryParams): Promise<Result<string, PaginatedServices>> {
+        return this.axiosInstance.get(`/api/getAll2`, { params: { ...params, paginate: true } }).then(Utils.handleResponse<string, PaginatedServices>);
     }
 
     async getById(service_id: number): Promise<Result<string, Service>> {

@@ -32,6 +32,7 @@ import { ClientMyPurchasesVue } from './components/client/my_purchases';
 import { FreelancerSubmitProposalVue } from './components/freelancer/proposal/submit';
 import { LoadingSpinnerVue } from './components/loading_spinner';
 import { RootSuspenseVue } from "./components/root_suspense";
+import { PaginationVue } from './components/pagination';
 
 const app = createApp(RootSuspenseVue);
 
@@ -75,6 +76,7 @@ app.component("Loading", LoadingVue);
 app.component("LoadingSpinner", LoadingSpinnerVue);
 app.component("Toast", ToastVue);
 app.component("Service", ServiceVue);
+app.component("Pagination", PaginationVue);
 
 // WebSocket
 const protocol = import.meta.env.MODE == "development" ? "ws" : "wss"; // Use 'wss' in production for secure WebSocket

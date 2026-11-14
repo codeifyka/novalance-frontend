@@ -25,3 +25,20 @@ interface ServiceImage {
     path: string;
     service_id: number;
 }
+
+interface PaginatedServices {
+    items: Service[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+}
+
+interface ServiceQueryParams {
+    page?: number;
+    per_page?: number;
+    search?: string;
+    category_id?: number;
+    sort?: string;
+    paginate?: boolean;
+}
