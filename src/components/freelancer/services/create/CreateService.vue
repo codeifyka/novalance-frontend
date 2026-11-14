@@ -140,17 +140,18 @@ if (response.isSuccess()) {
 }
 
 const onDropImage = (ev: DragEvent) => {
-    const files = ev.dataTransfer?.files || [];
+    const files = ev.dataTransfer?.files;
 
-    if (files.length > 0) {
-        images_files.value.push(...files);
-        const file = files[0];
-        if (file.type.startsWith('image/')) {
-            const blobUrl = URL.createObjectURL(file);
-            images.value.push(blobUrl);
-            console.log(images.value);
-        } else {
-            alert('Please drop a valid image file.');
+    if (files && files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file.type.startsWith('image/')) {
+                images_files.value.push(file);
+                const blobUrl = URL.createObjectURL(file);
+                images.value.push(blobUrl);
+            } else {
+                toastManager?.value?.alertError(`Please drop a valid image file (${file.name}).`);
+            }
         }
     }
 }
@@ -163,11 +164,15 @@ const onSelectImage = (event: Event) => {
     const target = event.target as HTMLInputElement;
     const files = target.files;
     if (files && files.length > 0) {
-        images_files.value.push(...files);
-        const file = files[0];
-        if (file.type.startsWith('image/')) {
-            const blobUrl = URL.createObjectURL(file);
-            images.value.push(blobUrl);
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file.type.startsWith('image/')) {
+                images_files.value.push(file);
+                const blobUrl = URL.createObjectURL(file);
+                images.value.push(blobUrl);
+            } else {
+                toastManager?.value?.alertError(`Please select a valid image file (${file.name}).`);
+            }
         }
     }
 
@@ -180,11 +185,13 @@ const removeImage = (index: number) => {
 }
 
 const uploadImages = async (): Promise<string[]> => {
-    if (images.value.length > 0) {
+    if (images_files.value.length > 0) {
         const restFreelancerServices = new RestFreelancerServices(axios!);
         let response = await restFreelancerServices.uploadImages(images_files.value);
         if (response.isSuccess()) {
             return response.value!;
+        } else {
+            throw new Error(response.error || 'Failed to upload images');
         }
     }
 
@@ -193,48 +200,61 @@ const uploadImages = async (): Promise<string[]> => {
 
 const onSubmit = async () => {
     isFormLoading.value = true;
+    createServiceFormErrors.title = "";
+    createServiceFormErrors.category = "";
+    createServiceFormErrors.price = "";
+    createServiceFormErrors.description = "";
+    createServiceFormErrors.api = "";
 
-    if (createServiceForm.title.length == 0) {
+    if (createServiceForm.title.trim().length == 0) {
         createServiceFormErrors.title = "Title is required.";
     }
 
-    if (createServiceForm.description.length == 0) {
+    if (createServiceForm.description.trim().length == 0) {
         createServiceFormErrors.description = "Description is required.";
     }
 
-    if (createServiceForm.price == 0) {
+    if (createServiceForm.price <= 0) {
         createServiceFormErrors.price = "Price must be greater than 0.";
     }
 
-    if (createServiceForm.category.length == 0) {
+    if (!createServiceForm.category) {
         createServiceFormErrors.category = "Category is required.";
     }
 
     const isValidForm = Object.values(createServiceFormErrors).filter(item => item.length > 0).length == 0;
-    alert(isValidForm);
     if (!isValidForm) {
         isFormLoading.value = false;
         return;
     }
 
-    const restFreelancerServices = new RestFreelancerServices(axios!);
-    const response = await restFreelancerServices.create({
-        title: createServiceForm.title,
-        description: createServiceForm.description,
-        category: createServiceForm.category,
-        images: await uploadImages(),
-        price: createServiceForm.price,
-    });
+    try {
+        let uploadedImagePaths: string[] = [];
+        if (images_files.value.length > 0) {
+            uploadedImagePaths = await uploadImages();
+        }
 
-    if (response.isSuccess()) {
-        toastManager?.value.alertSuccess('Service created successfuly');
-        window.location.href = `/services`;
-        console.log(response.value);
-    } else {
-        toastManager?.value.alertError('Something went wrong!');
-        console.log(response);
+        const restFreelancerServices = new RestFreelancerServices(axios!);
+        const response = await restFreelancerServices.create({
+            title: createServiceForm.title,
+            description: createServiceForm.description,
+            category: createServiceForm.category,
+            images: uploadedImagePaths,
+            price: createServiceForm.price,
+        });
+
+        if (response.isSuccess()) {
+            toastManager?.value.alertSuccess('Service created successfully');
+            window.location.href = `/services`;
+        } else {
+            toastManager?.value.alertError(response.error || 'Something went wrong!');
+            console.error(response);
+        }
+    } catch (err: any) {
+        toastManager?.value.alertError(err?.message || 'Failed to upload images');
+        console.error(err);
+    } finally {
+        isFormLoading.value = false;
     }
-
-    isFormLoading.value = false;
 }
 </script>

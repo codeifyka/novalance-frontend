@@ -36,13 +36,9 @@ export default class RestFreelancerServices {
         }
 
         return await this.axiosInstance.post('/api/services/upload_images', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data', // Important for file uploads
-            },
             onUploadProgress: progressEvent => {
-                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
+                const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
                 console.log(percentCompleted);
-                // You can update a progress bar or do something with the progress here
             }
         }).then(Utils.handleResponse<string, string[]>);
     }
