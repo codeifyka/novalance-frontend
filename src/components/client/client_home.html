@@ -41,32 +41,47 @@
                     </div>
                 </div>
                 <div class="flex flex-col gap-4">
-                    <div class="font-medium">Categories</div>
-                    <div class="text-sm">
-                        <div class="flex gap-4">
-                            <div class="opacity-50 w-60">Web Development</div>
-                            <div class="font-semibold">20</div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="opacity-50 w-60">Web Development</div>
-                            <div class="font-semibold">20</div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="opacity-50 w-60">Web Development</div>
-                            <div class="font-semibold">20</div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="opacity-50 w-60">Web Development</div>
-                            <div class="font-semibold">20</div>
+                    <div class="flex items-center justify-between">
+                        <div class="font-medium">Categories</div>
+                        <button
+                            v-if="selectedCategory"
+                            @click="clearCategoryFilter"
+                            class="text-xs text-primary hover:underline font-medium cursor-pointer"
+                        >
+                            Clear
+                        </button>
+                    </div>
+                    <div v-if="isLoadingCategories" class="text-sm opacity-50 py-2">
+                        Loading categories...
+                    </div>
+                    <div v-else-if="categories.length === 0" class="text-sm opacity-50 py-2">
+                        No categories found.
+                    </div>
+                    <div v-else class="text-sm flex flex-col gap-2">
+                        <div
+                            v-for="category in categories"
+                            :key="category.id"
+                            @click="selectCategory(category)"
+                            class="flex items-center justify-between gap-4 cursor-pointer py-1 px-2 rounded-md transition-colors"
+                            :class="selectedCategory?.id === category.id ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-gray-100 text-black'"
+                        >
+                            <div class="w-48 truncate" :class="selectedCategory?.id === category.id ? 'opacity-100' : 'opacity-60'">
+                                {{ category.name }}
+                            </div>
+                            <div class="font-semibold text-xs px-2 py-0.5 rounded-full" :class="selectedCategory?.id === category.id ? 'bg-primary text-white' : 'bg-gray-100 text-black'">
+                                {{ getCategoryCount(category) }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="flex justify-center items-center w-full">
-                <Loading v-if="!services" />
-                <div v-else class="flex flex-wrap gap-8">
-                    <div v-if="services.length === 0" class="m-auto">No services available at the moment.</div>
-                    <div v-for="service in services" :key="service.id" class="w-full md:w-5/12">
+                <Loading v-if="isLoadingServices" />
+                <div v-else class="flex flex-wrap gap-8 w-full">
+                    <div v-if="displayedServices.length === 0" class="m-auto text-center text-gray-500 py-12">
+                        {{ selectedCategory ? `No services available in "${selectedCategory.name}".` : 'No services available at the moment.' }}
+                    </div>
+                    <div v-for="service in displayedServices" :key="service.id" class="w-full md:w-5/12">
                         <ServiceVue v-motion-slide-visible-once-top :service="service" />
                     </div>
                 </div>
