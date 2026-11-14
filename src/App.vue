@@ -37,7 +37,17 @@ if (access_token) {
         if (response.isFailure()) {
             userSessionRepository.clear();
         } else {
-            provide('axios', setupAxios(access_token));
+            let authedAxios = setupAxios(access_token);
+            provide('axios', authedAxios);
+            try {
+                const restAuthedSession = new RestUserSession(authedAxios);
+                const getUserInfoResult = await restAuthedSession.getInfo();
+                if (getUserInfoResult.isSuccess()) {
+                    provide("user_info", getUserInfoResult.value);
+                }
+            } catch (err) {
+                console.error("Failed to get user info:", err);
+            }
         }
     } catch (error) {
         console.log(error);
@@ -56,14 +66,6 @@ router.beforeEach(async (to) => {
 
 const toastManager = ref(new ToastsManager());
 provide("toastManager", toastManager);
-
-if (axios) {
-    const restUserSession = new RestUserSession(axios!);
-    const getUserInfoResult = await restUserSession.getInfo();
-    if (getUserInfoResult.isSuccess()) {
-        provide("user_info", getUserInfoResult.value);
-    }
-}
 
 const toasts = toastManager?.value.toasts;
 

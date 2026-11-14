@@ -1,2 +1,5 @@
 <FreeLancerHomeVue v-if="account_type=='freelancer'" />
-<ClientHomeVue v-if="account_type=='client'" />
+<ClientHomeVue v-else-if="account_type=='client'" />
+<div v-else class="min-h-screen flex items-center justify-center text-gray-500">
+    Loading...
+</div>
