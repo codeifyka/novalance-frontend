@@ -18,10 +18,10 @@
             </a>
             <div class="flex items-center gap-2">
                 <Icon icon="material-symbols:notifications" class="h-4 w-4 object-contain" />
-                <div class="w-6 h-6 rounded-full">
-                    <img class="w-full h-full rounded-full object-cover" :src="DEFAULT_PROFILE_PICTURE"
+                <a href="/profile" class="w-6 h-6 rounded-full block cursor-pointer" title="View Profile">
+                    <img class="w-full h-full rounded-full object-cover" :src="userInfo?.user?.profile_picture || DEFAULT_PROFILE_PICTURE"
                         alt="profile picture">
-                </div>
+                </a>
             </div>
         </div>
     </div>
@@ -29,7 +29,9 @@
 
 <script lang="ts" setup>
 import { DEFAULT_PROFILE_PICTURE } from '@/consts';
+import { inject } from 'vue';
 
 const props = defineProps<{ target: string }>();
 const target = props.target;
+const userInfo = inject<{ user: User } | null>('user_info', null);
 </script>

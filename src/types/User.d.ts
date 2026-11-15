@@ -12,6 +12,7 @@ interface User {
     telephone: number;
     gender: string;
     country: string;
+    profile_picture?: string;
     rememberToken: boolean;
     created_at: string;
     updated_at: string;
