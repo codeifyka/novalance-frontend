@@ -49,4 +49,12 @@ export default class RestFreelancerServices {
     async searchByTitle(query: string): Promise<Result<string, Service[]>> {
         return this.axiosInstance.get(`/api/services/search/${query}`).then(Utils.handleResponse<string, Service[]>);
     }
+
+    async purchase(service_id: number): Promise<Result<string, Purchase>> {
+        return this.axiosInstance.post('/api/purchases', { service_id }).then(Utils.handleResponse<string, Purchase>);
+    }
+
+    async getPurchases(): Promise<Result<string, Purchase[]>> {
+        return this.axiosInstance.get('/api/purchases').then(Utils.handleResponse<string, Purchase[]>);
+    }
 };

@@ -42,3 +42,17 @@ interface ServiceQueryParams {
     sort?: string;
     paginate?: boolean;
 }
+
+interface Purchase {
+    id: number;
+    client_id: number;
+    freelancer_id: number;
+    service_id: number;
+    price: string | number;
+    status: string;
+    created_at: string;
+    updated_at: string;
+    service?: Service;
+    freelancer?: User;
+    client?: User;
+}

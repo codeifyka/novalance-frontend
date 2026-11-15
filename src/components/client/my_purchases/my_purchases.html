@@ -1,15 +1,45 @@
-<div class="bg-white min-h-screen">
-  <ClientHeaderVue />
-  <div class="pt-24 mx-8 md:mx-24 py-4">
-    <div class="flex flex-col gap-2">
-      <div class="font-semibold">My Purchases</div>
-      <div class="text-sm opacity-50">Your purchases here.</div>
+<div class="bg-white min-h-screen flex flex-col justify-between">
+  <div>
+    <ClientHeaderVue />
+    <div class="pt-24 mx-8 md:mx-24 py-4">
+      <div class="flex flex-col gap-2">
+        <div class="font-semibold text-2xl text-gray-900">My Purchases</div>
+        <div class="text-sm opacity-50">View and manage all services you have purchased.</div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div v-if="isLoading" class="flex justify-center items-center py-20">
+      <LoadingSpinner class="w-8 h-8 text-primary" />
+    </div>
+
+    <!-- Empty State -->
+    <div
+      v-else-if="purchases.length === 0"
+      class="flex flex-col items-center justify-center py-20 mx-8 md:mx-24 text-center border-2 border-dashed border-gray-200 rounded-2xl p-8 my-6"
+    >
+      <Icon icon="bxs:purchase-tag" class="w-16 h-16 text-gray-300 mb-4" />
+      <h3 class="text-lg font-semibold text-gray-700">No purchases yet</h3>
+      <p class="text-sm text-gray-400 mt-1 max-w-md">
+        You haven't bought any services yet. Explore our freelance services to get started!
+      </p>
+      <router-link
+        to="/all_services"
+        class="mt-6 bg-primary text-white text-sm font-semibold px-6 py-2.5 rounded-xl hover:bg-opacity-90 transition"
+      >
+        Explore Services
+      </router-link>
+    </div>
+
+    <!-- Purchases List -->
+    <div v-else class="flex flex-col mx-8 md:mx-24 py-4">
+      <PurchaseCardVue
+        v-for="purchase in purchases"
+        :key="purchase.id"
+        :purchase="purchase"
+      />
     </div>
   </div>
-  <div class="flex flex-col mx-8 md:mx-24 py-4">
-    <PurchaseCardVue/>
-    <PurchaseCardVue/>
-    <PurchaseCardVue/>
-  </div>
-  <ClientFooterVue/>
+
+  <ClientFooterVue />
 </div>

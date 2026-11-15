@@ -1,6 +1,9 @@
 <template>
     <div class="w-full flex items-center justify-between">
-        <a href="/home" class="text-black text-2xl font-bold">NovaLance</a>
+        <a href="/home" class="flex items-center text-black text-2xl font-bold">
+            <img src="/logo.png" class="mr-2 h-8 object-contain rounded-full" alt="NovaLance logo">
+            <span>NovaLance</span>
+        </a>
         <div class="flex items-center gap-16">
             <a href="/chat_client_freelancer" class="text-black text-base flex items-center gap-2">
                 <Icon icon="teenyicons:chat-outline" class="h-4 w-4 object-contain" />

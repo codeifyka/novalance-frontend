@@ -4,7 +4,7 @@
         <div class="w-full flex items-start justify-between">
             <div class="flex items-center gap-4">
                 <div class="w-20 h-20 rounded-full">
-                    <img :src="DEFAULT_PROFILE_PICTURE" alt="profile picture"
+                    <img :src="user_info?.user?.profile_picture || DEFAULT_PROFILE_PICTURE" alt="profile picture"
                         class="w-full h-full rounded-full object-cover">
                 </div>
                 <div class="flex flex-col">
