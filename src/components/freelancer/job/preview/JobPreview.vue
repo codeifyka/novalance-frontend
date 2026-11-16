@@ -49,6 +49,71 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="py-16 border-t flex flex-col gap-6">
+                            <div class="flex items-center justify-between">
+                                <div class="text-2xl font-semibold text-black">Illustrative files</div>
+                                <button
+                                    v-if="isFileValid(job?.illustrative_files)"
+                                    @click="downloadFile(job?.illustrative_files)"
+                                    type="button"
+                                    class="flex items-center gap-2 px-4 py-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg text-sm font-semibold transition-colors cursor-pointer"
+                                >
+                                    <Icon icon="solar:download-minimalistic-bold" class="text-lg" />
+                                    <span>Download file</span>
+                                </button>
+                            </div>
+
+                            <div v-if="isFileValid(job?.illustrative_files)" class="flex flex-col gap-4">
+                                <div
+                                    v-if="isImageFile(job?.illustrative_files)"
+                                    class="group relative max-w-md rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all cursor-pointer bg-gray-50"
+                                    @click="downloadFile(job?.illustrative_files)"
+                                    title="Click to download"
+                                >
+                                    <img
+                                        :src="getFileUrl(job?.illustrative_files)"
+                                        :alt="getFileName(job?.illustrative_files)"
+                                        class="w-full max-h-80 object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                                    />
+                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-medium">
+                                        <Icon icon="solar:download-minimalistic-bold" class="text-2xl" />
+                                        <span>Click to download</span>
+                                    </div>
+                                    <div class="p-3 bg-white border-t border-gray-100 flex items-center justify-between">
+                                        <span class="text-sm font-medium text-gray-700 truncate max-w-[280px]">
+                                            {{ getFileName(job?.illustrative_files) }}
+                                        </span>
+                                        <span class="text-xs text-primary font-semibold flex items-center gap-1">
+                                            <Icon icon="solar:download-minimalistic-bold" /> Download
+                                        </span>
+                                    </div>
+                                </div>
+                                <div
+                                    v-else
+                                    class="flex items-center justify-between p-4 max-w-md bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl transition-colors cursor-pointer group"
+                                    @click="downloadFile(job?.illustrative_files)"
+                                    title="Click to download"
+                                >
+                                    <div class="flex items-center gap-3 truncate">
+                                        <div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                            <Icon icon="solar:document-text-bold" class="text-xl" />
+                                        </div>
+                                        <div class="flex flex-col truncate">
+                                            <span class="text-sm font-semibold text-gray-800 truncate">
+                                                {{ getFileName(job?.illustrative_files) }}
+                                            </span>
+                                            <span class="text-xs text-gray-500">Attachment</span>
+                                        </div>
+                                    </div>
+                                    <div class="shrink-0 text-primary group-hover:translate-y-0.5 transition-transform">
+                                        <Icon icon="solar:download-minimalistic-bold" class="text-xl" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else class="text-sm text-gray-400 italic">
+                                No illustrative files attached to this job post.
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="w-1/4 flex flex-col gap-16">
@@ -122,4 +187,61 @@ catch (error) {
     isSent.value = false;
 }
 const formatDate = (date?: string): string => moment(date).fromNow();
+
+const isImageFile = (filePath?: string): boolean => {
+    if (!filePath) return false;
+    return /\.(jpg|jpeg|png|webp|gif|svg|avif)($|\?)/i.test(filePath);
+};
+
+const isFileValid = (filePath?: string): boolean => {
+    if (!filePath) return false;
+    const trimmed = filePath.trim();
+    return trimmed !== '' && trimmed !== 'file.pdf';
+};
+
+const getFileUrl = (filePath?: string): string => {
+    if (!filePath) return '';
+    if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+        return filePath;
+    }
+    if (filePath.startsWith('/')) {
+        return filePath;
+    }
+    return `/${filePath}`;
+};
+
+const getFileName = (filePath?: string): string => {
+    if (!filePath) return 'attachment';
+    const parts = filePath.split('/');
+    let name = parts[parts.length - 1];
+    name = name.replace(/^\d+_file_/, '');
+    return decodeURIComponent(name) || 'attachment';
+};
+
+const downloadFile = async (filePath?: string) => {
+    if (!filePath) return;
+    const url = getFileUrl(filePath);
+    const fileName = getFileName(filePath);
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Network error fetching file');
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+};
 </script>

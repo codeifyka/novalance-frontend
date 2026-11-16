@@ -39,7 +39,9 @@ export default {
         isLoading.value = true;
         let restClientJobs = new RestClientJobs(axios!)
         let formData = new FormData();
-        formData.append('files', files.value[0]);
+        if (files.value.length > 0 && files.value[0]) {
+          formData.append('files', files.value[0]);
+        }
         formData.append('title', title.value);
         formData.append('description', description.value);
         formData.append('skills', JSON.stringify(skills.value));
@@ -52,24 +54,24 @@ export default {
         let response = await restClientJobs.create(formData);
         if (response.data) {
           console.log(response.data)
-          toastManager?.value.alertSuccess('Job post created successfuly');
+          toastManager?.value.alertSuccess('Job post created successfully');
           isLoading.value = false;
           setTimeout(() => {
             window.location.href = '/my_jobs';    
-          }, 2000);
+          }, 1500);
         }
-      } catch (err) {
-        // @ts-ignore
-        toastManager?.value.alertError(err.response)
-        // let messages = err.response.data.messages;
+      } catch (err: any) {
+        toastManager?.value.alertError(err?.response?.data?.error || "Failed to create job post");
         console.log(err)
+      } finally {
+        isLoading.value = false;
       }
     }
 
     function handleFileChange(event: Event) {
       const input = (event.target as HTMLInputElement);
-      if (input.files) {
-        files.value.push(input.files[0]);
+      if (input.files && input.files[0]) {
+        files.value = [input.files[0]];
       }
     }
 

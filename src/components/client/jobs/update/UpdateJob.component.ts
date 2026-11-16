@@ -18,6 +18,7 @@ export default {
     const budjet = ref<number | string>(0);
     const time = ref("");
     const files = ref("file.pdf");
+    const newFile = ref<File | null>(null);
     const isLoading = ref(false);
 
     let toastManager = inject<Ref<ToastsManager>>("toastManager");
@@ -128,6 +129,21 @@ export default {
       }
     }
 
+    const getFileName = (filePath?: string): string => {
+      if (!filePath) return "attachment";
+      const parts = filePath.split("/");
+      let name = parts[parts.length - 1];
+      name = name.replace(/^\d+_file_/, "");
+      return decodeURIComponent(name) || "attachment";
+    };
+
+    function handleFileChange(event: Event) {
+      const input = event.target as HTMLInputElement;
+      if (input.files && input.files[0]) {
+        newFile.value = input.files[0];
+      }
+    }
+
     let onSubmit = async () => {
       if (!title.value?.trim()) {
         toastManager?.value.alertError("Please enter a job title.");
@@ -140,17 +156,33 @@ export default {
 
       try {
         isLoading.value = true;
-        let response = await restClientJobs.update(jobId, {
-          title: title.value,
-          description: description.value,
-          skills: skills.value.map((s) => s.name),
-          level: selectedLevel.value,
-          size: selectedSize.value,
-          budjet: Number(budjet.value) || 0,
-          time: String(time.value),
-          files: files.value,
-          expected_delivery_time: String(time.value),
-        });
+        let response;
+        if (newFile.value) {
+          const formData = new FormData();
+          formData.append("files", newFile.value);
+          formData.append("title", title.value);
+          formData.append("description", description.value);
+          formData.append("skills", JSON.stringify(skills.value.map((s) => s.name)));
+          formData.append("level", selectedLevel.value);
+          formData.append("size", selectedSize.value);
+          formData.append("budjet", String(Number(budjet.value) || 0));
+          formData.append("time", String(time.value));
+          formData.append("expected_delivery_time", String(time.value));
+          response = await restClientJobs.update(jobId, formData);
+        } else {
+          response = await restClientJobs.update(jobId, {
+            title: title.value,
+            description: description.value,
+            skills: skills.value.map((s) => s.name),
+            level: selectedLevel.value,
+            size: selectedSize.value,
+            budjet: Number(budjet.value) || 0,
+            time: String(time.value),
+            files: files.value,
+            expected_delivery_time: String(time.value),
+          });
+        }
+
         if (response.isSuccess()) {
           toastManager?.value.alertSuccess("Job post updated successfully");
           setTimeout(() => {
@@ -177,12 +209,15 @@ export default {
       budjet,
       time,
       files,
+      newFile,
       onSubmit,
       cancelOperation,
       categories,
       addSkill,
       removeSkill,
       onSelectSkill,
+      handleFileChange,
+      getFileName,
     };
   },
 };

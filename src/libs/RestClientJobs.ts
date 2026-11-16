@@ -40,7 +40,15 @@ export default class RestClientJobs {
 
     }
 
-    async update(id: number, jobPost: CreateJobPost): Promise<Result<string, JobPost>> {
+    async update(id: number, jobPost: CreateJobPost | FormData): Promise<Result<string, JobPost>> {
+        if (jobPost instanceof FormData) {
+            jobPost.append('_method', 'PUT');
+            return this.axiosInstance.post(`/api/job/${id}`, jobPost, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            }).then(Utils.handleResponse<string, JobPost>);
+        }
         return this.axiosInstance.put(`/api/job/${id}`, jobPost).then(Utils.handleResponse<string, JobPost>);
     }
 

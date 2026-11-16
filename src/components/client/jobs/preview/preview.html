@@ -69,8 +69,76 @@
             <div>Interviewing: <span class="ml-2 font-semibold">{{ job?.active_proposals_count ?? 0 }}</span></div>
           </div>
         </div>
-        <div class="border-b-2 border-gray-200 py-12 flex flex-col gap-8">
-          <h1 class="font-semibold text-xl">Illustrative files </h1>
+        <div class="border-b-2 border-gray-200 py-12 flex flex-col gap-6">
+          <div class="flex items-center justify-between">
+            <h1 class="font-semibold text-xl">Illustrative files</h1>
+            <button
+              v-if="isFileValid(job?.illustrative_files)"
+              @click="downloadFile(job?.illustrative_files)"
+              type="button"
+              class="flex items-center gap-2 px-4 py-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg text-sm font-semibold transition-colors cursor-pointer"
+            >
+              <Icon icon="solar:download-minimalistic-bold" class="text-lg" />
+              <span>Download file</span>
+            </button>
+          </div>
+
+          <!-- If there is a valid illustrative file -->
+          <div v-if="isFileValid(job?.illustrative_files)" class="flex flex-col gap-4">
+            <!-- If image file: show preview card with download on click -->
+            <div
+              v-if="isImageFile(job?.illustrative_files)"
+              class="group relative max-w-md rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all cursor-pointer bg-gray-50"
+              @click="downloadFile(job?.illustrative_files)"
+              title="Click to download"
+            >
+              <img
+                :src="getFileUrl(job?.illustrative_files)"
+                :alt="getFileName(job?.illustrative_files)"
+                class="w-full max-h-80 object-cover object-center group-hover:scale-105 transition-transform duration-300"
+              />
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-medium">
+                <Icon icon="solar:download-minimalistic-bold" class="text-2xl" />
+                <span>Click to download</span>
+              </div>
+              <div class="p-3 bg-white border-t border-gray-100 flex items-center justify-between">
+                <span class="text-sm font-medium text-gray-700 truncate max-w-[280px]">
+                  {{ getFileName(job?.illustrative_files) }}
+                </span>
+                <span class="text-xs text-primary font-semibold flex items-center gap-1">
+                  <Icon icon="solar:download-minimalistic-bold" /> Download
+                </span>
+              </div>
+            </div>
+
+            <!-- If document / other file: show file card with download on click -->
+            <div
+              v-else
+              class="flex items-center justify-between p-4 max-w-md bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl transition-colors cursor-pointer group"
+              @click="downloadFile(job?.illustrative_files)"
+              title="Click to download"
+            >
+              <div class="flex items-center gap-3 truncate">
+                <div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <Icon icon="solar:document-text-bold" class="text-xl" />
+                </div>
+                <div class="flex flex-col truncate">
+                  <span class="text-sm font-semibold text-gray-800 truncate">
+                    {{ getFileName(job?.illustrative_files) }}
+                  </span>
+                  <span class="text-xs text-gray-500">Attachment</span>
+                </div>
+              </div>
+              <div class="shrink-0 text-primary group-hover:translate-y-0.5 transition-transform">
+                <Icon icon="solar:download-minimalistic-bold" class="text-xl" />
+              </div>
+            </div>
+          </div>
+
+          <!-- If no file attached -->
+          <div v-else class="text-sm text-gray-400 italic">
+            No illustrative files attached to this job post.
+          </div>
         </div>
       </div>
     </div>

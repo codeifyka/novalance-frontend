@@ -14,6 +14,9 @@ export default defineConfig({
             '/storage': {
                 target: isProduction ? 'https://novalance.onrender.com' : 'http://127.0.0.1:8000',
             },
+            '/uploads': {
+                target: isProduction ? 'https://novalance.onrender.com' : 'http://127.0.0.1:8000',
+            },
             '/ws': {
                 target: 'wss://localhost:8001',
                 ws: true,
