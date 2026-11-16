@@ -2,7 +2,7 @@ interface JobPost {
     id: number;
     title: string;
     description: string;
-    size: number;
+    size: string | number;
     experience_level: string;
     budjet: number;
     expected_delivery_time: string;
@@ -25,9 +25,9 @@ interface JobActivity {
 interface CreateJobPost {
     title: string;
     description: string;
-    skills: Category[];
+    skills: (Category | string)[];
     level: string;
-    size: number;
+    size: string | number;
     budjet: number;
     time: string;
     files: string;

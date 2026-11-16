@@ -3,8 +3,8 @@
   <ClientHeaderVue isHomePath="true" />
   <div class="flex flex-col gap-8 mx-8 md:mx-24 pt-24">
     <div class="flex flex-col gap-2">
-      <div class="font-semibold">Create Job Post</div>
-      <div class="text-sm opacity-70">Fill the details about your job post</div>
+      <div class="font-semibold text-lg">Update Job Post</div>
+      <div class="text-sm opacity-70">Edit the details about your job post</div>
     </div>
     <div
       class="border border-gray-300 rounded-xl mb-4"
@@ -13,7 +13,7 @@
       <div
         class="flex flex-col md:flex-row gap-4 md:gap-24 p-4 md:p-8 border-b"
       >
-        <div class="flex flex-col gap-2 text-sm">
+        <div class="flex flex-col gap-2 text-sm md:w-1/3">
           <div class="font-semibold">Job Title</div>
           <div class="opacity-50">
             Give your job post a clear and specific title.
@@ -27,117 +27,132 @@
         />
       </div>
       <div class="flex flex-col p-4 md:p-8 border-b">
-        <div class="flex flex-col md:flex-row gap-4 md:gap-24 p-4 md:p-8">
-          <div class="flex flex-col gap-2 text-sm">
-            <div class="font-semibold">Add Skills</div>
+        <div class="flex flex-col md:flex-row gap-4 md:gap-24">
+          <div class="flex flex-col gap-2 text-sm md:w-1/3">
+            <div class="font-semibold">Skills & Categories</div>
             <div class="opacity-50">
-              List the skills needed to complete this job.
+              Select the skills needed to complete this job.
             </div>
           </div>
-          <select
-            class="border outline-black/75 w-full p-4 h-fit rounded-lg"
-            multiple
-          >
-            <option value="" class="cursor-pointer" selected>All skills</option>
-            <option
-              :value="category.name"
-              v-for="category in categories"
-              @click="addSkill"
-              class="cursor-pointer"
+          <div class="flex flex-col gap-3 w-full">
+            <select
+              @change="onSelectSkill($event)"
+              class="border outline-black/75 w-full p-4 h-fit rounded-lg bg-white cursor-pointer"
             >
-              {{category.name}}
-            </option>
-          </select>
-        </div>
-        <div class="flex gap-2">
-          <div
-            class="bg-black/10 w-fit text-xs p-2 h-fit rounded-xl"
-            v-for="skill in skills"
-          >
-            {{skill.name}}
+              <option value="" disabled selected>Select a skill to add...</option>
+              <option
+                :value="category.name"
+                v-for="category in categories"
+                :key="category.id"
+                :disabled="skills.some(s => s.name.toLowerCase() === category.name.toLowerCase())"
+              >
+                {{ category.name }} {{ skills.some(s => s.name.toLowerCase() === category.name.toLowerCase()) ? '(Added)' : '' }}
+              </option>
+            </select>
+
+            <div class="flex flex-wrap gap-2 pt-2" v-if="skills.length > 0">
+              <div
+                class="bg-primary/10 text-primary border border-primary/30 px-3 py-1.5 text-sm rounded-full flex items-center gap-2 font-medium"
+                v-for="skill in skills"
+                :key="skill.name"
+              >
+                <span>{{ skill.name }}</span>
+                <button
+                  type="button"
+                  @click="removeSkill(skill.name)"
+                  class="text-gray-500 hover:text-red-500 font-bold leading-none cursor-pointer text-base"
+                  title="Remove skill"
+                >
+                  &times;
+                </button>
+              </div>
+            </div>
+            <div v-else class="text-xs text-gray-400 italic">
+              No skills selected yet. Select from the dropdown above.
+            </div>
           </div>
         </div>
       </div>
       <div
         class="flex flex-col md:flex-row gap-4 md:gap-24 p-4 md:p-8 border-b"
       >
-        <div class="flex flex-col gap-2 text-sm">
+        <div class="flex flex-col gap-2 text-sm md:w-1/3">
           <div class="font-semibold">Size</div>
           <div class="opacity-50">Consider the size of your job.</div>
         </div>
-        <div class="flex flex-wrap items-center gap-4">
-          <div class="flex">
+        <div class="flex flex-wrap items-center gap-6">
+          <label class="flex items-center cursor-pointer gap-2">
             <input
               v-model="selectedSize"
               name="size"
               type="radio"
               value="Small"
-              id=""
+              class="cursor-pointer"
             />
-            <h1 class="ml-2">Small</h1>
-          </div>
-          <div class="flex">
+            <span class="text-sm font-medium">Small</span>
+          </label>
+          <label class="flex items-center cursor-pointer gap-2">
             <input
               v-model="selectedSize"
               name="size"
               type="radio"
-              value="Mediem"
-              id=""
+              value="Medium"
+              class="cursor-pointer"
             />
-            <h1 class="ml-2">Mediem</h1>
-          </div>
-          <div class="flex">
+            <span class="text-sm font-medium">Medium</span>
+          </label>
+          <label class="flex items-center cursor-pointer gap-2">
             <input
               v-model="selectedSize"
               name="size"
               type="radio"
               value="Large"
-              id=""
+              class="cursor-pointer"
             />
-            <h1 class="ml-2">Large</h1>
-          </div>
+            <span class="text-sm font-medium">Large</span>
+          </label>
         </div>
       </div>
       <div
         class="flex flex-col md:flex-row gap-4 md:gap-24 p-4 md:p-8 border-b"
       >
-        <div class="flex flex-col gap-2 text-sm">
+        <div class="flex flex-col gap-2 text-sm md:w-1/3">
           <div class="font-semibold">Experience Level</div>
           <div class="opacity-50">
             Select the required expertise level for this role.
           </div>
         </div>
-        <div class="flex flex-wrap items-center gap-4">
-          <div class="flex">
+        <div class="flex flex-wrap items-center gap-6">
+          <label class="flex items-center cursor-pointer gap-2">
             <input
               v-model="selectedLevel"
               name="level"
               value="Beginner"
               type="radio"
-              id=""
+              class="cursor-pointer"
             />
-            <h1 class="ml-2">Beginner</h1>
-          </div>
-          <div class="flex">
+            <span class="text-sm font-medium">Beginner</span>
+          </label>
+          <label class="flex items-center cursor-pointer gap-2">
             <input
               v-model="selectedLevel"
               name="level"
-              value="Intermidiate"
+              value="Intermediate"
               type="radio"
-              id=""
+              class="cursor-pointer"
             />
-            <h1 class="ml-2">Intermidiate</h1>
-          </div>
-          <div class="flex">
+            <span class="text-sm font-medium">Intermediate</span>
+          </label>
+          <label class="flex items-center cursor-pointer gap-2">
             <input
               v-model="selectedLevel"
               name="level"
               value="Expert"
               type="radio"
-              id=""
+              class="cursor-pointer"
             />
-            <h1 class="ml-2">Expert</h1>
-          </div>
+            <span class="text-sm font-medium">Expert</span>
+          </label>
         </div>
       </div>
       <div
@@ -218,9 +233,11 @@
       </button>
       <button
         @click="onSubmit"
-        class="bg-primary text-white rounded-lg px-8 py-1.5 font-semibold hover:bg-opacity-75"
+        :disabled="isLoading"
+        class="bg-primary text-white rounded-lg px-8 py-2 font-semibold hover:bg-opacity-75 disabled:opacity-50 cursor-pointer flex items-center gap-2"
       >
-        Create
+        <LoadingSpinner v-if="isLoading" class="w-4 h-4" />
+        <span>{{ isLoading ? 'Saving...' : 'Save Changes' }}</span>
       </button>
     </div>
   </div>
