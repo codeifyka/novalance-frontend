@@ -43,7 +43,7 @@
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="text-sm">Proposals: </div>
-                        <div class="text-sm"> 5 to 10</div>
+                        <div class="text-sm font-semibold"> {{ job?.proposals_count ?? 0 }}</div>
                     </div>
                 </div>
             </div>

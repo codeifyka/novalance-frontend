@@ -9,8 +9,17 @@ interface JobPost {
     illustrative_files: string;
     user_id: number;
     categories?: Category[];
+    proposals_count?: number;
+    pending_proposals_count?: number;
+    active_proposals_count?: number;
     created_at: string;
     updated_at: string;
+}
+
+interface JobActivity {
+    active_jobs: number;
+    new_proposals: number;
+    hiring: number;
 }
 
 interface CreateJobPost {

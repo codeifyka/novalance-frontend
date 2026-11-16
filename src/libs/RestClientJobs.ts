@@ -9,8 +9,19 @@ export default class RestClientJobs {
         this.axiosInstance = axiosInstance;
     }
 
-    async getMyJobs(): Promise<Result<string, JobPost[]>> {
-        return this.axiosInstance.get('/api/job/').then(Utils.handleResponse<string, JobPost[]>);
+    async getMyJobs(): Promise<Result<string, { jobs: JobPost[]; activity: JobActivity }>> {
+        return this.axiosInstance.get('/api/job/').then(res => {
+            if (res.data.error) {
+                return Result.failure<string, { jobs: JobPost[]; activity: JobActivity }>(res.data.error);
+            }
+            const jobs: JobPost[] = res.data.data || [];
+            const activity: JobActivity = res.data.activity || {
+                active_jobs: jobs.length,
+                new_proposals: jobs.reduce((sum, j) => sum + (j.pending_proposals_count || 0), 0),
+                hiring: jobs.reduce((sum, j) => sum + (j.active_proposals_count || 0), 0),
+            };
+            return Result.success<string, { jobs: JobPost[]; activity: JobActivity }>({ jobs, activity });
+        });
     }
 
     async getById(id: number): Promise<Result<string, JobPost>> {
