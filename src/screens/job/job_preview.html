@@ -1,2 +1,3 @@
-<ClientJobVue v-if="account_type=='client'" />
-<FreelancerJobVue v-if="account_type=='freelancer'" />
+<Loading v-if="!account_type" />
+<ClientJobVue v-else-if="account_type=='client'" />
+<FreelancerJobVue v-else-if="account_type=='freelancer'" />

@@ -1,6 +1,6 @@
 <template>
     <Loading v-if="isLoading" />
-    <div class="w-full flex flex-col items-center gap-16 py-4">
+    <div v-if="job !== null" class="w-full flex flex-col items-center gap-16 py-4">
         <div class="w-11/12 flex flex-col items-center gap-16">
             <FreeLancerHeaderVue target="services" />
             <div class="w-full flex justify-between">
@@ -26,10 +26,14 @@
                         </div>
                         <div class="py-16 border-t border-b flex flex-col gap-8">
                             <div class="text-2xl font-semibold text-black">Skills and Expertise</div>
-                            <div class="flex items-center gap-4">
-                                <div class="py-2 px-4 bg-gray-200 rounded-full">React</div>
-                                <div class="py-2 px-4 bg-gray-200 rounded-full">TypeScript</div>
-                                <div class="py-2 px-4 bg-gray-200 rounded-full">NodeJS</div>
+                            <div class="flex items-center gap-4 flex-wrap">
+                                <div
+                                    class="py-2 px-4 bg-gray-200 rounded-full"
+                                    v-for="category in job?.categories"
+                                    :key="category.id"
+                                >
+                                    {{ category.name }}
+                                </div>
                             </div>
                         </div>
                         <div class="flex flex-col gap-8">
@@ -37,11 +41,11 @@
                             <div class="flex flex-col gap-2">
                                 <div class="flex items-center gap-4">
                                     <div>Proposals:</div>
-                                    <div>less than 5</div>
+                                    <div>{{ job?.proposals_count ?? 0 }}</div>
                                 </div>
                                 <div class="flex items-center gap-4">
                                     <div>Invterviewing:</div>
-                                    <div>2</div>
+                                    <div>{{ job?.active_proposals_count ?? 0 }}</div>
                                 </div>
                             </div>
                         </div>
@@ -68,6 +72,13 @@
             </div>
         </div>
     </div>
+    <div v-else-if="!isLoading && job === null" class="w-full py-24 flex flex-col items-center justify-center text-center">
+        <h2 class="text-xl font-bold text-gray-700">Job Not Found</h2>
+        <p class="text-gray-500 mt-2">The requested job post could not be found or has been removed.</p>
+        <router-link to="/home" class="mt-4 px-6 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-opacity-90">
+            Back to Home
+        </router-link>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -80,7 +91,7 @@ import type { AxiosInstance } from 'axios';
 import moment from 'moment';
 
 
-const isLoading = ref(false);
+const isLoading = ref(true);
 const isSent = ref(false)
 const route = useRoute();
 const axios = inject<AxiosInstance>('axios');
@@ -88,10 +99,17 @@ const restClientJobs = new RestClientJobs(axios!);
 const restProposals = new RestProposals(axios!);
 const job = ref<JobPost | null>(null);
 
-const getJobByIdResult = await restClientJobs.getById(Number(route.params.id));
-if (getJobByIdResult.isSuccess()) {
-    job.value = getJobByIdResult.value!;
+try {
+    const getJobByIdResult = await restClientJobs.getById(Number(route.params.id));
+    if (getJobByIdResult.isSuccess()) {
+        job.value = getJobByIdResult.value!;
+    }
+} catch (error) {
+    console.error("Failed to load job details:", error);
+} finally {
+    isLoading.value = false;
 }
+
 try {
     const getProposalByJobIdResult = await restProposals.getProposalByJobId(Number(route.params.id));
     if (getProposalByJobIdResult.isSuccess()) {

@@ -13,20 +13,28 @@ export default {
     const restClientJobs = new RestClientJobs(axios!);
     const jobId = route.params.id
     let job = ref<JobPost | null>(null);
+    let isLoading = ref<boolean>(true);
     const colors = ref({
       'text': 'text-regal-brown',
       'background': "bg-white",
     })
     onMounted(async () => {
-      let response = await restClientJobs.getById(Number(jobId));
-      console.log(response);
-      if (response.isSuccess()) {
-        job.value = response.value!;
+      isLoading.value = true;
+      try {
+        let response = await restClientJobs.getById(Number(jobId));
+        console.log(response);
+        if (response.isSuccess()) {
+          job.value = response.value!;
+        }
+      } catch (error) {
+        console.error("Failed to load job details:", error);
+      } finally {
+        isLoading.value = false;
       }
     });
 
     return {
-      job, colors
+      job, colors, isLoading
     };
   },
 };

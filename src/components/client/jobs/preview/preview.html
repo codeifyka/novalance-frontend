@@ -1,13 +1,14 @@
 <div class="min-h-screen bg-white">
   <ClientHeaderVue />
-  <main class="w-full flex flex-col md:flex-row items-center md:items-start justify-around">
+  <Loading v-if="isLoading" />
+  <main v-else-if="job !== null" class="w-full flex flex-col md:flex-row items-center md:items-start justify-around">
     <div class="md:w-3/5 order-2 md:order-1 w-full mt-20 flex flex-col px-10">
       <div>
         <div class="md:my-2">
           <h1 class="font-bold text-xl">{{job?.title}}</h1>
         </div>
         <div class="text-sm opacity-50 border-b-2 border-gray-200 pb-12">
-          Posted {{job?.created_at.split('T')[0]}}
+          Posted {{job?.created_at ? job.created_at.split('T')[0] : ''}}
         </div>
         <div class="py-12 border-b-2 border-gray-200 pb-12">
           <p class="font-normal">{{job?.description}}</p>
@@ -82,5 +83,12 @@
       </router-link>
     </div>
   </main>
+  <div v-else-if="!isLoading && job === null" class="w-full py-24 flex flex-col items-center justify-center text-center">
+    <h2 class="text-xl font-bold text-gray-700">Job Not Found</h2>
+    <p class="text-gray-500 mt-2">The requested job post could not be found or has been removed.</p>
+    <router-link to="/my_jobs" class="mt-4 px-6 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-opacity-90">
+      Back to My Jobs
+    </router-link>
+  </div>
   <ClientFooterVue />
 </div>
