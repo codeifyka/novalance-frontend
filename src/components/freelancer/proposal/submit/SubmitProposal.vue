@@ -34,17 +34,23 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex gap-4 p-8  border-t">
+                        <div class="flex gap-4 p-8 border-t">
                             <div class="w-1/5 flex flex-col gap-4">
                                 <div class="font-semibold text-black">Skills and Expertise</div>
                                 <div class="text-gray-400">List of the skills needed to complete this job.</div>
                             </div>
                             <div class="w-4/5 flex items-center gap-2">
-                                <div class="flex items-center gap-4">
-                                    <div v-for="category in job?.categories" class="py-2 px-4 bg-gray-200 rounded-full">
-                                        {{ category }}</div>
-                                    <div class="py-2 px-4 bg-gray-200 rounded-full">TypeScript</div>
-                                    <div class="py-2 px-4 bg-gray-200 rounded-full">NodeJS</div>
+                                <div class="flex items-center gap-3 flex-wrap">
+                                    <div
+                                        v-for="(category, index) in job?.categories"
+                                        :key="index"
+                                        class="py-2 px-4 bg-gray-200 rounded-full text-sm font-medium text-gray-800"
+                                    >
+                                        {{ getCategoryName(category) }}
+                                    </div>
+                                    <div v-if="!job?.categories || job.categories.length === 0" class="text-sm text-gray-400 italic">
+                                        No specific skills listed.
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -111,14 +117,28 @@
                             </div>
                         </div>
                     </div>
+                    <div v-if="formErrors.api" class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-medium">
+                        {{ formErrors.api }}
+                    </div>
+
                     <div class="flex items-center justify-end gap-4">
-                        <div class="cursor-pointer text-black font-semibold rounded-full px-16 py-2">Cancel</div>
-                        <div v-if="isFormLoading" class="flex items-center gap-2">
-                            <LoadingSpinner />
-                            <div>Submiting...</div>
+                        <router-link
+                            :to="`/job/${job?.id}`"
+                            class="cursor-pointer text-gray-700 hover:text-black font-semibold rounded-full px-8 py-2.5 transition"
+                        >
+                            Cancel
+                        </router-link>
+                        <div v-if="isFormLoading" class="flex items-center gap-2 px-8 py-2.5 bg-primary/20 text-primary rounded-full font-semibold">
+                            <LoadingSpinner class="w-5 h-5 text-primary" />
+                            <div>Submitting...</div>
                         </div>
-                        <button type="submit" v-if="!isFormLoading"
-                            class="cursor-pointer bg-primary text-white font-semibold rounded-full px-16 py-2">Send</button>
+                        <button
+                            type="submit"
+                            v-else
+                            class="cursor-pointer bg-primary hover:bg-opacity-90 text-white font-semibold rounded-full px-12 py-2.5 transition shadow-sm"
+                        >
+                            Send Proposal
+                        </button>
                     </div>
                 </form>
             </div>
@@ -131,24 +151,25 @@ import { FreeLancerHeaderVue } from '@/components/freelancer/header';
 import { DURATION_LIST } from '@/consts';
 import RestClientJobs from "@/libs/RestClientJobs";
 import RestProposals from '@/libs/RestProposals';
+import type ToastsManager from "@/libs/ToastsManager";
 import type { AxiosInstance } from 'axios';
 import moment from 'moment';
-import { inject, ref, computed, reactive } from "vue";
-import { useRoute } from 'vue-router';
+import { inject, ref, computed, reactive, type Ref } from "vue";
+import { useRoute, useRouter } from 'vue-router';
 
-const fee = computed(() => submitProposalForm.bid * 0.1);
 const route = useRoute();
-const job = ref<JobPost | null>(null);
+const router = useRouter();
 const axios = inject<AxiosInstance>('axios');
+const toastManager = inject<Ref<ToastsManager>>('toastManager');
 const restClientJobs = new RestClientJobs(axios!);
 const restProposals = new RestProposals(axios!);
 const isFormLoading = ref(false);
+const job = ref<JobPost | null>(null);
 
 const submitProposalForm = reactive({
     bid: 0,
     duration: "",
     cover_letter: "",
-    job_post_id: computed(() => job.value?.id).value,
 });
 
 const formErrors = reactive({
@@ -159,46 +180,73 @@ const formErrors = reactive({
     api: "",
 });
 
-const response = await restClientJobs.getById(Number(route.params.id));
-if (response.isSuccess()) {
-    job.value = response.value!;
+const fee = computed(() => Number(submitProposalForm.bid || 0) * 0.1);
+
+const getCategoryName = (cat: any): string => {
+    if (!cat) return '';
+    if (typeof cat === 'object') {
+        return cat.name || '';
+    }
+    return String(cat);
+};
+
+try {
+    const response = await restClientJobs.getById(Number(route.params.id));
+    if (response.isSuccess()) {
+        job.value = response.value!;
+        if (job.value.budjet && submitProposalForm.bid === 0) {
+            submitProposalForm.bid = Number(job.value.budjet);
+        }
+    }
+} catch (error) {
+    console.error("Failed to load job details:", error);
 }
 
 async function submitForm() {
-    isFormLoading.value = true;
-    await new Promise((res) => setTimeout(() => res({}), 3000));
-    if (submitProposalForm.bid == 0) {
+    formErrors.bid = "";
+    formErrors.duration = "";
+    formErrors.cover_letter = "";
+    formErrors.api = "";
+
+    if (!submitProposalForm.bid || Number(submitProposalForm.bid) <= 0) {
         formErrors.bid = "Bid must be greater than 0.";
     }
 
-    if (submitProposalForm.duration.length == 0) {
+    if (!submitProposalForm.duration || submitProposalForm.duration.trim().length === 0) {
         formErrors.duration = "Duration is required.";
     }
 
-    if (submitProposalForm.cover_letter.length == 0) {
+    if (!submitProposalForm.cover_letter || submitProposalForm.cover_letter.trim().length === 0) {
         formErrors.cover_letter = "Cover Letter is required.";
     }
 
-    const isValidForm = Object.values(formErrors).filter(item => item.length > 0).length == 0;
-    if (!isValidForm) {
-        isFormLoading.value = false;
+    const hasErrors = formErrors.bid || formErrors.duration || formErrors.cover_letter;
+    if (hasErrors) {
         return;
     }
 
-    const result = await restProposals.create({
-        bid: submitProposalForm.bid,
-        cover_letter: submitProposalForm.cover_letter,
-        duration: submitProposalForm.duration as Duration,
-        job_post_id: job.value?.id || 0,
-    });
+    isFormLoading.value = true;
+    try {
+        const result = await restProposals.create({
+            bid: Number(submitProposalForm.bid),
+            cover_letter: submitProposalForm.cover_letter,
+            duration: submitProposalForm.duration as Duration,
+            job_post_id: Number(job.value?.id || route.params.id),
+        });
 
-    if (result.isFailure()) {
-        formErrors.api = result.error!;
+        if (result.isFailure()) {
+            formErrors.api = result.error!;
+            toastManager?.value?.alertError(result.error || 'Failed to submit proposal.');
+        } else {
+            toastManager?.value?.alertSuccess('Proposal submitted successfully!');
+            router.push('/proposals');
+        }
+    } catch (err: any) {
+        const errorMsg = err?.response?.data?.message || err?.message || 'Failed to submit proposal.';
+        formErrors.api = errorMsg;
+        toastManager?.value?.alertError(errorMsg);
+    } finally {
+        isFormLoading.value = false;
     }
-
-    // TODO: Redirect to Proposal Page
-
-    isFormLoading.value = false;
 }
-
 </script>
