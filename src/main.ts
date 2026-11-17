@@ -33,6 +33,7 @@ import { FreelancerSubmitProposalVue } from './components/freelancer/proposal/su
 import { LoadingSpinnerVue } from './components/loading_spinner';
 import { RootSuspenseVue } from "./components/root_suspense";
 import { PaginationVue } from './components/pagination';
+import { SavedJobsVue } from './components/freelancer/saved_jobs';
 
 const app = createApp(RootSuspenseVue);
 
@@ -64,6 +65,7 @@ const routes: RouteRecordRaw[] = [
     { path: '/proposals/', component: ProposalsVue },
     { path: '/create_portfolio/', component: FreeLancerCreateProjectVue },
     { path: '/my_purchases/', component: ClientMyPurchasesVue },
+    { path: '/saved_jobs', component: SavedJobsVue },
 ];
 
 const router = createRouter({

@@ -12,8 +12,22 @@ interface JobPost {
     proposals_count?: number;
     pending_proposals_count?: number;
     active_proposals_count?: number;
+    user?: ClientInfo;
+    is_saved?: boolean;
+    saved_at?: string;
     created_at: string;
     updated_at: string;
+}
+
+interface ClientInfo {
+    id: number;
+    username: string;
+    first_name?: string;
+    last_name?: string;
+    country?: string;
+    profile_picture?: string;
+    created_at: string;
+    job_posts_count?: number;
 }
 
 interface JobActivity {

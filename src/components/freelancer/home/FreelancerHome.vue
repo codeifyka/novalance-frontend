@@ -53,6 +53,19 @@
                                 <div class="text-xs text-black underline pb-1">{{user_info?.proposals}} submited proposals</div>
                             </div>
                         </div>
+
+                        <div class="w-full flex flex-col items-center gap-2">
+                            <div class="w-full flex items-center justify-between font-semibold text-black">
+                                <div class="text-sm">SAVED JOBS</div>
+                                <Icon icon="uil:angle-down" class="text-xl" />
+                            </div>
+                            <div class="w-full flex flex-col gap-2 px-4">
+                                <router-link to="/saved_jobs" class="text-xs text-black underline flex items-center gap-1">
+                                    <Icon icon="solar:bookmark-linear" class="text-sm" />
+                                    <span>my saved jobs</span>
+                                </router-link>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -116,21 +116,72 @@
                         </div>
                     </div>
                 </div>
-                <div class="w-1/4 flex flex-col gap-16">
-                    <div class="flex flex-col gap-4">
+                <div class="w-1/4 flex flex-col gap-10">
+                    <div class="flex flex-col gap-3">
                         <router-link :to="`/job/${job?.id}/submit_proposal`"
-                            class="py-2 bg-primary border border-primary rounded-full text-white font-semibold text-center">
-                            Apply now</router-link>
-                        <div
-                            class="py-2 flex items-center justify-center gap-2 border border-primary rounded-full text-primary font-semibold text-center">
-                            <Icon icon="mdi:heart-outline" />
-                            <div class="text-base">Save job</div>
-                        </div>
+                            class="py-2.5 bg-primary hover:bg-opacity-90 transition border border-primary rounded-full text-white font-semibold text-center shadow-sm">
+                            Apply now
+                        </router-link>
+                        <button
+                            @click="toggleSave"
+                            :disabled="isSaving"
+                            type="button"
+                            class="py-2.5 flex items-center justify-center gap-2 border rounded-full font-semibold text-center transition-all cursor-pointer"
+                            :class="isSaved ? 'border-red-500 bg-red-50 text-red-600 hover:bg-red-100' : 'border-primary text-primary hover:bg-primary/10'"
+                        >
+                            <LoadingSpinner v-if="isSaving" class="w-5 h-5 text-current" />
+                            <template v-else>
+                                <Icon :icon="isSaved ? 'solar:heart-bold' : 'solar:heart-linear'" class="text-xl" />
+                                <div class="text-base">{{ isSaved ? 'Saved' : 'Save job' }}</div>
+                            </template>
+                        </button>
                     </div>
-                    <div class="flex flex-col gap-8">
-                        <div class="text-2xl font-semibold text-black">About the client</div>
-                        <div class="flex flex-col gap-2">
-                            <div class="text-black">176 jobs posted</div>
+
+                    <!-- Dynamic About the Client section -->
+                    <div class="flex flex-col gap-6 p-6 border rounded-2xl bg-gray-50/50">
+                        <div class="text-xl font-bold text-gray-900 border-b pb-3">About the client</div>
+                        <div class="flex flex-col gap-4">
+                            <!-- Client Avatar & Name -->
+                            <div class="flex items-center gap-3">
+                                <img
+                                    :src="job?.user?.profile_picture || DEFAULT_PROFILE_PICTURE"
+                                    alt="client avatar"
+                                    class="w-12 h-12 rounded-full object-cover border border-gray-200"
+                                />
+                                <div class="flex flex-col truncate">
+                                    <span class="font-semibold text-gray-900 text-base truncate">
+                                        {{ clientDisplayName }}
+                                    </span>
+                                    <span class="text-xs text-gray-500">Client</span>
+                                </div>
+                            </div>
+
+                            <!-- Location -->
+                            <div class="flex items-start gap-2.5 text-sm text-gray-700">
+                                <Icon icon="solar:map-point-bold" class="text-lg text-gray-400 shrink-0 mt-0.5" />
+                                <div class="flex flex-col">
+                                    <span class="font-medium">{{ job?.user?.country || 'Location not specified' }}</span>
+                                    <span class="text-xs text-gray-400">Location</span>
+                                </div>
+                            </div>
+
+                            <!-- Jobs Posted -->
+                            <div class="flex items-start gap-2.5 text-sm text-gray-700">
+                                <Icon icon="solar:document-text-bold" class="text-lg text-gray-400 shrink-0 mt-0.5" />
+                                <div class="flex flex-col">
+                                    <span class="font-medium">{{ job?.user?.job_posts_count ?? 1 }} jobs posted</span>
+                                    <span class="text-xs text-gray-400">Activity on NovaLance</span>
+                                </div>
+                            </div>
+
+                            <!-- Member Since -->
+                            <div class="flex items-start gap-2.5 text-sm text-gray-700" v-if="job?.user?.created_at">
+                                <Icon icon="solar:calendar-bold" class="text-lg text-gray-400 shrink-0 mt-0.5" />
+                                <div class="flex flex-col">
+                                    <span class="font-medium">Member since {{ formatMemberSince(job?.user?.created_at) }}</span>
+                                    <span class="text-xs text-gray-400">Joined</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -150,24 +201,31 @@
 import { FreeLancerHeaderVue } from '@/components/freelancer/header';
 import RestClientJobs from "@/libs/RestClientJobs";
 import RestProposals from "@/libs/RestProposals";
-import { inject, ref } from "vue";
+import RestSavedJobs from "@/libs/RestSavedJobs";
+import { DEFAULT_PROFILE_PICTURE } from '@/consts';
+import type ToastsManager from "@/libs/ToastsManager";
+import { inject, ref, computed, type Ref } from "vue";
 import { useRoute } from "vue-router";
 import type { AxiosInstance } from 'axios';
 import moment from 'moment';
 
-
 const isLoading = ref(true);
-const isSent = ref(false)
+const isSent = ref(false);
+const isSaved = ref(false);
+const isSaving = ref(false);
 const route = useRoute();
 const axios = inject<AxiosInstance>('axios');
+const toastManager = inject<Ref<ToastsManager>>('toastManager');
 const restClientJobs = new RestClientJobs(axios!);
 const restProposals = new RestProposals(axios!);
+const restSavedJobs = new RestSavedJobs(axios!);
 const job = ref<JobPost | null>(null);
 
 try {
     const getJobByIdResult = await restClientJobs.getById(Number(route.params.id));
     if (getJobByIdResult.isSuccess()) {
         job.value = getJobByIdResult.value!;
+        isSaved.value = !!job.value?.is_saved;
     }
 } catch (error) {
     console.error("Failed to load job details:", error);
@@ -179,13 +237,49 @@ try {
     const getProposalByJobIdResult = await restProposals.getProposalByJobId(Number(route.params.id));
     if (getProposalByJobIdResult.isSuccess()) {
         console.log("result:", getProposalByJobIdResult.value);
-        isSent.value = true
+        isSent.value = true;
     }
-}
-catch (error) {
+} catch (error) {
     console.log({ error });
     isSent.value = false;
 }
+
+const clientDisplayName = computed(() => {
+    if (!job.value?.user) return 'Client';
+    const u = job.value.user;
+    if (u.first_name && u.last_name) {
+        return `${u.first_name} ${u.last_name}`;
+    }
+    return u.username || 'Client';
+});
+
+const formatMemberSince = (date?: string): string => {
+    if (!date) return '';
+    return moment(date).format('MMM YYYY');
+};
+
+const toggleSave = async () => {
+    if (!job.value?.id || isSaving.value) return;
+    isSaving.value = true;
+    try {
+        const res = await restSavedJobs.toggleSave(job.value.id);
+        if (res.isSuccess()) {
+            isSaved.value = res.value!.saved;
+            if (isSaved.value) {
+                toastManager?.value?.alertSuccess('Job saved to your list!');
+            } else {
+                toastManager?.value?.alertSuccess('Job removed from saved jobs.');
+            }
+        } else {
+            toastManager?.value?.alertError(res.error || 'Failed to update saved job.');
+        }
+    } catch (err: any) {
+        toastManager?.value?.alertError(err?.message || 'Failed to update saved job.');
+    } finally {
+        isSaving.value = false;
+    }
+};
+
 const formatDate = (date?: string): string => moment(date).fromNow();
 
 const isImageFile = (filePath?: string): boolean => {

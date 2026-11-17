@@ -19,6 +19,11 @@
                 <Icon icon="bytesize:portfolio" class="h-4 w-4 object-contain" />
                 <div class="ml-1">My Projects</div>
             </a>
+            <a href="/saved_jobs"
+                :class="`text-base flex items-center gap-2 ${target == 'saved_jobs' ? 'text-primary font-medium' : 'text-black'}`">
+                <Icon icon="solar:bookmark-linear" class="h-4 w-4 object-contain" />
+                <div class="ml-1">Saved Jobs</div>
+            </a>
             <div class="flex items-center gap-2">
                 <Icon icon="material-symbols:notifications" class="h-4 w-4 object-contain" />
                 <a href="/profile" class="w-6 h-6 rounded-full block cursor-pointer" title="View Profile">
