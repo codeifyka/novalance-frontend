@@ -34,6 +34,7 @@ import { LoadingSpinnerVue } from './components/loading_spinner';
 import { RootSuspenseVue } from "./components/root_suspense";
 import { PaginationVue } from './components/pagination';
 import { SavedJobsVue } from './components/freelancer/saved_jobs';
+import { FreeLancerUpdateServiceVue } from './components/freelancer/services/update';
 
 const app = createApp(RootSuspenseVue);
 
@@ -51,6 +52,7 @@ const routes: RouteRecordRaw[] = [
     { path: '/chat/:id', component: ChatPreviewVue },
     { path: '/services', component: FreeLancerServicesVue },
     { path: '/create_service', component: FreeLancerCreateServiceVue },
+    { path: '/update_service/:id', component: FreeLancerUpdateServiceVue },
     { path: '/services/:username', component: FreeLancerServicesVue },
     { path: '/portfolio', component: FreeLancerPortfolioVue },
     { path: '/create_project', component: FreeLancerCreateProjectVue },

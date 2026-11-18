@@ -22,8 +22,10 @@ interface CreateService {
 }
 
 interface ServiceImage {
+    id?: number;
     path: string;
-    service_id: number;
+    url?: string;
+    service_id?: number;
 }
 
 interface PaginatedServices {

@@ -46,6 +46,23 @@ export default class RestFreelancerServices {
     async create(service: CreateService): Promise<Result<string, Service>> {
         return await this.axiosInstance.post('/api/services/create', service).then(Utils.handleResponse<string, Service>);
     }
+
+    async update(service_id: number, service: CreateService | Partial<CreateService>): Promise<Result<string, Service>> {
+        return await this.axiosInstance.put(`/api/services/${service_id}`, service).then(Utils.handleResponse<string, Service>);
+    }
+
+    async delete(service_id: number): Promise<Result<string, string>> {
+        return this.axiosInstance.delete(`/api/services/${service_id}`).then(res => {
+            if (res.data.error) {
+                return Result.failure<string, string>(res.data.error);
+            }
+            return Result.success<string, string>(res.data.message || 'Service deleted');
+        }).catch(err => {
+            const errorMsg = err?.response?.data?.error || err?.response?.data?.message || err?.message || 'Failed to delete service';
+            return Result.failure<string, string>(errorMsg);
+        });
+    }
+
     async searchByTitle(query: string): Promise<Result<string, Service[]>> {
         return this.axiosInstance.get(`/api/services/search/${query}`).then(Utils.handleResponse<string, Service[]>);
     }
