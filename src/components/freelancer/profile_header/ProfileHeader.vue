@@ -1,5 +1,5 @@
 <template>
-    <div class="w-11/12 flex flex-col items-center gap-16">
+    <div class="w-11/12 flex flex-col items-center gap-6">
         <FreeLancerHeaderVue :target="target" />
         <div class="w-full flex items-start justify-between">
             <div class="flex items-center gap-4">

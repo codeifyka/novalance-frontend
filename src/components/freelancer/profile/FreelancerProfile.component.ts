@@ -18,6 +18,9 @@ export default {
             email: "",
             first_name: "",
             last_name: "",
+            telephone: "",
+            country: "",
+            gender: "",
             general: "",
         });
 
@@ -81,8 +84,12 @@ export default {
             errors.email = "";
             errors.first_name = "";
             errors.last_name = "";
+            errors.telephone = "";
+            errors.country = "";
+            errors.gender = "";
             errors.general = "";
         };
+
 
         onMounted(async () => {
             let restUserSession = new RestUserSession(axios!);
