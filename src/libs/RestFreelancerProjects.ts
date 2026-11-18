@@ -1,6 +1,6 @@
 import type { AxiosInstance } from "axios";
+import Result from "./Result";
 import Utils from "./Utils";
-import type Result from "./Result";
 
 export default class RestFreelancerProjects {
     axiosInstance: AxiosInstance;
@@ -34,12 +34,27 @@ export default class RestFreelancerProjects {
             onUploadProgress: progressEvent => {
                 const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total!);
                 console.log(percentCompleted);
-                // You can update a progress bar or do something with the progress here
             }
         }).then(Utils.handleResponse<string, string[]>);
     }
 
     async create(project: CreateProject): Promise<Result<string, Project>> {
         return await this.axiosInstance.post('/api/projects/create', project).then(Utils.handleResponse<string, Project>);
+    }
+
+    async update(project_id: number, project: CreateProject): Promise<Result<string, Project>> {
+        return await this.axiosInstance.put(`/api/projects/${project_id}`, project).then(Utils.handleResponse<string, Project>);
+    }
+
+    async delete(project_id: number): Promise<Result<string, string>> {
+        return this.axiosInstance.delete(`/api/projects/${project_id}`).then(res => {
+            if (res.data.error) {
+                return Result.failure<string, string>(res.data.error);
+            }
+            return Result.success<string, string>(res.data.message || 'Project deleted');
+        }).catch(err => {
+            const errorMsg = err?.response?.data?.error || err?.response?.data?.message || err?.message || 'Failed to delete project';
+            return Result.failure<string, string>(errorMsg);
+        });
     }
 };

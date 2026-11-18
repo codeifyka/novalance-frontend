@@ -35,6 +35,7 @@ import { RootSuspenseVue } from "./components/root_suspense";
 import { PaginationVue } from './components/pagination';
 import { SavedJobsVue } from './components/freelancer/saved_jobs';
 import { FreeLancerUpdateServiceVue } from './components/freelancer/services/update';
+import { FreeLancerUpdateProjectVue } from './components/freelancer/portfolio/update';
 
 const app = createApp(RootSuspenseVue);
 
@@ -56,6 +57,7 @@ const routes: RouteRecordRaw[] = [
     { path: '/services/:username', component: FreeLancerServicesVue },
     { path: '/portfolio', component: FreeLancerPortfolioVue },
     { path: '/create_project', component: FreeLancerCreateProjectVue },
+    { path: '/update_project/:id', component: FreeLancerUpdateProjectVue },
     { path: '/portfolio/:username', component: FreeLancerPortfolioVue },
     { path: '/create_job', component: ClientCreateJobVue },
     { path: '/client/profile', component: ProfileVue },
