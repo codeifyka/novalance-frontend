@@ -1,82 +1,66 @@
 <template>
 <nav :class="['w-full', 'h-16', 'md:h-20', 'shadow-sm', 'flex', 'px-8', 'md:px-24', 'justify-between', 'items-center', 'fixed', 'top-0', 'z-50', 'bg-white']">
-  <router-link to="/home" class="h-full flex justify-center items-center cursor-pointer">
+  <router-link to="/home" class="h-full flex items-center cursor-pointer">
     <img src="/logo.png" class="mr-2 h-8 object-contain rounded-full" alt="NovaLance logo" />
-    <h1 class="text-black text-xl font-bold inline-block uppercase hover:text-primary">Novalance</h1>
+    <span class="text-black text-xl font-bold inline-block hover:text-primary">NovaLance</span>
   </router-link>
 
-  <div class="flex items-center gap-8 justify-around">
+  <div class="flex items-center gap-8">
     <!-- Messages -->
-    <router-link to="/chat_client_freelancer/" class="text-black hidden lg:flex items-center gap-2 cursor-pointer group">
-      <Icon icon="jam:messages-f" width="20" height="20" class="text-black group-hover:text-primary" />
-      <span class="group-hover:text-primary">Messages</span>
+    <router-link
+      to="/chat_client_freelancer"
+      :class="`hidden md:flex items-center gap-2 cursor-pointer transition-colors duration-200 ${target === 'messages' ? 'text-primary font-medium' : 'text-black hover:text-primary'}`"
+    >
+      <Icon icon="teenyicons:chat-outline" class="w-4 h-4 object-contain" />
+      <span>Messages</span>
     </router-link>
 
-    <!-- Services -->
+    <!-- My Services -->
     <router-link
       to="/services"
-      :class="`hidden lg:flex items-center gap-2 cursor-pointer group ${target === 'services' ? 'text-primary font-medium' : 'text-black'}`"
+      :class="`hidden md:flex items-center gap-2 cursor-pointer transition-colors duration-200 ${target === 'services' ? 'text-primary font-medium' : 'text-black hover:text-primary'}`"
     >
-      <Icon icon="icons8:services" width="20" height="20" class="group-hover:text-primary" />
-      <span class="group-hover:text-primary">My Services</span>
+      <Icon icon="icons8:services" class="w-5 h-5 object-contain" />
+      <span>My Services</span>
     </router-link>
 
-    <!-- Projects -->
+    <!-- My Projects -->
     <router-link
       to="/portfolio"
-      :class="`hidden lg:flex items-center gap-2 cursor-pointer group ${target === 'portfolio' ? 'text-primary font-medium' : 'text-black'}`"
+      :class="`hidden md:flex items-center gap-2 cursor-pointer transition-colors duration-200 ${target === 'portfolio' ? 'text-primary font-medium' : 'text-black hover:text-primary'}`"
     >
-      <Icon icon="bytesize:portfolio" width="20" height="20" class="group-hover:text-primary" />
-      <span class="group-hover:text-primary">My Projects</span>
+      <Icon icon="bytesize:portfolio" class="w-4 h-4 object-contain" />
+      <span>My Projects</span>
     </router-link>
 
     <!-- Saved Jobs -->
     <router-link
       to="/saved_jobs"
-      :class="`hidden lg:flex items-center gap-2 cursor-pointer group ${target === 'saved_jobs' ? 'text-primary font-medium' : 'text-black'}`"
+      :class="`hidden md:flex items-center gap-2 cursor-pointer transition-colors duration-200 ${target === 'saved_jobs' ? 'text-primary font-medium' : 'text-black hover:text-primary'}`"
     >
-      <Icon icon="solar:bookmark-linear" width="20" height="20" class="group-hover:text-primary" />
-      <span class="group-hover:text-primary">Saved Jobs</span>
+      <Icon icon="solar:bookmark-linear" class="w-5 h-5 object-contain" />
+      <span>Saved Jobs</span>
     </router-link>
 
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-4">
       <!-- Notification bell -->
-      <Icon icon="iconamoon:notification-fill" width="20" height="20" class="cursor-pointer text-black hover:text-primary" />
+      <NotificationBell />
 
-      <!-- Avatar + profile dropdown -->
-      <div
-        @click="isShowProfile = !isShowProfile"
-        class="rounded-full bg-black text-white text-sm w-8 h-8 hidden lg:flex justify-center items-center uppercase relative cursor-pointer"
+      <!-- Profile Avatar -->
+      <router-link
+        to="/profile"
+        class="w-8 h-8 rounded-full block cursor-pointer overflow-hidden border border-gray-200 hover:ring-2 hover:ring-primary transition-all"
+        title="View Profile"
       >
-        <div
-          v-if="isShowProfile"
-          v-motion-pop-visible
-          class="py-5 px-2 w-40 bg-white text-black shadow-md absolute top-12 right-0 transition-all duration-200 rounded-lg"
-          @click.stop
-        >
-          <ul class="text-black">
-            <router-link
-              to="/profile"
-              class="flex items-center mb-2 p-1 transition-colors duration-300 rounded-lg hover:bg-violet-100 hover:bg-opacity-75 cursor-pointer"
-            >
-              <Icon icon="iconamoon:profile-circle-fill" class="mr-2" />
-              <span>My Profile</span>
-            </router-link>
-            <button
-              @click="logout"
-              class="w-full flex items-center mb-2 p-1 transition-colors duration-300 rounded-lg hover:bg-violet-100 hover:bg-opacity-75 cursor-pointer"
-            >
-              <Icon icon="clarity:logout-solid" class="mr-2" />
-              <span>Logout</span>
-            </button>
-          </ul>
-        </div>
-        <img v-if="userInfo?.user?.profile_picture" :src="userInfo.user.profile_picture" class="w-full h-full rounded-full object-cover" />
-        <span v-else>{{ userInfo?.user?.first_name ? userInfo.user.first_name[0] : 'U' }}</span>
-      </div>
+        <img
+          class="w-full h-full rounded-full object-cover"
+          :src="userInfo?.user?.profile_picture || DEFAULT_PROFILE_PICTURE"
+          alt="profile picture"
+        />
+      </router-link>
 
       <!-- Mobile menu toggle -->
-      <button @click="toggleMenu" class="lg:hidden p-2 hover:bg-purple text-black rounded-full">
+      <button @click="toggleMenu" class="md:hidden p-2 hover:bg-violet-50 text-black rounded-full cursor-pointer">
         <Icon v-if="showMobileMenu" icon="material-symbols:close" width="24" height="24" />
         <Icon v-else icon="ri:menu-4-fill" width="24" height="24" />
       </button>
@@ -88,83 +72,50 @@
 <nav
   v-if="showMobileMenu"
   v-motion-pop-visible
-  class="fixed top-0 right-0 inset-[1rem] bg-white shadow-md rounded-bl-full z-50 flex flex-col items-center justify-center space-y-8"
+  class="fixed top-0 right-0 inset-[1rem] bg-white shadow-xl rounded-2xl z-50 flex flex-col items-center justify-center space-y-6 md:hidden"
 >
-  <button @click="toggleMenu" class="lg:hidden p-2 text-black rounded-full absolute top-4 right-4">
-    <Icon icon="material-symbols:close" width="32" height="32" />
+  <button @click="toggleMenu" class="p-2 text-black rounded-full absolute top-4 right-4 cursor-pointer hover:bg-gray-100">
+    <Icon icon="material-symbols:close" width="28" height="28" />
   </button>
-  <router-link to="/home" class="text-black hover:text-primary font-bold uppercase mb-4 flex justify-center items-center cursor-pointer">
+  <router-link to="/home" @click="showMobileMenu = false" class="text-black hover:text-primary font-bold text-xl flex items-center cursor-pointer mb-2">
     <img src="/logo.png" class="mr-2 h-8 object-contain rounded-full" alt="NovaLance logo" />
-    <span>Novalance</span>
+    <span>NovaLance</span>
   </router-link>
-  <router-link to="/chat_client_freelancer/" class="text-black flex items-center gap-2 w-36 cursor-pointer">
-    <Icon icon="jam:messages-f" width="20" height="20" />
+  <router-link to="/chat_client_freelancer" @click="showMobileMenu = false" class="text-black hover:text-primary flex items-center gap-3 w-40 text-base cursor-pointer py-1">
+    <Icon icon="teenyicons:chat-outline" class="w-5 h-5" />
     <span>Messages</span>
   </router-link>
-  <router-link to="/services" class="text-black flex items-center gap-2 w-36 cursor-pointer">
-    <Icon icon="icons8:services" width="20" height="20" />
+  <router-link to="/services" @click="showMobileMenu = false" class="text-black hover:text-primary flex items-center gap-3 w-40 text-base cursor-pointer py-1">
+    <Icon icon="icons8:services" class="w-5 h-5" />
     <span>My Services</span>
   </router-link>
-  <router-link to="/portfolio" class="text-black flex items-center gap-2 w-36 cursor-pointer">
-    <Icon icon="bytesize:portfolio" width="20" height="20" />
+  <router-link to="/portfolio" @click="showMobileMenu = false" class="text-black hover:text-primary flex items-center gap-3 w-40 text-base cursor-pointer py-1">
+    <Icon icon="bytesize:portfolio" class="w-5 h-5" />
     <span>My Projects</span>
   </router-link>
-  <router-link to="/saved_jobs" class="text-black flex items-center gap-2 w-36 cursor-pointer">
-    <Icon icon="solar:bookmark-linear" width="20" height="20" />
+  <router-link to="/saved_jobs" @click="showMobileMenu = false" class="text-black hover:text-primary flex items-center gap-3 w-40 text-base cursor-pointer py-1">
+    <Icon icon="solar:bookmark-linear" class="w-5 h-5" />
     <span>Saved Jobs</span>
   </router-link>
-  <div @click="isShowProfile = !isShowProfile" class="text-black flex w-36 relative cursor-pointer items-center gap-2">
-    <Icon icon="iconamoon:profile-circle-fill" width="20" height="20" />
-    <span>Profile</span>
-    <Icon icon="ep:arrow-down-bold" width="14" height="14" class="ml-1 mt-0.5 transition-all duration-200" :class="[isShowProfile ? 'rotate-180' : '']" />
-    <div
-      v-motion-pop-visible
-      class="py-5 px-2 w-40 bg-white text-black shadow-md absolute bottom-10 transition-all duration-200 rounded-lg"
-      v-if="isShowProfile"
-    >
-      <ul class="text-black">
-        <router-link
-          to="/profile"
-          class="flex items-center mb-2 p-1 transition-colors duration-300 rounded-lg hover:bg-violet-100 hover:bg-opacity-75 cursor-pointer"
-        >
-          <Icon icon="iconamoon:profile-circle-fill" class="mr-2" />
-          <span>My Profile</span>
-        </router-link>
-        <button
-          @click="logout"
-          class="w-full flex items-center mb-2 p-1 transition-colors duration-300 rounded-lg hover:bg-violet-100 hover:bg-opacity-75 cursor-pointer"
-        >
-          <Icon icon="clarity:logout-solid" class="mr-2" />
-          <span>Logout</span>
-        </button>
-      </ul>
-    </div>
-  </div>
+  <router-link to="/profile" @click="showMobileMenu = false" class="text-black hover:text-primary flex items-center gap-3 w-40 text-base cursor-pointer py-1">
+    <Icon icon="iconamoon:profile-circle-fill" class="w-5 h-5" />
+    <span>My Profile</span>
+  </router-link>
 </nav>
 </template>
 
 <script lang="ts" setup>
-import RestUserSession from '@/libs/RestUserSession';
+import { NotificationBell } from '@/components/notifications';
+import { DEFAULT_PROFILE_PICTURE } from '@/consts';
 import { inject, ref } from 'vue';
-import axios from 'axios';
 
-const props = defineProps<{ target: string }>();
+const props = defineProps<{ target?: string }>();
 const target = props.target;
 const userInfo = inject<UserInfo | null>('user_info', null);
 
-const isShowProfile = ref(false);
 const showMobileMenu = ref(false);
 
 function toggleMenu() {
   showMobileMenu.value = !showMobileMenu.value;
 }
-
-const logout = () => {
-  const restUserSession = new RestUserSession(axios);
-  restUserSession.logout().then(() => {
-    location.href = '/';
-  }).catch(() => {
-    location.href = '/';
-  });
-};
 </script>

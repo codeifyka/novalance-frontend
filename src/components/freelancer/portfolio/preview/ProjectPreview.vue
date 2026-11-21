@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full h-screen overflow-auto flex flex-col items-center pt-20 pb-4 gap-16">
+    <div class="w-full h-screen overflow-auto flex flex-col items-center pt-24 md:pt-28 pb-4 gap-16">
         <div class="w-11/12 flex flex-col items-center gap-16">
             <FreeLancerHeaderVue target="portfolio" />
             <div class="w-2/3 flex">

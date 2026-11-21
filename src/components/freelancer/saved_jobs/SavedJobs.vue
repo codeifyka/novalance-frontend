@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full min-h-screen bg-gray-50/30 overflow-auto flex flex-col items-center pt-20 pb-16">
+    <div class="w-full min-h-screen bg-gray-50/30 overflow-auto flex flex-col items-center pt-24 md:pt-28 pb-16">
         <div class="w-11/12 flex flex-col items-center gap-10">
             <FreeLancerHeaderVue target="saved_jobs" />
 

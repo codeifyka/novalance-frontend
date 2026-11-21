@@ -1,6 +1,6 @@
 <template>
     <Loading v-if="isLoading" />
-    <div v-if="job !== null" class="w-full flex flex-col items-center gap-16 pt-20 pb-4">
+    <div v-if="job !== null" class="w-full flex flex-col items-center gap-16 pt-24 md:pt-28 pb-4">
         <div class="w-11/12 flex flex-col items-center gap-16">
             <FreeLancerHeaderVue target="services" />
             <div class="w-full flex justify-between">

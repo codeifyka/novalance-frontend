@@ -1,9 +1,13 @@
 import logo from '@/assets/images/logo.png';
 import RestUserSession from "@/libs/RestUserSession";
+import { NotificationBell } from '@/components/notifications';
 import { ref, inject, type Ref, onMounted } from 'vue'
 import axios from "axios";
 import type ToastsManager from '@/libs/ToastsManager';
 export default {
+    components: {
+        NotificationBell,
+    },
     props: {
         isHomePath: Boolean
     },

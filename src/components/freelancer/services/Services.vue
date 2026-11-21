@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full h-screen overflow-auto flex flex-col items-center pt-20 pb-4 gap-16">
+    <div class="w-full h-screen overflow-auto flex flex-col items-center pt-24 md:pt-28 pb-4 gap-16">
         <ProfileHeaderVue target="services" />
         <div class="w-11/12 flex flex-col gap-8">
             <div class="w-full flex items-center border-b border-gray-300">
