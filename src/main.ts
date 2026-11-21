@@ -4,72 +4,48 @@ import { MotionPlugin } from '@vueuse/motion'
 
 import './style.css';
 
-import { HomeVue } from './screens/home';
-import { SignInVue } from './screens/sign_in';
-import { SignUpVue } from './screens/sign_up';
-import { JobPreviewVue } from './screens/job';
-import { ServicePreviewVue } from './screens/service';
-import { ProjectPreviewVue } from './screens/project';
-import { ChatVue } from './screens/chat';
-import { ChatPreviewVue } from './screens/chat/preview';
+// Shared components (used across pages) stay in the initial bundle.
 import { Icon } from '@iconify/vue';
-import { FreeLancerPortfolioVue } from './components/freelancer/portfolio';
-import { FreeLancerServicesVue } from './components/freelancer/services';
-import { FreeLancerCreateServiceVue } from './components/freelancer/services/create';
 import { LoadingVue } from './components/loading';
 import { ToastVue } from './components/toast';
-import { ClientCreateJobVue } from './components/client/jobs/create'
-import { FreeLancerCreateProjectVue } from './components/freelancer/portfolio/create';
-import { ProfileVue } from './components/client/profile'
-import { ClientServicesVue } from './components/client/services'
 import { ServiceVue } from './components/service';
-import { ClientMyjobsVue } from './components/client/jobs/my_jobs';
-import { FreeLancerProfileVue } from './components/freelancer/profile';
-import { ClientUpdateJobVue } from './components/client/jobs/update';
-import { LandingPageVue } from './screens/landing_page';
-import { ProposalsVue } from './screens/proposal';
-import { ClientMyPurchasesVue } from './components/client/my_purchases';
-import { FreelancerSubmitProposalVue } from './components/freelancer/proposal/submit';
 import { LoadingSpinnerVue } from './components/loading_spinner';
 import { RootSuspenseVue } from "./components/root_suspense";
 import { PaginationVue } from './components/pagination';
-import { SavedJobsVue } from './components/freelancer/saved_jobs';
-import { FreeLancerUpdateServiceVue } from './components/freelancer/services/update';
-import { FreeLancerUpdateProjectVue } from './components/freelancer/portfolio/update';
 
 const app = createApp(RootSuspenseVue);
 
 const routes: RouteRecordRaw[] = [
     // shared routes
-    { path: '/', component: LandingPageVue },
-    { path: '/home', component: HomeVue },
-    { path: '/sign_in', component: SignInVue },
-    { path: '/sign_up', component: SignUpVue },
-    { path: '/job/:id', component: JobPreviewVue },
-    { path: '/job/:id/submit_proposal', component: FreelancerSubmitProposalVue, },
-    { path: '/service/:id', component: ServicePreviewVue },
-    { path: '/project/:id', component: ProjectPreviewVue },
-    { path: '/chat', component: ChatVue },
-    { path: '/chat/:id', component: ChatPreviewVue },
-    { path: '/services', component: FreeLancerServicesVue },
-    { path: '/create_service', component: FreeLancerCreateServiceVue },
-    { path: '/update_service/:id', component: FreeLancerUpdateServiceVue },
-    { path: '/services/:username', component: FreeLancerServicesVue },
-    { path: '/portfolio', component: FreeLancerPortfolioVue },
-    { path: '/create_project', component: FreeLancerCreateProjectVue },
-    { path: '/update_project/:id', component: FreeLancerUpdateProjectVue },
-    { path: '/portfolio/:username', component: FreeLancerPortfolioVue },
-    { path: '/create_job', component: ClientCreateJobVue },
-    { path: '/client/profile', component: ProfileVue },
-    { path: '/all_services', component: ClientServicesVue },
-    { path: '/my_jobs', component: ClientMyjobsVue },
-    { path: '/profile', component: FreeLancerProfileVue },
-    { path: '/update_job/:id', component: ClientUpdateJobVue },
-    { path: '/chat_client_freelancer/', component: ChatVue },
-    { path: '/proposals/', component: ProposalsVue },
-    { path: '/create_portfolio/', component: FreeLancerCreateProjectVue },
-    { path: '/my_purchases/', component: ClientMyPurchasesVue },
-    { path: '/saved_jobs', component: SavedJobsVue },
+    { path: '/', component: () => import('./screens/landing_page').then(m => m.LandingPageVue) },
+    { path: '/home', component: () => import('./screens/home').then(m => m.HomeVue) },
+    { path: '/sign_in', component: () => import('./screens/sign_in').then(m => m.SignInVue) },
+    { path: '/sign_up', component: () => import('./screens/sign_up').then(m => m.SignUpVue) },
+    { path: '/job/:id', component: () => import('./screens/job').then(m => m.JobPreviewVue) },
+    { path: '/job/:id/submit_proposal', component: () => import('./components/freelancer/proposal/submit').then(m => m.FreelancerSubmitProposalVue) },
+    { path: '/service/:id', component: () => import('./screens/service').then(m => m.ServicePreviewVue) },
+    { path: '/project/:id', component: () => import('./screens/project').then(m => m.ProjectPreviewVue) },
+    { path: '/chat', component: () => import('./screens/chat').then(m => m.ChatVue) },
+    { path: '/chat/:id', component: () => import('./screens/chat/preview').then(m => m.ChatPreviewVue) },
+    { path: '/services', component: () => import('./components/freelancer/services').then(m => m.FreeLancerServicesVue) },
+    { path: '/create_service', component: () => import('./components/freelancer/services/create').then(m => m.FreeLancerCreateServiceVue) },
+    { path: '/update_service/:id', component: () => import('./components/freelancer/services/update').then(m => m.FreeLancerUpdateServiceVue) },
+    { path: '/services/:username', component: () => import('./components/freelancer/services').then(m => m.FreeLancerServicesVue) },
+    { path: '/portfolio', component: () => import('./components/freelancer/portfolio').then(m => m.FreeLancerPortfolioVue) },
+    { path: '/create_project', component: () => import('./components/freelancer/portfolio/create').then(m => m.FreeLancerCreateProjectVue) },
+    { path: '/update_project/:id', component: () => import('./components/freelancer/portfolio/update').then(m => m.FreeLancerUpdateProjectVue) },
+    { path: '/portfolio/:username', component: () => import('./components/freelancer/portfolio').then(m => m.FreeLancerPortfolioVue) },
+    { path: '/create_job', component: () => import('./components/client/jobs/create').then(m => m.ClientCreateJobVue) },
+    { path: '/client/profile', component: () => import('./components/client/profile').then(m => m.ProfileVue) },
+    { path: '/all_services', component: () => import('./components/client/services').then(m => m.ClientServicesVue) },
+    { path: '/my_jobs', component: () => import('./components/client/jobs/my_jobs').then(m => m.ClientMyjobsVue) },
+    { path: '/profile', component: () => import('./components/freelancer/profile').then(m => m.FreeLancerProfileVue) },
+    { path: '/update_job/:id', component: () => import('./components/client/jobs/update').then(m => m.ClientUpdateJobVue) },
+    { path: '/chat_client_freelancer/', component: () => import('./screens/chat').then(m => m.ChatVue) },
+    { path: '/proposals/', component: () => import('./screens/proposal').then(m => m.ProposalsVue) },
+    { path: '/create_portfolio/', component: () => import('./components/freelancer/portfolio/create').then(m => m.FreeLancerCreateProjectVue) },
+    { path: '/my_purchases/', component: () => import('./components/client/my_purchases').then(m => m.ClientMyPurchasesVue) },
+    { path: '/saved_jobs', component: () => import('./components/freelancer/saved_jobs').then(m => m.SavedJobsVue) },
 ];
 
 const router = createRouter({
