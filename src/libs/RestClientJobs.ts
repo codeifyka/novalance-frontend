@@ -62,8 +62,12 @@ export default class RestClientJobs {
         })
     }
 
-    async getAll(): Promise<Result<string, JobPost[]>> {
-        return this.axiosInstance.get('/api/user/job/getAll').then(Utils.handleResponse<string, JobPost[]>);
+    async getAll(params?: JobQueryParams): Promise<Result<string, JobPost[]>> {
+        return this.axiosInstance.get('/api/user/job/getAll', { params }).then(Utils.handleResponse<string, JobPost[]>);
+    }
+
+    async getPaginated(params: JobQueryParams): Promise<Result<string, PaginatedJobs>> {
+        return this.axiosInstance.get('/api/user/job/getAll', { params: { ...params, paginate: true } }).then(Utils.handleResponse<string, PaginatedJobs>);
     }
 
     async uploadFiles(files: File[]): Promise<Result<string, string[]>> {

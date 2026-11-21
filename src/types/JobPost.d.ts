@@ -36,6 +36,20 @@ interface JobActivity {
     hiring: number;
 }
 
+interface PaginatedJobs {
+    items: JobPost[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+}
+
+interface JobQueryParams {
+    page?: number;
+    per_page?: number;
+    search?: string;
+}
+
 interface CreateJobPost {
     title: string;
     description: string;

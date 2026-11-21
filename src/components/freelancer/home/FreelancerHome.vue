@@ -8,6 +8,7 @@
                     <div class="flex items-center border rounded-full bg-white shadow-sm focus-within:border-primary transition-colors">
                         <input
                             v-model="searchQuery"
+                            @input="onSearchInput"
                             @keyup.enter="onSearch"
                             class="bg-transparent outline-none w-full px-8 py-2 text-black placeholder:text-gray-400"
                             placeholder="Search jobs by title, description or skills..."
@@ -32,8 +33,13 @@
                     </div>
                     <div class="w-full h-px bg-gray-200"></div>
 
+                    <!-- Loading state -->
+                    <div v-if="isLoading" class="w-full py-12 text-center text-sm text-gray-500">
+                        Loading jobs...
+                    </div>
+
                     <!-- Empty state -->
-                    <div v-if="filteredJobs.length === 0" class="w-full flex flex-col items-center justify-center py-12 text-center text-gray-500">
+                    <div v-else-if="jobs.length === 0" class="w-full flex flex-col items-center justify-center py-12 text-center text-gray-500">
                         <Icon icon="material-symbols:search-off" class="text-4xl mb-2 text-gray-400" />
                         <p class="font-medium text-base text-gray-700">No jobs found</p>
                         <p class="text-sm text-gray-400 mt-1">Try searching with different keywords</p>
@@ -45,9 +51,18 @@
                         v-motion-slide-visible-once-top
                         :colors="colors"
                         :job="job"
-                        v-for="job in filteredJobs"
+                        v-for="job in jobs"
                         :key="job.id"
                         @remove-job="removeJob"
+                    />
+
+                    <Pagination
+                        :current-page="currentPage"
+                        :last-page="lastPage"
+                        :per-page="perPage"
+                        :total="totalJobs"
+                        item-label="jobs"
+                        @change-page="goToPage"
                     />
                 </div>
                 <div class="w-1/3 flex flex-col items-center">
@@ -113,11 +128,12 @@
 
 <script lang="ts" setup>
 import { FreeLancerHeaderVue } from '@/components/freelancer/header';
+import { PaginationVue as Pagination } from '@/components/pagination';
+import { JobPostVue } from '@/components/job_post';
 import RestClientJobs from "@/libs/RestClientJobs";
-import { computed, inject, ref } from 'vue';
+import { inject, onMounted, onUnmounted, ref } from 'vue';
 import type { AxiosInstance } from 'axios';
 import { DEFAULT_PROFILE_PICTURE } from '@/consts';
-import { JobPostVue } from '@/components/job_post';
 
 const colors = ref({
     'text': 'text-violet-700',
@@ -126,38 +142,94 @@ const colors = ref({
 
 const axios = inject<AxiosInstance>("axios");
 const user_info = inject<UserInfo>("user_info");
-const allJobs = ref<JobPost[]>([]);
+const restClientJobs = new RestClientJobs(axios!);
+
+const jobs = ref<JobPost[]>([]);
 const searchQuery = ref('');
+const isLoading = ref(false);
 
-const filteredJobs = computed(() => {
-    const q = searchQuery.value.trim().toLowerCase();
-    if (!q) return allJobs.value;
-    return allJobs.value.filter(job => {
-        const titleMatch = job.title?.toLowerCase().includes(q);
-        const descMatch = job.description?.toLowerCase().includes(q);
-        const categoryMatch = job.categories?.some(c => {
-            const name = typeof c === 'string' ? c : c.name;
-            return name?.toLowerCase().includes(q);
+const currentPage = ref(1);
+const lastPage = ref(1);
+const perPage = ref(6);
+const totalJobs = ref(0);
+
+// Ignore responses from requests that were superseded by a newer search/page change.
+let latestRequestId = 0;
+
+const fetchJobs = async () => {
+    const requestId = ++latestRequestId;
+    isLoading.value = true;
+    try {
+        const response = await restClientJobs.getPaginated({
+            page: currentPage.value,
+            per_page: perPage.value,
+            search: searchQuery.value.trim() || undefined,
         });
-        return Boolean(titleMatch || descMatch || categoryMatch);
-    });
-});
 
-const onSearch = () => {
-    // Reactive filtering updates automatically through filteredJobs computed
+        if (requestId !== latestRequestId) return;
+
+        if (response.isSuccess() && response.value) {
+            jobs.value = response.value.items || [];
+            currentPage.value = response.value.current_page || 1;
+            lastPage.value = response.value.last_page || 1;
+            totalJobs.value = response.value.total || 0;
+        } else {
+            jobs.value = [];
+            lastPage.value = 1;
+            totalJobs.value = 0;
+        }
+    } catch (err) {
+        console.error('Failed to load jobs:', err);
+        jobs.value = [];
+        lastPage.value = 1;
+        totalJobs.value = 0;
+    } finally {
+        if (requestId === latestRequestId) {
+            isLoading.value = false;
+        }
+    }
 };
+
+let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+const search = (resetPage: boolean) => {
+    if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+    if (resetPage) currentPage.value = 1;
+    fetchJobs();
+};
+
+const onSearchInput = () => {
+    if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(() => {
+        currentPage.value = 1;
+        fetchJobs();
+    }, 350);
+};
+
+const onSearch = () => search(true);
 
 const clearSearch = () => {
     searchQuery.value = '';
+    search(true);
 };
 
-const removeJob = (jobId: number) => {
-    allJobs.value = allJobs.value.filter(j => j.id !== jobId);
+const goToPage = (page: number) => {
+    if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+    currentPage.value = page;
+    fetchJobs();
 };
 
-const restClientJobs = new RestClientJobs(axios!);
-const getJobsResult = await restClientJobs.getAll();
-if (getJobsResult.isSuccess()) {
-    allJobs.value = getJobsResult.value! || [];
-}
+const removeJob = async (jobId: number) => {
+    jobs.value = jobs.value.filter(job => job.id !== jobId);
+    if (totalJobs.value > 0) totalJobs.value -= 1;
+    if (jobs.value.length === 0 && currentPage.value > 1) {
+        currentPage.value -= 1;
+        await fetchJobs();
+    }
+};
+
+onMounted(fetchJobs);
+
+onUnmounted(() => {
+    if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+});
 </script>
