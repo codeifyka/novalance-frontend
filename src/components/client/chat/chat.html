@@ -1,23 +1,44 @@
 <div class="w-full h-screen bg-white">
     <ClientHeaderVue />
-    <div class=" mt-24 flex items-start justify-between md:mx-24 mx-8 ">
-        <div class="w-full md:w-4/12 rounded-br-3xl h-full md:block" :class="chatScreenState? 'hidden' : 'block'">
+    <div class="mt-24 flex items-start justify-between md:mx-24 mx-8">
+        <div class="w-full md:w-4/12 rounded-br-3xl h-full md:block" :class="chatScreenState ? 'hidden' : 'block'">
             <h1 class="text-xl font-semibold my-2">Recent Chats</h1>
             <div class="overflow-y-auto hide-scrollbar h-80">
                 <div 
                     v-for="freelancer in freelancers" 
                     @click="ChangeCurrentUser(freelancer.id)"
-                    :key="freelancer.freelancer.id" 
-                    :class="['flex',  'cursor-pointer', 'hover:bg-black/10',currentUser.freelancer_id == freelancer.freelancer.id && currentUser.job_post_id == freelancer.job_post_id ?'bg-black/5': '', 'hover:bg-opacity-20', ' p-2', 'rounded-lg', 'items-center']"
+                    :key="freelancer.id" 
+                    :class="['flex', 'cursor-pointer', 'hover:bg-black/10', currentUser?.id == freelancer.id ? 'bg-black/5': '', 'hover:bg-opacity-20', 'p-2', 'rounded-lg', 'items-center']"
                 >
-                    <div class="w-12 h-12 rounded-full bg-white mx-3"></div>
-                    <div class=" flex flex-col w-2/3">
-                        <span class=" font-medium ">{{freelancer.freelancer.first_name}} {{freelancer.freelancer.last_name}}</span>
-                        <span class=" font-semibold opacity-30 text-sm ">{{truncatedMessage(freelancer.last_message?.message)}}</span>
+                    <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-100 mx-3 shrink-0 relative">
+                        <img 
+                            :src="freelancer.freelancer?.profile_picture || DEFAULT_PROFILE_PICTURE" 
+                            :alt="freelancer.freelancer?.username" 
+                            class="w-full h-full object-cover" 
+                            @error="$event.target.src = DEFAULT_PROFILE_PICTURE"
+                        />
+                        <div class="absolute bottom-0 right-0 h-2.5 w-2.5 bg-green-500 rounded-full border-2 border-white"></div>
+                    </div>
+                    <div class="flex flex-col w-2/3 min-w-0">
+                        <div class="flex items-center gap-2 justify-between">
+                            <span class="font-medium truncate text-sm">
+                                {{ [freelancer.freelancer?.first_name, freelancer.freelancer?.last_name || freelancer.freelancer?.lastname].filter(Boolean).join(' ') || freelancer.freelancer?.username || 'Freelancer' }}
+                            </span>
+                            <span 
+                                v-if="freelancer.chat_tag || freelancer.tag" 
+                                class="shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider"
+                                :class="(freelancer.chat_tag || freelancer.tag) === 'service' ? 'bg-emerald-100 text-emerald-700' : 'bg-purple/10 text-purple'"
+                            >
+                                {{ (freelancer.chat_tag || freelancer.tag) === 'service' ? 'Service' : 'Job Post' }}
+                            </span>
+                        </div>
+                        <span class="font-semibold opacity-30 text-xs truncate">
+                            {{ truncatedMessage(freelancer.last_message?.message) || 'No messages yet' }}
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
-        <ClientChatRoomVue :class="chatScreenState? 'block' : 'hidden'" :freelancer="currentUser" @chatState="toggleChatScreen" @received-message="handleMessage" v-if="currentUser"/>
+        <ClientChatRoomVue :class="chatScreenState ? 'block' : 'hidden'" :freelancer="currentUser" @chatState="toggleChatScreen" @received-message="handleMessage" v-if="currentUser"/>
     </div>
 </div>

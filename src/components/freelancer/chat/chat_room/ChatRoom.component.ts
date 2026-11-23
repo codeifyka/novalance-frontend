@@ -1,9 +1,11 @@
 import { ref, onMounted, inject, nextTick, toRefs, watch, defineComponent } from 'vue';
+import { onClickOutside } from '@vueuse/core';
 import RestChat from '@/libs/RestChat';
 import RestClientJobs from '@/libs/RestClientJobs';
 import RestUserSession from '@/libs/RestUserSession';
 import { ModalVue } from './modal';
 import Loading from '@/components/loading/Loading.component';
+import { DEFAULT_PROFILE_PICTURE } from '@/consts';
 import type { AxiosInstance } from 'axios';
 
 export default defineComponent({
@@ -23,6 +25,7 @@ export default defineComponent({
       messages = ref<Message[]>([]),
       newMessage = ref(''),
       messagesRef = ref<HTMLDivElement | null>(null),
+      menuContainerRef = ref<HTMLDivElement | null>(null),
       axios = inject<AxiosInstance>('axios');
 
     const resClientJobPost = new RestClientJobs(axios!);
@@ -32,6 +35,10 @@ export default defineComponent({
     const menuIsShow = ref(false);
     const isModalOpen = ref(false);
     const isLoading = ref(false);
+
+    onClickOutside(menuContainerRef, () => {
+      menuIsShow.value = false;
+    });
 
     const connect = () => {
       if (!ws || ws.readyState !== WebSocket.OPEN) {
@@ -69,7 +76,9 @@ export default defineComponent({
 
     const getJobPostById = async () => {
       try {
-        const response = await resClientJobPost.getById(client.value.job_post_id);
+        const jobId = client.value?.job_post_id || (client.value?.chattable_type?.includes('JobPost') ? client.value?.chattable_id : null);
+        if (!jobId) return;
+        const response = await resClientJobPost.getById(jobId);
         if (response.isSuccess()) {
           JobPost.value = response.value!;
         }
@@ -177,11 +186,13 @@ export default defineComponent({
       JobPost,
       user,
       menuIsShow,
+      menuContainerRef,
       openModal,
       isModalOpen,
       isLoading,
       toggleChatScreen,
-      formatTime
+      formatTime,
+      DEFAULT_PROFILE_PICTURE
     };
   },
 });

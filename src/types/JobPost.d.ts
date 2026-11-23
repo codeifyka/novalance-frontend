@@ -48,6 +48,7 @@ interface JobQueryParams {
     page?: number;
     per_page?: number;
     search?: string;
+    user_id?: number;
 }
 
 interface CreateJobPost {

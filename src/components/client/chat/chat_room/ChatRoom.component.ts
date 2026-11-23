@@ -1,8 +1,10 @@
 import { ref, onMounted, inject, nextTick, toRefs, watch, defineComponent, type Ref } from 'vue';
+import { onClickOutside } from '@vueuse/core';
 import RestChat from '@/libs/RestChat';
 import RestClientJobs from '@/libs/RestClientJobs';
 import RestUserSession from '@/libs/RestUserSession';
 import { ModalVue } from './modal';
+import { DEFAULT_PROFILE_PICTURE } from '@/consts';
 import type { AxiosInstance } from 'axios';
 import type ToastsManager from '@/libs/ToastsManager';
 
@@ -21,6 +23,7 @@ export default defineComponent({
       messages = ref<Message[]>([]),
       newMessage = ref(''),
       messagesRef = ref<HTMLDivElement | null>(null),
+      menuContainerRef = ref<HTMLDivElement | null>(null),
       isLoading = ref(false),
       axios = inject<AxiosInstance>('axios');
     const resClientJobPost = new RestClientJobs(axios!);
@@ -31,6 +34,10 @@ export default defineComponent({
     const isModalOpen = ref(false)
     const toastManager = inject<Ref<ToastsManager>>("toastManager")
     const { freelancer } = toRefs(props);
+
+    onClickOutside(menuContainerRef, () => {
+      menuIsShow.value = false;
+    });
 
     const connect = () => {
       if (!ws || ws.readyState !== WebSocket.OPEN) {
@@ -58,7 +65,9 @@ export default defineComponent({
 
     const getJobPostById = async () => {
       try {
-        const response = await resClientJobPost.getById(freelancer.value?.job_post_id);
+        const jobId = freelancer.value?.job_post_id || (freelancer.value?.chattable_type?.includes('JobPost') ? freelancer.value?.chattable_id : null);
+        if (!jobId) return;
+        const response = await resClientJobPost.getById(jobId);
         if (response.isSuccess()) {
           JobPost.value = response.value!;
         }
@@ -160,6 +169,17 @@ export default defineComponent({
       emit('chatState', 'toggleChat')
     }
 
+    const formatTime = (dateString?: string) => {
+      if (!dateString) return "";
+      const date = new Date(dateString);
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const formattedHours = hours % 12 || 12;
+      const formattedMinutes = minutes.toString().padStart(2, '0');
+      return `${formattedHours}:${formattedMinutes} ${ampm}`;
+    };
+
     return {
       messages,
       newMessage,
@@ -169,10 +189,13 @@ export default defineComponent({
       user,
       isLoading,
       menuIsShow,
+      menuContainerRef,
       openModal,
       isModalOpen,
       handleSend,
-      toggleChatScreen
+      toggleChatScreen,
+      formatTime,
+      DEFAULT_PROFILE_PICTURE,
     };
   },
 });

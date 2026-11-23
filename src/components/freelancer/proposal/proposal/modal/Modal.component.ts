@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
 import RestFreelancerProjects from '@/libs/RestFreelancerProjects';
 import { inject } from 'vue';
 import type { AxiosInstance } from 'axios';
@@ -9,13 +9,13 @@ export default defineComponent({
             type: Boolean,
             required: true,
         },
-        freelancer: {
+        client: {
             type: Object,
             required: true,
         }
     },
     emits: ['close'],
-    setup({ freelancer }, { emit }) {
+    setup(props, { emit }) {
         const closeModal = () => {
             emit('close');
         };
@@ -24,19 +24,21 @@ export default defineComponent({
         const restFreelancerProjects = new RestFreelancerProjects(axios!);
         const projects = ref<Project[]>([]);
 
-        onMounted(async () => {
-            if (!freelancer) {
-                console.error('Freelancer data is null or undefined.');
-                return;
-            }
-            try {
-                const response = await restFreelancerProjects.getAll(freelancer.username);
-                projects.value = response.value!;
-                console.log(projects.value);
-            } catch (err) {
-                console.log(err);
-            }
-        });
+        // Wait for the async user data before loading their projects.
+        watch(
+            () => [props.client?.username, props.isOpen] as const,
+            async ([username, isOpen]) => {
+                if (!isOpen || !username) return;
+                try {
+                    const response = await restFreelancerProjects.getAll(username);
+                    projects.value = response.isSuccess() ? response.value || [] : [];
+                } catch (err) {
+                    console.error('Failed to load projects:', err);
+                    projects.value = [];
+                }
+            },
+            { immediate: true },
+        );
 
         const enter = (el: HTMLElement, done: () => void) => {
             const animation = el.animate([

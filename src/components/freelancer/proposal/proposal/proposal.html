@@ -1,19 +1,36 @@
-<Loading v-if="isLoading" />
+<Loading v-if="isLoadingClient" />
 <div class="p-3 items-center bg-white/50 flex justify-between my-10 mx-16 rounded-md">
-    <div class="flex justify-around w-2/5">
-        <div class="h-10 w-10 flex justify-center items-center text-lg capitalize rounded-full bg-slate-500 text-purple cursor-pointer"
-            @click="openModal">{{getFirstLetter(client.username) }}</div>
-        <p class="font-semibold w-2/3 underline opacity-80 text-purple">{{jobTitle}}</p>
+    <div class="w-2/5 md:w-1/5 flex justify-around items-center gap-2">
+        <button
+            type="button"
+            @click="openModal"
+            :disabled="isLoadingClient || !client"
+            class="flex items-center gap-2 min-w-0 cursor-pointer"
+            :class="{ 'opacity-50 cursor-not-allowed': isLoadingClient || !client }"
+            :title="`View ${clientName}'s profile`"
+        >
+            <img
+                :src="client?.profile_picture || DEFAULT_PROFILE_PICTURE"
+                :alt="clientName"
+                class="h-9 w-9 shrink-0 rounded-full object-cover border border-gray-200"
+            />
+            <span class="text-sm font-medium text-purple hover:underline truncate">{{ clientName }}</span>
+        </button>
+        <router-link
+            :to="`/job/${proposal.job_post_id}`"
+            class="font-semibold underline opacity-80 hover:text-primary text-center truncate"
+        >
+            {{ jobTitle }}
+        </router-link>
     </div>
     <div class="flex justify-around text-gray-300 w-[35%]" v-if="status == 'pending'">
         <div :class="{'truncate w-16 hover:underline': isTruncated, 'hover:text-purple w-32 cursor-pointer': true}"
             @click="toggleTruncate">{{proposal.cover_letter}}</div>
-        <p class="flex flex-col items-center">
-            <span>{{createdAtDay}}</span>
-            <span>{{createdAtTime}}</span>
-        </p>
+        <p class="text-center whitespace-nowrap">{{ dateSent }}</p>
     </div>
-    <div class="flex justify-around text-purple w-1/5" v-else="status == 'active'">
+    <div class="flex justify-around gap-2 text-purple md:w-5/12" v-else="status == 'active'">
+        <span class="text-green-500 capitalize">{{ proposal.status }}</span>
+        <span class="text-green-500">${{ Number(proposal.bid || 0).toLocaleString() }}</span>
         <p class="flex flex-col items-center">
             <span>{{startedAtDay}}</span>
             <span>{{startedAtTime}}</span>
@@ -26,4 +43,5 @@
             Not yet
         </p>
     </div>
+    <ClientModalVue :isOpen="isModalOpen" @close="isModalOpen = false" :client="client" :jobPostId="proposal.job_post_id" />
 </div>

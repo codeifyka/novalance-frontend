@@ -1,7 +1,10 @@
-import { ref, inject, onMounted, defineComponent } from 'vue';
+import { computed, ref, inject, onMounted, defineComponent } from 'vue';
 import RestClientJobs from '@/libs/RestClientJobs'
 import RestProposals from '@/libs/RestProposals'
+import { ModalVue, ClientModalVue } from './modal';
+import { DEFAULT_PROFILE_PICTURE } from '@/consts';
 import type { AxiosInstance } from 'axios';
+import moment from 'moment';
 
 export default defineComponent({
     props: {
@@ -14,6 +17,8 @@ export default defineComponent({
         }
     },
     components: {
+        ModalVue,
+        ClientModalVue,
     },
     setup({ proposal }) {
         const axios = inject<AxiosInstance>('axios');
@@ -25,13 +30,21 @@ export default defineComponent({
         const restClientProposals = new RestProposals(axios!)
         const user_id = ref(0);
         const jobTitle = ref("");
+        const isModalOpen = ref(false);
+        const clientName = computed(() => {
+            const c = client.value;
+            if (!c) return 'Client';
+            const fullName = [c.first_name, c.last_name].filter(Boolean).join(' ').trim();
+            return fullName || c.username || 'Client';
+        });
 
-        const createdAtDay = ref<string>("");
-        const createdAtTime = ref<string>("");
+        const dateSent = ref<string>("");
         const startedAtDay = ref<string>("");
         const startedAtTime = ref<string>("");
         const endedAtDay = ref<string>("");
         const endedAtTime = ref<string>("");
+
+        const isLoadingClient = ref(true);
 
         const getJobPost = async () => {
             let response = await restJob.getById(proposal.job_post_id)
@@ -48,6 +61,10 @@ export default defineComponent({
             let response = await restClientProposals.getUserInfo(user_id.value)
             if (response.isSuccess()) {
                 client.value = response.value!
+                isLoadingClient.value = false;
+            } else {
+                isLoadingClient.value = false;
+                console.error('Failed to load client info');
             }
         }
 
@@ -58,15 +75,18 @@ export default defineComponent({
             return '';
         }
 
+        const openModal = () => {
+            if (isLoadingClient.value || !client.value) return;
+            isModalOpen.value = true;
+        }
+
         onMounted(async () => {
             await getJobPost();
             await getClient();
         });
 
         if (proposal.created_at) {
-            let [date, time] = proposal.created_at.split("T");
-            createdAtDay.value = date;
-            createdAtTime.value = time.split("Z")[0];
+            dateSent.value = moment.utc(proposal.created_at).format('DD MMM YYYY · HH:mm');
         } if (proposal.started_at) {
             let [date, time] = proposal.started_at.split(" ");
             startedAtDay.value = date;
@@ -91,10 +111,14 @@ export default defineComponent({
             proposal,
             getFirstLetter,
             client,
+            clientName,
+            DEFAULT_PROFILE_PICTURE,
+            isModalOpen,
+            openModal,
             isLoading,
+            isLoadingClient,
             jobTitle,
-            createdAtDay,
-            createdAtTime,
+            dateSent,
             startedAtDay,
             startedAtTime,
             endedAtDay,

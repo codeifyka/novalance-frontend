@@ -1,9 +1,11 @@
-import { ref, inject, onMounted, defineComponent, type Ref } from 'vue';
+import { computed, ref, inject, onMounted, defineComponent, type Ref } from 'vue';
 import RestClientJobs from '@/libs/RestClientJobs'
 import RestProposals from '@/libs/RestProposals';
 import { ModalVue } from './modal';
 import type { AxiosInstance } from 'axios';
 import type ToastsManager from '@/libs/ToastsManager';
+import moment from 'moment';
+import { DEFAULT_PROFILE_PICTURE } from '@/consts';
 
 export default defineComponent({
     props: {
@@ -36,8 +38,7 @@ export default defineComponent({
         const menuValue = ref(false)
         const jobPost = ref<JobPost | null>(null);
         const freelancer = ref<User | null>(null);
-        const createdAtDay = ref<string>("");
-        const createdAtTime = ref<string>("");
+        const dateSent = ref<string>("");
         const startedAtDay = ref<string>("");
         const startedAtTime = ref<string>("");
         const endedAtDay = ref<string>("");
@@ -56,6 +57,13 @@ export default defineComponent({
                 freelancer.value = response.value!;
             }
         }
+
+        const freelancerName = computed(() => {
+            const f = freelancer.value;
+            if (!f) return 'Freelancer';
+            const fullName = [f.first_name, f.last_name].filter(Boolean).join(' ').trim();
+            return fullName || f.username || 'Freelancer';
+        });
 
         const getFirstLetter = (name: string) => {
             if (name && typeof name === 'string') {
@@ -78,9 +86,7 @@ console.log(proposal)
         }
 
         if (proposal.created_at) {
-            let [date, time] = proposal.created_at.split("T");
-            createdAtDay.value = date;
-            createdAtTime.value = time.split("Z")[0];
+            dateSent.value = moment.utc(proposal.created_at).format('DD MMM YYYY · HH:mm');
         }
 
         if (proposal.started_at) {
@@ -141,11 +147,12 @@ console.log(proposal)
             isModalOpen,
             openModal,
             freelancer,
+            freelancerName,
+            DEFAULT_PROFILE_PICTURE,
             acceptProposal,
             isLoading,
             deleteProposal,
-            createdAtDay,
-            createdAtTime,
+            dateSent,
             startedAtDay,
             startedAtTime,
             endedAtDay,

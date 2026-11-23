@@ -30,6 +30,6 @@ export default class RestProposals {
     }
 
     async getFreelancerProposals(): Promise<Result<string, Proposal[]>> {
-        return this.axiosInstance.get(`/api/proposals/getFreelancerProposals`).then(response => response.data);
+        return this.axiosInstance.get(`/api/proposals/getFreelancerProposals`).then(Utils.handleResponse<string, Proposal[]>);
     }
 };

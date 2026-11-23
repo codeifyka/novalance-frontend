@@ -1,15 +1,30 @@
 <Loading v-if="isLoading" />
 <div :class="background" class="px-3 items-center flex justify-between mt-4 mb-10 rounded-md">
-    <div class="w-2/5">
-        <p class="font-semibold w-2/3 underline opacity-80">{{jobPost?.title}}</p>
+    <div class="w-2/5 md:w-1/5 flex justify-around items-center gap-2">
+        <button
+            type="button"
+            @click="openModal"
+            class="flex items-center gap-2 min-w-0 cursor-pointer"
+            :title="`View ${freelancerName}'s profile`"
+        >
+            <img
+                :src="freelancer?.profile_picture || DEFAULT_PROFILE_PICTURE"
+                :alt="freelancerName"
+                class="h-9 w-9 shrink-0 rounded-full object-cover border border-gray-200"
+            />
+            <span class="text-sm font-medium text-purple hover:underline truncate">{{ freelancerName }}</span>
+        </button>
+        <router-link
+            :to="`/job/${proposal.job_post_id}`"
+            class="font-semibold underline opacity-80 hover:text-primary text-center truncate"
+        >
+            {{ jobPost?.title }}
+        </router-link>
     </div>
     <div class="flex justify-around gap-2 text-gray-300 md:w-[35%]" v-if="status == 'pending'">
         <div :class="{'truncate w-16 hover:underline': isTruncated, 'hover:text-purple w-32 cursor-pointer': true}"
             @click="toggleTruncate">{{proposal.cover_letter}}</div>
-        <p class="flex flex-col items-center">
-            <span>{{createdAtDay}}</span>
-            <span>{{createdAtTime}}</span>
-        </p>
+        <p class="text-center whitespace-nowrap">{{ dateSent }}</p>
         <div class="flex flex-col items-center relative">
             <div @click="menu"
                 class="absolute grid place-content-center p-5 w-1 h-1 cursor-pointer transition-colors duration-200 rounded-full hover:bg-violet-100 ">
@@ -46,5 +61,5 @@
             Not yet
         </p>
     </div>
-    <ModalVue :isOpen="isModalOpen" @close="isModalOpen = false" :freelancer="freelancer" />
+    <ModalVue :isOpen="isModalOpen" @close="isModalOpen = false" :freelancer="freelancer" :jobPostId="proposal.job_post_id" />
 </div>
