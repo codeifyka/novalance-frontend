@@ -1,4 +1,16 @@
 <div>
-    <!-- <div v-if="proposals.length < 0">Loading...</div> -->
-    Proposals Not Found
+    <div class="flex justify-between bg-gray-100 rounded-lg py-2 mt-8 px-4 font-medium">
+        <div class="md:w-1/5">
+            <span>Job Title</span>
+        </div>
+        <div class="md:w-5/12 flex justify-between gap-2">
+            <span>Status</span>
+            <span>Price</span>
+            <span>Started At</span>
+            <span>End At</span>
+        </div>
+    </div>
+    <hr class="font-semibold text-gray-300 md:mx-16">
+    <div v-if="!proposals || proposals.length === 0" class="py-8 text-center text-gray-400">No completed proposals.</div>
+    <ProposalVue v-for="proposal in proposals" :key="proposal.id" :proposal="proposal" background="bg-white" status="done"/>
 </div>

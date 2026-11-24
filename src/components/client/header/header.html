@@ -41,6 +41,21 @@
       </div>
     </router-link>
 
+    <router-link
+      to="/wallet"
+      class="hidden lg:flex items-center gap-2 group"
+    >
+      <div class="flex cursor-pointer text-black group-hover:text-primary">
+        <Icon
+          icon="solar:wallet-money-bold"
+          width="20"
+          height="20"
+          class="text-black group-hover:text-primary"
+        />
+        <span>Wallet</span>
+      </div>
+    </router-link>
+
     <div
       @click="isShow = !isShow"
       class="relative hidden lg:flex items-center gap-2 text-black cursor-pointer group"
@@ -170,6 +185,17 @@
         style="color: #000"
       />
       My Purchases
+    </div>
+  </router-link>
+  <router-link to="/wallet" class="flex flex-col w-32">
+    <div class="text-black flex items-center gap-2 cursor-pointer">
+      <Icon
+        icon="solar:wallet-money-bold"
+        width="20"
+        height="20"
+        style="color: #000"
+      />
+      Wallet
     </div>
   </router-link>
   <div

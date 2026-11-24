@@ -1,11 +1,9 @@
-import { ClientHeaderVue } from '@/components/client/header';
+import { ProposalVue } from '@/components/proposal';
 
 export default {
-  components: { ClientHeaderVue   },
-  props: {proposals: Array},
+  components: { ProposalVue },
+  props: { proposals: Array },
   setup() {   
-    return {
-      
-    };
+    return {};
   },
 };

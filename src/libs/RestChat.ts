@@ -27,7 +27,7 @@ export default class RestChat {
             .then(Utils.handleResponse<string, Chat>);
     }
 
-    async setExpiryDate(chat_id: number, end_date: Date): Promise<Result<string, Chat>> {
-        return this.axiosInstance.post(`/api/chats/setExpiryDate`, { chat_id, end_date }).then(Utils.handleResponse<string, Chat>);
+    async setExpiryDate(chat_id: number, end_date: Date | string, temporary_removed?: boolean): Promise<Result<string, Chat>> {
+        return this.axiosInstance.post(`/api/chats/setExpiryDate`, { chat_id, end_date, temporary_removed }).then(Utils.handleResponse<string, Chat>);
     }
 };

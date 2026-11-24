@@ -4,7 +4,7 @@ import RestProposals from '@/libs/RestProposals'
 import { ModalVue, ClientModalVue } from './modal';
 import { DEFAULT_PROFILE_PICTURE } from '@/consts';
 import type { AxiosInstance } from 'axios';
-import moment from 'moment';
+import Utils from '@/libs/Utils';
 
 export default defineComponent({
     props: {
@@ -86,19 +86,19 @@ export default defineComponent({
         });
 
         if (proposal.created_at) {
-            dateSent.value = moment.utc(proposal.created_at).format('DD MMM YYYY · HH:mm');
-        } if (proposal.started_at) {
-            let [date, time] = proposal.started_at.split(" ");
+            dateSent.value = Utils.formatDateTime(proposal.created_at);
+        }
+
+        if (proposal.started_at) {
+            const [date, time] = Utils.splitDateTime(proposal.started_at);
             startedAtDay.value = date;
-            startedAtTime.value = time
-        } else {
-            console.error('created_at is undefined for a proposal:', proposal);
+            startedAtTime.value = time;
         }
 
         if (proposal.ends_at) {
-            let [date, time] = proposal.ends_at.split(" ");
+            const [date, time] = Utils.splitDateTime(proposal.ends_at);
             endedAtDay.value = date;
-            endedAtTime.value = time
+            endedAtTime.value = time;
         }
 
         const toggleTruncate = () => {

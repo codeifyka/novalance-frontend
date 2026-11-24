@@ -22,6 +22,15 @@
                     >
                         {{ (freelancer.chat_tag || freelancer.tag) === 'service' ? 'Service' : 'Job Post' }}
                     </span>
+                    <span
+                        v-if="freelancer.end_date"
+                        class="text-[10px] font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1"
+                        :class="new Date(freelancer.end_date) <= new Date() ? 'bg-amber-100 text-amber-800' : 'bg-blue-50 text-blue-700'"
+                        :title="`Contract deadline: ${freelancer.end_date}`"
+                    >
+                        <Icon icon="solar:clock-circle-bold" class="text-xs" />
+                        <span>{{ new Date(freelancer.end_date) <= new Date() ? 'Deadline Reached' : `Ends ${freelancer.end_date.split('T')[0] || freelancer.end_date.split(' ')[0]}` }}</span>
+                    </span>
                 </div>
             </div>
             <div class="relative shrink-0 mr-4" ref="menuContainerRef">
@@ -77,5 +86,5 @@
             </div>
         </div>
     </div>
-    <ModalVue :isOpen="isModalOpen" @close="isModalOpen = false" @send="handleSend" :end_date="freelancer.end_date" v-if="freelancer"/>
+    <ModalVue :isOpen="isModalOpen" @close="isModalOpen = false" @send="handleSend" :end_date="freelancer.end_date" :temporary_removed="freelancer.temporary_removed" v-if="freelancer"/>
 </div>

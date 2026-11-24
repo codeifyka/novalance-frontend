@@ -40,12 +40,23 @@ export default {
     };
 
     const handleProposalAccepted = (proposalId: number) => {
-      doneProposals.value.push(
-        ...pendingProposals.value.filter(
-          (proposal) => proposal.id == proposalId
-        )
-      );
+      const accepted = pendingProposals.value.find((p) => p.id == proposalId);
+      if (accepted) {
+        accepted.status = 'active';
+        activeProposals.value.unshift(accepted);
+      }
       pendingProposals.value = pendingProposals.value.filter(
+        (proposal) => proposal.id !== proposalId
+      );
+    };
+
+    const handleProposalCompleted = (proposalId: number) => {
+      const completed = activeProposals.value.find((p) => p.id == proposalId);
+      if (completed) {
+        completed.status = 'done';
+        doneProposals.value.unshift(completed);
+      }
+      activeProposals.value = activeProposals.value.filter(
         (proposal) => proposal.id !== proposalId
       );
     };
@@ -63,6 +74,7 @@ export default {
       doneProposals,
       activeProposals,
       handleProposalAccepted,
+      handleProposalCompleted,
       handleProposalDeleted,
     };
   },

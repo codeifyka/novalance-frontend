@@ -1,4 +1,4 @@
-type ProposalStatus = 'pending' | 'active' | 'done';
+type ProposalStatus = 'pending' | 'active' | 'done' | 'disputed' | 'failed';
 interface Proposal {
     id: number;
     cover_letter: string;
@@ -9,6 +9,9 @@ interface Proposal {
     status: ProposalStatus;
     started_at: string;
     ends_at: string;
+    can_dispute?: boolean;
+    job_post?: JobPost;
+    freelancer?: User;
     created_at: string;
     updated_at: string;
 }

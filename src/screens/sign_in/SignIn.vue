@@ -225,8 +225,12 @@ const signIn = () => {
             userSessionRepository.save({ access_token: response.value!.access_token, account_type: response.value!.account_type });
             toastManager?.value.alertSuccess("Sign in successfuly.");
             setTimeout(() => {
-                location.href = "/home";
-            }, 3000);
+                if (response.value!.account_type === 'admin') {
+                    location.href = "/admin";
+                } else {
+                    location.href = "/home";
+                }
+            }, 1000);
         }
     }).catch(error => {
         isLoading.value = false;

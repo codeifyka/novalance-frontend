@@ -1,4 +1,4 @@
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
     props: {
@@ -8,12 +8,22 @@ export default defineComponent({
         },
         end_date: {
             type: String,
-            required: true,
+            required: false,
+        },
+        temporary_removed: {
+            type: Boolean,
+            required: false,
+            default: false,
         }
     },
     emits: ['close', 'send'],
     setup(props, { emit }) {
-        const expiryDate = ref(props.end_date?.substring(0, 10) || null)
+        const expiryDate = ref(props.end_date?.substring(0, 10) || null);
+
+        watch(() => props.end_date, (newDate) => {
+            expiryDate.value = newDate?.substring(0, 10) || null;
+        });
+
         const closeModal = () => {
             emit('close');
         };

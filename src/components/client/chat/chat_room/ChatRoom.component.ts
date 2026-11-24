@@ -148,22 +148,35 @@ export default defineComponent({
       }
     });
 
-    const handleSend = async (end_date: Date) => {
+    const handleSend = async (payload: { end_date: Date | string, temporary_removed: boolean } | any) => {
       try {
         isLoading.value = true;
-        console.log('expiry date Sent:', end_date);
-        let response = await restChat.setExpiryDate(freelancer.value.id, end_date);
-        if (response) {
-          toastManager?.value.alertSuccess("Set expiry date successfuly.");
+        const targetEndDate = (typeof payload === 'object' && payload !== null && 'end_date' in payload)
+          ? payload.end_date
+          : payload;
+        const targetTempRemoved = (typeof payload === 'object' && payload !== null && 'temporary_removed' in payload)
+          ? Boolean(payload.temporary_removed)
+          : false;
+
+        console.log('expiry date Sent:', targetEndDate, 'temporary_removed:', targetTempRemoved);
+        let response = await restChat.setExpiryDate(freelancer.value.id, targetEndDate as any, targetTempRemoved);
+        if (response && response.isSuccess()) {
+          toastManager?.value?.alertSuccess?.("Set expiry date successfully.");
+          if (freelancer.value) {
+            freelancer.value.end_date = String(targetEndDate);
+            freelancer.value.temporary_removed = targetTempRemoved;
+          }
           isModalOpen.value = false;
-          isLoading.value = false;
+        } else {
+          toastManager?.value?.alertError?.(response?.error || "Failed to set expiry date.");
         }
-      } catch (error) {
-        isLoading.value = false;
+      } catch (error: any) {
         console.log(error);
-        toastManager?.value.alertError(error as string);
+        toastManager?.value?.alertError?.(error?.message || String(error));
+      } finally {
+        isLoading.value = false;
       }
-    }
+    };
 
     const toggleChatScreen = () => {
       emit('chatState', 'toggleChat')

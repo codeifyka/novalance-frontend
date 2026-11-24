@@ -2,11 +2,10 @@ import { ProposalVue } from '@/components/proposal';
 import { ClientHeaderVue } from '@/components/client/header';
 
 export default {
-  components: { ClientHeaderVue, ProposalVue  },
-  props: {proposals: Array},
+  components: { ClientHeaderVue, ProposalVue },
+  props: { proposals: Array },
+  emits: ['proposalCompleted'],
   setup() {   
-    return {
-      
-    };
+    return {};
   },
 };

@@ -25,7 +25,7 @@
         }"></div>
         </div>
         <div>
-            <ActiveVue v-if="status === 'active'" :proposals="activeProposals"/>
+            <ActiveVue v-if="status === 'active'" :proposals="activeProposals" @proposalCompleted="handleProposalCompleted"/>
             <PendingVue 
                 v-if="status === 'pending'" 
                 :proposals="pendingProposals"

@@ -14,6 +14,8 @@ interface Chat {
     service?: any;
     start_date: string;
     end_date: string;
+    temporary_removed?: boolean;
+    is_expired?: boolean;
     created_at: string;
     updated_at: string;
     freelancer?: User;

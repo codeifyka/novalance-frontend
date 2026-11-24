@@ -1,4 +1,4 @@
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
     props: {
@@ -8,18 +8,36 @@ export default defineComponent({
         },
         end_date: {
             type: String,
-            required: true,
+            required: false,
+        },
+        temporary_removed: {
+            type: Boolean,
+            required: false,
+            default: false,
         }
     },
     emits: ['close', 'send'],
     setup(props, { emit }) {
-        const expiryDate = ref(props.end_date?.substring(0, 10) || null)
+        const expiryDate = ref(props.end_date?.substring(0, 10) || null);
+        const temporaryRemoved = ref(Boolean(props.temporary_removed));
+
+        watch(() => props.end_date, (newDate) => {
+            expiryDate.value = newDate?.substring(0, 10) || null;
+        });
+
+        watch(() => props.temporary_removed, (newVal) => {
+            temporaryRemoved.value = Boolean(newVal);
+        });
+
         const closeModal = () => {
             emit('close');
         };
 
         const save = () => {
-            emit('send', expiryDate.value);
+            emit('send', {
+                end_date: expiryDate.value,
+                temporary_removed: temporaryRemoved.value,
+            });
             closeModal();
         };
 
@@ -53,6 +71,7 @@ export default defineComponent({
             enter,
             leave,
             expiryDate,
+            temporaryRemoved,
         };
     },
 });

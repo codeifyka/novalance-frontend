@@ -42,6 +42,15 @@
       <span>Saved Jobs</span>
     </router-link>
 
+    <!-- Wallet -->
+    <router-link
+      to="/wallet"
+      :class="`hidden md:flex items-center gap-2 cursor-pointer transition-colors duration-200 ${target === 'wallet' ? 'text-primary font-medium' : 'text-black hover:text-primary'}`"
+    >
+      <Icon icon="solar:wallet-money-bold" class="w-5 h-5 object-contain" />
+      <span>Wallet</span>
+    </router-link>
+
     <div class="flex items-center gap-4">
       <!-- Notification bell -->
       <NotificationBell />
@@ -96,6 +105,10 @@
   <router-link to="/saved_jobs" @click="showMobileMenu = false" class="text-black hover:text-primary flex items-center gap-3 w-40 text-base cursor-pointer py-1">
     <Icon icon="solar:bookmark-linear" class="w-5 h-5" />
     <span>Saved Jobs</span>
+  </router-link>
+  <router-link to="/wallet" @click="showMobileMenu = false" class="text-black hover:text-primary flex items-center gap-3 w-40 text-base cursor-pointer py-1">
+    <Icon icon="solar:wallet-money-bold" class="w-5 h-5" />
+    <span>Wallet</span>
   </router-link>
   <router-link to="/profile" @click="showMobileMenu = false" class="text-black hover:text-primary flex items-center gap-3 w-40 text-base cursor-pointer py-1">
     <Icon icon="iconamoon:profile-circle-fill" class="w-5 h-5" />

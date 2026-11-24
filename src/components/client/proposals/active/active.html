@@ -11,6 +11,6 @@
         </div>
     </div>
     <hr class="font-semibold text-gray-300 md:mx-16">
-    <div v-if="!proposals">Loading...</div>
-    <ProposalVue v-for="proposal in proposals" :proposal="proposal" background="bg-white" status="active"/>
+    <div v-if="!proposals || proposals.length === 0" class="py-8 text-center text-gray-400">No active contracts.</div>
+    <ProposalVue v-for="proposal in proposals" :key="proposal.id" :proposal="proposal" background="bg-white" status="active" @proposalCompleted="$emit('proposalCompleted', $event)"/>
 </div>

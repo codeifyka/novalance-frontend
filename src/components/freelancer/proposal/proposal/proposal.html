@@ -37,7 +37,7 @@
         </p>
         <p class="flex flex-col items-center" v-if="proposal.ends_at">
             <span>{{endedAtDay}}</span>
-            <span>{{endedAtTime}}</span>
+            <span v-if="endedAtTime && endedAtTime !== '00:00'">{{endedAtTime}}</span>
         </p>
         <p>
             Not yet

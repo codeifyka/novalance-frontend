@@ -25,8 +25,12 @@ export default class RestProposals {
         return this.axiosInstance.get(`/api/user/${user_id}`).then(Utils.handleResponse<string, User>);
     }
 
-    async acceptProposal(id: number): Promise<Result<string, Proposal>> {
-        return this.axiosInstance.put(`/api/proposals/${id}/accept`).then(Utils.handleResponse<string, Proposal>);
+    async acceptProposal(id: number, ends_at?: string): Promise<Result<string, Proposal>> {
+        return this.axiosInstance.put(`/api/proposals/${id}/accept`, { ends_at }).then(Utils.handleResponse<string, Proposal>);
+    }
+
+    async completeProposal(id: number): Promise<Result<string, Proposal>> {
+        return this.axiosInstance.put(`/api/proposals/${id}/complete`).then(Utils.handleResponse<string, Proposal>);
     }
 
     async getFreelancerProposals(): Promise<Result<string, Proposal[]>> {

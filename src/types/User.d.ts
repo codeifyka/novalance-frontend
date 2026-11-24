@@ -1,4 +1,4 @@
-type AccountType = "client" | "freelancer";
+type AccountType = "client" | "freelancer" | "admin";
 
 interface User {
     id: number;

@@ -79,5 +79,5 @@
             </div>
         </div>
     </div>
-    <ModalVue :isOpen="isModalOpen" @close="isModalOpen = false" :end_date="client.end_date" v-if="client"/>
+    <ModalVue :isOpen="isModalOpen" @close="isModalOpen = false" :end_date="client.end_date" :temporary_removed="client.temporary_removed" v-if="client"/>
 </div>
