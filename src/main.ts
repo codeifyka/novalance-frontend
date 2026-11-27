@@ -45,6 +45,7 @@ const routes: RouteRecordRaw[] = [
     { path: '/proposals/', component: () => import('./screens/proposal').then(m => m.ProposalsVue) },
     { path: '/create_portfolio/', component: () => import('./components/freelancer/portfolio/create').then(m => m.FreeLancerCreateProjectVue) },
     { path: '/my_purchases/', component: () => import('./components/client/my_purchases').then(m => m.ClientMyPurchasesVue) },
+    { path: '/service_orders', component: () => import('./components/freelancer/service_orders').then(m => m.FreelancerServiceOrdersVue) },
     { path: '/saved_jobs', component: () => import('./components/freelancer/saved_jobs').then(m => m.SavedJobsVue) },
     { path: '/wallet', component: () => import('./screens/wallet').then(m => m.WalletViewVue) },
     { path: '/admin', component: () => import('./screens/admin').then(m => m.AdminDashboardVue) },

@@ -24,6 +24,15 @@
       <span>My Services</span>
     </router-link>
 
+    <!-- Service Orders -->
+    <router-link
+      to="/service_orders"
+      :class="`hidden md:flex items-center gap-2 cursor-pointer transition-colors duration-200 ${target === 'service_orders' ? 'text-primary font-medium' : 'text-black hover:text-primary'}`"
+    >
+      <Icon icon="solar:box-linear" class="w-5 h-5 object-contain" />
+      <span>Service Orders</span>
+    </router-link>
+
     <!-- My Projects -->
     <router-link
       to="/portfolio"
@@ -55,18 +64,46 @@
       <!-- Notification bell -->
       <NotificationBell />
 
-      <!-- Profile Avatar -->
-      <router-link
-        to="/profile"
-        class="w-8 h-8 rounded-full block cursor-pointer overflow-hidden border border-gray-200 hover:ring-2 hover:ring-primary transition-all"
-        title="View Profile"
-      >
-        <img
-          class="w-full h-full rounded-full object-cover"
-          :src="userInfo?.user?.profile_picture || DEFAULT_PROFILE_PICTURE"
-          alt="profile picture"
-        />
-      </router-link>
+      <!-- Profile Avatar + Dropdown Menu -->
+      <div class="relative" ref="profileMenuRef">
+        <button
+          type="button"
+          @click.stop="showProfileMenu = !showProfileMenu"
+          class="w-8 h-8 rounded-full block cursor-pointer overflow-hidden border border-gray-200 hover:ring-2 hover:ring-primary transition-all focus:outline-none"
+          title="Account Menu"
+        >
+          <img
+            class="w-full h-full rounded-full object-cover"
+            :src="userInfo?.user?.profile_picture || DEFAULT_PROFILE_PICTURE"
+            alt="profile picture"
+          />
+        </button>
+
+        <div
+          v-if="showProfileMenu"
+          v-motion-pop-visible
+          class="py-3 px-2 w-44 bg-white text-black shadow-xl border border-gray-100 absolute top-11 right-0 transition-all duration-200 rounded-xl z-50"
+        >
+          <ul class="text-black flex flex-col gap-1">
+            <router-link
+              to="/profile"
+              @click="showProfileMenu = false"
+              class="flex items-center p-2 text-sm transition-colors duration-200 rounded-lg hover:bg-violet-100/75 cursor-pointer"
+            >
+              <Icon icon="iconamoon:profile-circle-fill" class="mr-2 text-base text-primary" />
+              <span>My Profile</span>
+            </router-link>
+            <button
+              type="button"
+              @click="logout"
+              class="w-full flex items-center p-2 text-sm text-left transition-colors duration-200 rounded-lg hover:bg-red-50 text-red-600 cursor-pointer"
+            >
+              <Icon icon="clarity:logout-solid" class="mr-2 text-base" />
+              <span>Logout</span>
+            </button>
+          </ul>
+        </div>
+      </div>
 
       <!-- Mobile menu toggle -->
       <button @click="toggleMenu" class="md:hidden p-2 hover:bg-violet-50 text-black rounded-full cursor-pointer">
@@ -98,6 +135,10 @@
     <Icon icon="icons8:services" class="w-5 h-5" />
     <span>My Services</span>
   </router-link>
+  <router-link to="/service_orders" @click="showMobileMenu = false" class="text-black hover:text-primary flex items-center gap-3 w-40 text-base cursor-pointer py-1">
+    <Icon icon="solar:box-linear" class="w-5 h-5" />
+    <span>Service Orders</span>
+  </router-link>
   <router-link to="/portfolio" @click="showMobileMenu = false" class="text-black hover:text-primary flex items-center gap-3 w-40 text-base cursor-pointer py-1">
     <Icon icon="bytesize:portfolio" class="w-5 h-5" />
     <span>My Projects</span>
@@ -114,21 +155,48 @@
     <Icon icon="iconamoon:profile-circle-fill" class="w-5 h-5" />
     <span>My Profile</span>
   </router-link>
+  <button type="button" @click="logout" class="text-red-600 hover:text-red-700 flex items-center gap-3 w-40 text-base cursor-pointer py-1">
+    <Icon icon="clarity:logout-solid" class="w-5 h-5" />
+    <span>Logout</span>
+  </button>
 </nav>
 </template>
 
 <script lang="ts" setup>
 import { NotificationBell } from '@/components/notifications';
 import { DEFAULT_PROFILE_PICTURE } from '@/consts';
-import { inject, ref } from 'vue';
+import RestUserSession from '@/libs/RestUserSession';
+import type ToastsManager from '@/libs/ToastsManager';
+import { onClickOutside } from '@vueuse/core';
+import axios, { type AxiosInstance } from 'axios';
+import { inject, ref, type Ref } from 'vue';
 
 const props = defineProps<{ target?: string }>();
 const target = props.target;
 const userInfo = inject<UserInfo | null>('user_info', null);
+const injectedAxios = inject<AxiosInstance>('axios', axios);
+const toastManager = inject<Ref<ToastsManager>>('toastManager');
+const restUserSession = new RestUserSession(injectedAxios);
 
 const showMobileMenu = ref(false);
+const showProfileMenu = ref(false);
+const profileMenuRef = ref<HTMLElement | null>(null);
+
+onClickOutside(profileMenuRef, () => {
+  showProfileMenu.value = false;
+});
 
 function toggleMenu() {
   showMobileMenu.value = !showMobileMenu.value;
+}
+
+function logout() {
+  showProfileMenu.value = false;
+  showMobileMenu.value = false;
+  restUserSession.logout().then(() => {
+    location.href = '/';
+  }).catch(() => {
+    toastManager?.value?.alertError('Failed to logout');
+  });
 }
 </script>

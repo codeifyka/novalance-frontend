@@ -11,9 +11,13 @@ export default {
             type: Object as () => Purchase,
             required: true,
         },
+        role: {
+            type: String as () => 'client' | 'freelancer',
+            default: 'client',
+        },
     },
     emits: ['purchaseUpdated'],
-    setup(props: { purchase: Purchase }, { emit }: any) {
+    setup(props: { purchase: Purchase; role: 'client' | 'freelancer' }, { emit }: any) {
         const router = useRouter();
         const axios = inject<AxiosInstance>('axios');
         const toastManager = inject<Ref<ToastsManager>>("toastManager");
@@ -21,10 +25,12 @@ export default {
 
         // Modal states
         const isCompleteModalOpen = ref(false);
+        const isDeliverModalOpen = ref(false);
         const isDisputeModalOpen = ref(false);
         const isExtendModalOpen = ref(false);
 
         const isSubmittingComplete = ref(false);
+        const isSubmittingDeliver = ref(false);
         const isSubmittingDispute = ref(false);
         const isSubmittingExtend = ref(false);
 
@@ -62,7 +68,26 @@ export default {
             }
         };
 
-        // Complete Order
+        // Deliver Order (Freelancer)
+        const confirmDeliver = async () => {
+            try {
+                isSubmittingDeliver.value = true;
+                const res = await restServices.deliverPurchase(props.purchase.id);
+                if (res.isSuccess()) {
+                    toastManager?.value?.alertSuccess("Work marked as delivered! The client has been notified to review.");
+                    isDeliverModalOpen.value = false;
+                    emit('purchaseUpdated', res.value);
+                } else {
+                    toastManager?.value?.alertError(res.error || "Failed to mark order as delivered.");
+                }
+            } catch (err: any) {
+                toastManager?.value?.alertError(err.message || "Failed to mark order as delivered.");
+            } finally {
+                isSubmittingDeliver.value = false;
+            }
+        };
+
+        // Complete Order (Client)
         const confirmComplete = async () => {
             try {
                 isSubmittingComplete.value = true;
@@ -143,13 +168,16 @@ export default {
             openChat,
             viewService,
             isCompleteModalOpen,
+            isDeliverModalOpen,
             isDisputeModalOpen,
             isExtendModalOpen,
             isSubmittingComplete,
+            isSubmittingDeliver,
             isSubmittingDispute,
             isSubmittingExtend,
             disputeReason,
             newDeadline,
+            confirmDeliver,
             confirmComplete,
             confirmDispute,
             openExtendModal,

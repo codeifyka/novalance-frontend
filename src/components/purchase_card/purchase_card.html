@@ -47,8 +47,11 @@
             </span>
           </div>
 
-          <!-- Freelancer & Dates -->
-          <div v-if="purchase?.freelancer" class="text-xs text-gray-500 mt-1">
+          <!-- Counterparty (Client for freelancer view, Freelancer for client view) & Dates -->
+          <div v-if="role === 'freelancer' && purchase?.client" class="text-xs text-gray-500 mt-1">
+            Client: <span class="font-semibold text-gray-800 capitalize">{{ purchase.client.first_name }} {{ purchase.client.last_name }}</span>
+          </div>
+          <div v-else-if="purchase?.freelancer" class="text-xs text-gray-500 mt-1">
             Freelancer: <span class="font-semibold text-gray-800 capitalize">{{ purchase.freelancer.first_name }} {{ purchase.freelancer.last_name }}</span>
           </div>
           <div class="text-[11px] text-gray-400 mt-0.5 flex items-center gap-3">
@@ -70,9 +73,21 @@
 
     <!-- Actions Area -->
     <div class="flex flex-wrap items-center gap-2">
-      <!-- Complete / Release Escrow (when active or delivered) -->
+      <!-- Freelancer Action: Mark as Delivered (when active) -->
       <button
-        v-if="purchase?.status === 'delivered' || purchase?.status === 'active'"
+        v-if="role === 'freelancer' && purchase?.status === 'active'"
+        type="button"
+        @click="isDeliverModalOpen = true"
+        class="bg-blue-600 text-white text-xs rounded-xl px-3.5 py-2 font-semibold hover:bg-blue-700 transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+        title="Submit work and notify client to review"
+      >
+        <Icon icon="solar:box-bold" class="text-base" />
+        <span>Mark as Delivered</span>
+      </button>
+
+      <!-- Client Actions: Complete / Release Escrow (when active or delivered) -->
+      <button
+        v-if="role !== 'freelancer' && (purchase?.status === 'delivered' || purchase?.status === 'active')"
         type="button"
         @click="isCompleteModalOpen = true"
         class="bg-emerald-600 text-white text-xs rounded-xl px-3.5 py-2 font-semibold hover:bg-emerald-700 transition cursor-pointer flex items-center gap-1.5 shadow-xs"
@@ -82,9 +97,9 @@
         <span>Approve & Complete</span>
       </button>
 
-      <!-- Dispute Button (only permitted when deadline has passed and not completed) -->
+      <!-- Client Action: Dispute Button (only permitted when deadline has passed and not completed) -->
       <button
-        v-if="(purchase?.status === 'active' || purchase?.status === 'delivered') && isDeadlinePassed"
+        v-if="role !== 'freelancer' && (purchase?.status === 'active' || purchase?.status === 'delivered') && isDeadlinePassed"
         type="button"
         @click="isDisputeModalOpen = true"
         class="bg-rose-50 border border-rose-200 text-rose-600 text-xs rounded-xl px-3 py-2 font-semibold hover:bg-rose-100 transition cursor-pointer flex items-center gap-1"
@@ -94,9 +109,9 @@
         <span>Dispute</span>
       </button>
 
-      <!-- Extend Deadline Option -->
+      <!-- Client Action: Extend Deadline Option -->
       <button
-        v-if="purchase?.status === 'active'"
+        v-if="role !== 'freelancer' && purchase?.status === 'active'"
         type="button"
         @click="openExtendModal"
         class="bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-xl px-3 py-2 font-semibold hover:bg-gray-100 transition cursor-pointer flex items-center gap-1"
@@ -292,6 +307,55 @@
         >
           <Icon v-if="isSubmittingExtend" icon="line-md:loading-loop" class="text-base" />
           <span>{{ isSubmittingExtend ? 'Updating...' : 'Save New Deadline' }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELIVER CONFIRMATION MODAL (FREELANCER) -->
+  <div
+    v-if="isDeliverModalOpen"
+    class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+    @click.self="isDeliverModalOpen = false"
+  >
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 flex flex-col gap-5 relative">
+      <button
+        @click="isDeliverModalOpen = false"
+        class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition cursor-pointer"
+      >
+        <Icon icon="material-symbols:close" class="text-xl" />
+      </button>
+
+      <div class="flex items-center gap-3 border-b pb-4">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+          <Icon icon="solar:box-bold" class="text-xl" />
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900">Mark Order as Delivered</h3>
+          <p class="text-xs text-gray-500">Notify client that work is ready for review</p>
+        </div>
+      </div>
+
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Confirm that you have submitted all deliverables for <span class="font-semibold text-gray-900">{{ purchase?.service?.title }}</span>. Once marked as delivered, the client can review and approve the order to release your funds.
+      </p>
+
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button
+          type="button"
+          @click="isDeliverModalOpen = false"
+          class="px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          @click="confirmDeliver"
+          :disabled="isSubmittingDeliver"
+          class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition flex items-center gap-2 cursor-pointer shadow-sm"
+        >
+          <Icon v-if="isSubmittingDeliver" icon="line-md:loading-loop" class="text-base" />
+          <span>{{ isSubmittingDeliver ? 'Submitting...' : 'Confirm Delivery' }}</span>
         </button>
       </div>
     </div>
