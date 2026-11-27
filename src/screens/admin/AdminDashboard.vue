@@ -1,26 +1,26 @@
 <template>
   <div class="w-full min-h-screen bg-gray-50/40 flex flex-col items-center pt-24 md:pt-28 pb-20">
     <!-- Admin Top Navbar -->
-    <nav class="w-full h-16 md:h-20 shadow-sm flex px-8 md:px-24 justify-between items-center fixed top-0 z-50 bg-white border-b border-gray-100">
-      <router-link to="/admin" class="flex items-center gap-2 cursor-pointer">
-        <img src="/logo.png" class="h-8 object-contain rounded-full" alt="NovaLance logo" />
-        <span class="text-black text-xl font-bold inline-block hover:text-purple">NovaLance</span>
-        <span class="ml-2 px-2.5 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-purple text-white shadow-xs">
+    <nav class="w-full h-16 md:h-20 shadow-sm flex px-4 sm:px-8 md:px-24 justify-between items-center fixed top-0 z-50 bg-white border-b border-gray-100">
+      <router-link to="/admin" class="flex items-center gap-2 cursor-pointer min-w-0">
+        <img src="/logo.png" class="h-8 object-contain rounded-full shrink-0" alt="NovaLance logo" />
+        <span class="text-black text-lg sm:text-xl font-bold inline-block hover:text-purple truncate">NovaLance</span>
+        <span class="hidden sm:inline-block ml-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-purple text-white shadow-xs shrink-0">
           Admin Portal
         </span>
       </router-link>
 
-      <div class="flex items-center gap-6">
-        <router-link to="/wallet" class="text-sm font-semibold text-gray-700 hover:text-purple transition flex items-center gap-1.5">
-          <Icon icon="solar:wallet-bold" class="text-base text-purple" />
-          <span>Platform Wallet</span>
+      <div class="flex items-center gap-3 sm:gap-6 shrink-0">
+        <router-link to="/wallet" class="text-sm font-semibold text-gray-700 hover:text-purple transition flex items-center gap-1.5" title="Platform Wallet">
+          <Icon icon="solar:wallet-bold" class="text-lg sm:text-base text-purple" />
+          <span class="hidden md:inline">Platform Wallet</span>
         </router-link>
-        <router-link to="/admin" class="text-sm font-semibold text-gray-700 hover:text-purple transition flex items-center gap-1.5">
-          <Icon icon="solar:home-smile-linear" class="text-base" />
-          <span>Dashboard</span>
+        <router-link to="/admin" class="text-sm font-semibold text-gray-700 hover:text-purple transition flex items-center gap-1.5" title="Dashboard">
+          <Icon icon="solar:home-smile-linear" class="text-lg sm:text-base" />
+          <span class="hidden md:inline">Dashboard</span>
         </router-link>
 
-        <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
+        <div class="flex items-center gap-2 sm:gap-3 pl-3 sm:pl-4 border-l border-gray-200">
           <div class="w-8 h-8 rounded-full bg-purple/10 text-purple flex items-center justify-center font-bold text-xs uppercase">
             {{ adminUser?.first_name ? adminUser.first_name[0] : 'A' }}
           </div>
@@ -128,8 +128,8 @@
 
       <!-- Main Tabs Navigation -->
       <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col gap-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
-          <div class="flex items-center gap-4">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-gray-100 pb-4">
+          <div class="flex flex-wrap items-center gap-2 sm:gap-3">
             <button
               @click="activeTab = 'disputes'"
               class="px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition cursor-pointer"
@@ -482,7 +482,7 @@
         </div>
 
         <!-- Dispute Info Cards -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 text-xs flex flex-col gap-1">
             <span class="text-gray-400 font-semibold uppercase">Client</span>
             <strong class="text-gray-900 text-sm">
@@ -547,7 +547,7 @@
           <h4 class="text-xs font-bold uppercase tracking-wider text-gray-700">Administrator Verdict</h4>
 
           <!-- Resolution Type Radios -->
-          <div class="grid grid-cols-3 gap-2">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <button
               type="button"
               @click="resolutionType = 'full_refund'"
@@ -580,7 +580,7 @@
           </div>
 
           <!-- Partial inputs if partial selected -->
-          <div v-if="resolutionType === 'partial_refund'" class="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200">
+          <div v-if="resolutionType === 'partial_refund'" class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200">
             <div>
               <label class="text-[11px] font-bold text-gray-600 block mb-1">Refund to Client ($)</label>
               <input

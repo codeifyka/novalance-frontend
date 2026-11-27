@@ -2,19 +2,19 @@
     <div class="w-full h-screen overflow-auto flex flex-col items-center pt-24 md:pt-28 pb-4 gap-16">
         <ProfileHeaderVue target="services" />
         <div class="w-11/12 flex flex-col gap-8">
-            <div class="w-full flex items-center justify-between border-b border-gray-300">
+            <div class="w-full flex flex-wrap items-center justify-between gap-2 border-b border-gray-300">
                 <div class="flex items-center">
                     <a href="/portfolio" class="w-fit flex flex-col">
-                        <div class="px-4 py-2 text-gray-300 hover:text-purple">My Projects</div>
+                        <div class="px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-300 hover:text-purple whitespace-nowrap">My Projects</div>
                     </a>
                     <a href="/services" class="w-fit flex flex-col">
-                        <div class="px-4 py-2 text-primary">My Services</div>
+                        <div class="px-3 sm:px-4 py-2 text-sm sm:text-base text-primary whitespace-nowrap">My Services</div>
                         <div class="w-full bg-primary h-1 rounded-full"></div>
                     </a>
                 </div>
                 <router-link
                     to="/service_orders"
-                    class="mb-1.5 inline-flex items-center gap-1.5 text-xs font-semibold text-primary bg-violet-50 hover:bg-violet-100 px-3.5 py-2 rounded-xl transition"
+                    class="mb-1.5 inline-flex items-center gap-1.5 text-xs font-semibold text-primary bg-violet-50 hover:bg-violet-100 px-3.5 py-2 rounded-xl transition whitespace-nowrap"
                 >
                     <Icon icon="solar:box-bold" class="text-sm" />
                     <span>Incoming Orders</span>
@@ -28,7 +28,7 @@
                         management.</p>
                 </div>
             </div>
-            <div class="w-full grid grid-cols-5 gap-4">
+            <div class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <div class="w-full flex flex-col bg-white rounded-xl border border-gray-100 p-2 shadow-sm hover:shadow transition" v-for="service in services" :key="service.id">
                     <a :href="`/service/${service.id}`" class="w-full flex flex-col gap-2">
                         <Service v-motion-slide-visible-once-top :service="service" />

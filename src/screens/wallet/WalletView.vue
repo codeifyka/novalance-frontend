@@ -15,7 +15,7 @@
       <!-- Title & Summary Header -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-200 pb-6">
         <div>
-          <div class="flex items-center gap-3">
+          <div class="flex flex-wrap items-center gap-3">
             <h1 class="text-3xl font-extrabold text-gray-900">Wallet & Escrow</h1>
             <span class="px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded-full bg-purple/10 text-purple">
               {{ accountType }}
@@ -26,7 +26,7 @@
           </p>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex flex-wrap items-center gap-3">
           <button
             @click="openDepositModal"
             class="bg-purple text-white hover:bg-[#7144d6] px-5 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 shadow-sm transition-all cursor-pointer"
@@ -251,7 +251,7 @@
         <!-- Step 1: Amount selector (always visible in simulation mode, or step 1 in live Stripe mode) -->
         <div v-if="!stripeConfigured || depositStep === 'amount'" class="flex flex-col gap-2">
           <label class="text-xs font-bold uppercase tracking-wider text-gray-600">Select Amount ($USD)</label>
-          <div class="grid grid-cols-4 gap-2">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
             <button
               v-for="preset in [25, 50, 100, 250]"
               :key="preset"
@@ -339,7 +339,7 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex items-center justify-end gap-3 pt-2">
+        <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2 sm:gap-3 pt-2">
           <button
             v-if="stripeConfigured && depositStep === 'payment'"
             type="button"

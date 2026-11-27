@@ -69,21 +69,21 @@
 <div class="bg-white min-h-screen">
   <Loading v-if="isLoading" />
   <ClientHeaderVue isHomePath="true" />
-  <div class="flex flex-col justify-center mx-8 md:mx-24 py-24">
+  <div class="flex flex-col justify-center mx-4 sm:mx-8 md:mx-24 py-24">
     <div class="flex flex-col justify-center gap-8">
       <div class="font-bold text-xl">Settings</div>
-      <div class="flex flex-col items-start md:flex-row justify-between">
-        <div class="flex flex-row md:flex-col gap-4">
-          <div @click="activeTab = 'profile'" class="flex items-center gap-2 cursor-pointer">
+      <div class="flex flex-col items-stretch md:items-start md:flex-row justify-between gap-6">
+        <div class="flex flex-row md:flex-col gap-4 overflow-x-auto pb-1">
+          <div @click="activeTab = 'profile'" class="flex items-center gap-2 cursor-pointer whitespace-nowrap">
             <div :class="`w-4 h-1.5 md:w-1.5 md:h-4 ${activeTab === 'profile' ? 'bg-primary' : 'bg-black/25'}`"></div>
             <div :class="`text-xs ${activeTab === 'profile' ? 'font-semibold text-primary' : ''}`">Edit Profiles</div>
           </div>
-          <div @click="activeTab = 'other'" class="flex items-center gap-2 cursor-pointer">
+          <div @click="activeTab = 'other'" class="flex items-center gap-2 cursor-pointer whitespace-nowrap">
             <div :class="`w-4 h-1.5 md:w-1.5 md:h-4 ${activeTab === 'other' ? 'bg-primary' : 'bg-black/25'}`"></div>
             <div :class="`text-xs ${activeTab === 'other' ? 'font-semibold text-primary' : ''}`">Other Settings</div>
           </div>
         </div>
-        <div v-if="activeTab === 'profile'" class="flex flex-col md:w-2/3">
+        <div v-if="activeTab === 'profile'" class="flex flex-col w-full md:w-2/3">
           <div class="flex flex-col gap-2">
             <div class="font-semibold">Edit Profile</div>
             <div class="text-xs font-semibold opacity-70">
@@ -132,7 +132,7 @@
             {{ errors.general }}
           </div>
           <div class="flex flex-col gap-4">
-            <div class="flex gap-8 items-center w-full">
+            <div class="flex flex-col sm:flex-row gap-4 sm:gap-8 items-center w-full">
               <div
                 class="flex flex-col gap-1 w-full"
                 v-if="user"
@@ -160,7 +160,7 @@
                 <span v-if="errors.last_name" class="text-xs text-red-500 font-medium">{{ errors.last_name }}</span>
               </div>
             </div>
-            <div class="flex gap-8 items-center">
+            <div class="flex flex-col sm:flex-row gap-4 sm:gap-8 items-center w-full">
               <div
                 class="flex flex-col gap-1 w-full"
                 v-if="user"
@@ -188,7 +188,7 @@
                 <span v-if="errors.country" class="text-xs text-red-500 font-medium">{{ errors.country }}</span>
               </div>
             </div>
-            <div class="flex gap-8 items-center">
+            <div class="flex flex-col sm:flex-row gap-4 sm:gap-8 items-center w-full">
               <div
                 class="flex flex-col gap-1 w-full"
                 v-if="user"
@@ -216,7 +216,7 @@
                 <span v-if="errors.gender" class="text-xs text-red-500 font-medium">{{ errors.gender }}</span>
               </div>
             </div>
-            <div class="flex gap-8 items-center">
+            <div class="flex flex-col sm:flex-row gap-4 sm:gap-8 items-center w-full">
               <div
                 class="flex flex-col gap-1 w-full"
                 v-if="user"
@@ -257,7 +257,7 @@
             <div class="w-full flex items-center justify-end mt-8">
               <button
                 @click="save"
-                class="bg-primary w-1/2 text-white rounded-xl px-8 py-1.5 font-semibold hover:bg-opacity-75 cursor-pointer"
+                class="bg-primary w-full sm:w-1/2 text-white rounded-xl px-8 py-2 font-semibold hover:bg-opacity-75 cursor-pointer"
               >
                 Update
               </button>
@@ -266,7 +266,7 @@
         </div>
 
         <!-- OTHER SETTINGS TAB -->
-        <div v-else-if="activeTab === 'other' && user" class="flex flex-col md:w-2/3 gap-6">
+        <div v-else-if="activeTab === 'other' && user" class="flex flex-col w-full md:w-2/3 gap-6">
           <div class="flex flex-col gap-1">
             <div class="font-semibold">Other Settings</div>
             <div class="text-xs font-semibold opacity-70">Manage your notification preferences and account security</div>
