@@ -67,8 +67,50 @@ export default class RestFreelancerServices {
         return this.axiosInstance.get(`/api/services/search/${query}`).then(Utils.handleResponse<string, Service[]>);
     }
 
-    async purchase(service_id: number): Promise<Result<string, Purchase>> {
-        return this.axiosInstance.post('/api/purchases', { service_id }).then(Utils.handleResponse<string, Purchase>);
+    async purchase(service_id: number, ends_at?: string): Promise<Result<string, Purchase>> {
+        return this.axiosInstance.post('/api/purchases', { service_id, ends_at })
+            .then(Utils.handleResponse<string, Purchase>)
+            .catch(err => {
+                const errorData = err?.response?.data;
+                const errorMsg = errorData?.error || errorData?.message || err?.message || 'Failed to purchase service';
+                return Result.failure<string, Purchase>(errorMsg);
+            });
+    }
+
+    async completePurchase(id: number): Promise<Result<string, Purchase>> {
+        return this.axiosInstance.put(`/api/purchases/${id}/complete`)
+            .then(Utils.handleResponse<string, Purchase>)
+            .catch(err => {
+                const errorMsg = err?.response?.data?.error || err?.message || 'Failed to complete order';
+                return Result.failure<string, Purchase>(errorMsg);
+            });
+    }
+
+    async deliverPurchase(id: number): Promise<Result<string, Purchase>> {
+        return this.axiosInstance.put(`/api/purchases/${id}/deliver`)
+            .then(Utils.handleResponse<string, Purchase>)
+            .catch(err => {
+                const errorMsg = err?.response?.data?.error || err?.message || 'Failed to mark deliverable';
+                return Result.failure<string, Purchase>(errorMsg);
+            });
+    }
+
+    async extendPurchase(id: number, ends_at: string): Promise<Result<string, Purchase>> {
+        return this.axiosInstance.put(`/api/purchases/${id}/extend`, { ends_at })
+            .then(Utils.handleResponse<string, Purchase>)
+            .catch(err => {
+                const errorMsg = err?.response?.data?.error || err?.message || 'Failed to extend deadline';
+                return Result.failure<string, Purchase>(errorMsg);
+            });
+    }
+
+    async disputePurchase(purchase_id: number, reason: string): Promise<Result<string, any>> {
+        return this.axiosInstance.post(`/api/disputes/purchase/${purchase_id}`, { reason })
+            .then(Utils.handleResponse<string, any>)
+            .catch(err => {
+                const errorMsg = err?.response?.data?.error || err?.message || 'Failed to open dispute';
+                return Result.failure<string, any>(errorMsg);
+            });
     }
 
     async getPurchases(): Promise<Result<string, Purchase[]>> {

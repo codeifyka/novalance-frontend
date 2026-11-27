@@ -1,45 +1,299 @@
-<div class="w-full flex flex-col items-center border-t-2 py-4 border-gray-200">
-  <div :class="['w-full','flex flex-col md:flex-row justify-between items-start md:items-center gap-4','py-4']">
-    <div class="flex gap-4 w-full md:w-[45%] items-center">
+<div class="w-full flex flex-col items-center border-t py-5 border-gray-200">
+  <div :class="['w-full','flex flex-col md:flex-row justify-between items-start md:items-center gap-4','py-2']">
+    <!-- Service Thumbnail & Details -->
+    <div class="flex gap-4 w-full md:w-[50%] items-center">
       <img
         :src="serviceImage"
-        class="w-24 h-24 object-cover rounded-lg bg-gray-100 flex-shrink-0"
+        class="w-20 h-20 md:w-24 md:h-24 object-cover rounded-xl bg-gray-100 flex-shrink-0 border border-gray-100"
         alt="service thumbnail"
       />
-      <div class="flex flex-col justify-between gap-1">
-        <div class="flex flex-col">
-          <div class="font-bold text-base md:text-lg capitalize text-gray-900">
+      <div class="flex flex-col justify-between gap-1 min-w-0">
+        <div class="flex flex-col truncate">
+          <div class="font-bold text-sm md:text-base capitalize text-gray-900 truncate">
             {{ purchase?.service?.title || 'Purchased Service' }}
           </div>
-          <div class="flex items-center gap-3">
-            <span class="text-green-600 font-semibold text-base">${{ purchase?.price }}</span>
-            <span class="text-xs px-2 py-0.5 rounded-full capitalize bg-green-100 text-green-700 font-medium">
-              {{ purchase?.status || 'Active' }}
+
+          <div class="flex items-center gap-2 mt-1 flex-wrap">
+            <span class="text-green-600 font-extrabold text-base">${{ purchase?.price }}</span>
+
+            <!-- Status Badges -->
+            <span
+              v-if="purchase?.status === 'completed'"
+              class="text-[11px] px-2.5 py-0.5 rounded-full capitalize bg-emerald-100 text-emerald-800 font-bold flex items-center gap-1"
+            >
+              <Icon icon="solar:check-circle-bold" />
+              Completed
+            </span>
+            <span
+              v-else-if="purchase?.status === 'delivered'"
+              class="text-[11px] px-2.5 py-0.5 rounded-full capitalize bg-blue-100 text-blue-800 font-bold flex items-center gap-1"
+            >
+              <Icon icon="solar:box-bold" />
+              Work Delivered
+            </span>
+            <span
+              v-else-if="purchase?.status === 'disputed'"
+              class="text-[11px] px-2.5 py-0.5 rounded-full capitalize bg-amber-100 text-amber-800 font-bold flex items-center gap-1"
+            >
+              <Icon icon="solar:danger-triangle-bold" />
+              Under Dispute
+            </span>
+            <span
+              v-else
+              class="text-[11px] px-2.5 py-0.5 rounded-full capitalize bg-purple/10 text-purple font-bold flex items-center gap-1"
+            >
+              <Icon icon="solar:play-circle-bold" />
+              In Progress
             </span>
           </div>
+
+          <!-- Freelancer & Dates -->
           <div v-if="purchase?.freelancer" class="text-xs text-gray-500 mt-1">
-            Freelancer: <span class="font-medium text-gray-700 capitalize">{{ purchase.freelancer.first_name }} {{ purchase.freelancer.last_name }}</span>
+            Freelancer: <span class="font-semibold text-gray-800 capitalize">{{ purchase.freelancer.first_name }} {{ purchase.freelancer.last_name }}</span>
           </div>
-          <div v-if="formattedDate" class="text-xs text-gray-400">
-            Purchased on {{ formattedDate }}
+          <div class="text-[11px] text-gray-400 mt-0.5 flex items-center gap-3">
+            <span>Started: <strong class="text-gray-600">{{ formattedStartDate }}</strong></span>
+            <span v-if="formattedDeadline">
+              Deadline: <strong :class="isDeadlinePassed ? 'text-amber-600 font-bold' : 'text-gray-600'">{{ formattedDeadline }}</strong>
+            </span>
           </div>
         </div>
+
         <div
           @click="viewService"
-          class="underline text-primary md:text-sm cursor-pointer hover:opacity-75 text-xs font-medium w-fit mt-1"
+          class="underline text-purple md:text-xs cursor-pointer hover:opacity-75 text-[11px] font-semibold w-fit mt-1"
         >
-          View service
+          View service details &rarr;
         </div>
       </div>
     </div>
-    <div class="flex items-center gap-3">
+
+    <!-- Actions Area -->
+    <div class="flex flex-wrap items-center gap-2">
+      <!-- Complete / Release Escrow (when active or delivered) -->
       <button
-        @click="openChat"
-        class="bg-primary text-white text-sm rounded-xl px-4 md:px-8 py-2 font-semibold hover:bg-opacity-80 transition cursor-pointer flex items-center gap-2"
+        v-if="purchase?.status === 'delivered' || purchase?.status === 'active'"
+        type="button"
+        @click="isCompleteModalOpen = true"
+        class="bg-emerald-600 text-white text-xs rounded-xl px-3.5 py-2 font-semibold hover:bg-emerald-700 transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+        title="Approve deliverable and release funds to freelancer"
       >
-        <Icon icon="teenyicons:chat-outline" class="w-4 h-4" />
+        <Icon icon="solar:check-circle-bold" class="text-base" />
+        <span>Approve & Complete</span>
+      </button>
+
+      <!-- Dispute Button (only permitted when deadline has passed and not completed) -->
+      <button
+        v-if="(purchase?.status === 'active' || purchase?.status === 'delivered') && isDeadlinePassed"
+        type="button"
+        @click="isDisputeModalOpen = true"
+        class="bg-rose-50 border border-rose-200 text-rose-600 text-xs rounded-xl px-3 py-2 font-semibold hover:bg-rose-100 transition cursor-pointer flex items-center gap-1"
+        title="Open dispute with admin"
+      >
+        <Icon icon="solar:danger-triangle-bold" class="text-sm" />
+        <span>Dispute</span>
+      </button>
+
+      <!-- Extend Deadline Option -->
+      <button
+        v-if="purchase?.status === 'active'"
+        type="button"
+        @click="openExtendModal"
+        class="bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-xl px-3 py-2 font-semibold hover:bg-gray-100 transition cursor-pointer flex items-center gap-1"
+        title="Extend the delivery deadline"
+      >
+        <Icon icon="solar:calendar-date-bold" class="text-sm" />
+        <span>Extend</span>
+      </button>
+
+      <!-- Open Chat -->
+      <button
+        type="button"
+        @click="openChat"
+        class="bg-primary text-white text-xs rounded-xl px-4 py-2 font-semibold hover:bg-opacity-90 transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+      >
+        <Icon icon="teenyicons:chat-outline" class="w-3.5 h-3.5" />
         <span>Open chat</span>
       </button>
+    </div>
+  </div>
+
+  <!-- COMPLETE CONFIRMATION MODAL -->
+  <div
+    v-if="isCompleteModalOpen"
+    class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+    @click.self="isCompleteModalOpen = false"
+  >
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 flex flex-col gap-5 relative">
+      <button
+        @click="isCompleteModalOpen = false"
+        class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition cursor-pointer"
+      >
+        <Icon icon="material-symbols:close" class="text-xl" />
+      </button>
+
+      <div class="flex items-center gap-3 border-b pb-4">
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+          <Icon icon="solar:check-circle-bold" class="text-xl" />
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900">Approve & Complete Order</h3>
+          <p class="text-xs text-gray-500">Release escrow funds to freelancer</p>
+        </div>
+      </div>
+
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Are you satisfied with the delivered service? Approving will immediately release the escrowed funds (${{ purchase?.price }}) to the freelancer's wallet.
+      </p>
+
+      <div class="bg-gray-50 rounded-xl p-3 border border-gray-100 flex flex-col gap-2 text-xs">
+        <div class="flex justify-between">
+          <span class="text-gray-500">Service Price:</span>
+          <strong class="text-gray-900">${{ purchase?.price }}</strong>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-500">Freelancer Net (90%):</span>
+          <strong class="text-emerald-700">${{ (Number(purchase?.price) * 0.90).toFixed(2) }}</strong>
+        </div>
+        <div class="flex justify-between text-[11px] text-gray-400">
+          <span>Platform Fee (10%):</span>
+          <span>${{ (Number(purchase?.price) * 0.10).toFixed(2) }}</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button
+          type="button"
+          @click="isCompleteModalOpen = false"
+          class="px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          @click="confirmComplete"
+          :disabled="isSubmittingComplete"
+          class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 transition flex items-center gap-2 cursor-pointer shadow-sm"
+        >
+          <Icon v-if="isSubmittingComplete" icon="line-md:loading-loop" class="text-base" />
+          <span>{{ isSubmittingComplete ? 'Releasing Escrow...' : 'Confirm & Release Funds' }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISPUTE MODAL -->
+  <div
+    v-if="isDisputeModalOpen"
+    class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+    @click.self="isDisputeModalOpen = false"
+  >
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 flex flex-col gap-5 relative">
+      <button
+        @click="isDisputeModalOpen = false"
+        class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition cursor-pointer"
+      >
+        <Icon icon="material-symbols:close" class="text-xl" />
+      </button>
+
+      <div class="flex items-center gap-3 border-b pb-4">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+          <Icon icon="solar:danger-triangle-bold" class="text-xl" />
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900">Open Service Dispute</h3>
+          <p class="text-xs text-gray-500">Request administrative review & refund</p>
+        </div>
+      </div>
+
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Please describe the problem. An administrator will review your conversation history and deliverables to resolve this case.
+      </p>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-bold uppercase tracking-wider text-gray-700">Reason for Dispute</label>
+        <textarea
+          v-model="disputeReason"
+          rows="4"
+          placeholder="Explain what was missed, incomplete, or not delivered as agreed..."
+          class="w-full p-3 rounded-xl border border-gray-200 text-sm text-gray-800 focus:outline-none focus:border-purple resize-none"
+        ></textarea>
+        <span class="text-[11px] text-gray-400">Minimum 10 characters required.</span>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button
+          type="button"
+          @click="isDisputeModalOpen = false"
+          class="px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          @click="confirmDispute"
+          :disabled="isSubmittingDispute || disputeReason.trim().length < 10"
+          class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 disabled:opacity-50 transition flex items-center gap-2 cursor-pointer shadow-sm"
+        >
+          <Icon v-if="isSubmittingDispute" icon="line-md:loading-loop" class="text-base" />
+          <span>{{ isSubmittingDispute ? 'Submitting...' : 'Submit Dispute' }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXTEND DEADLINE MODAL -->
+  <div
+    v-if="isExtendModalOpen"
+    class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+    @click.self="isExtendModalOpen = false"
+  >
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 flex flex-col gap-5 relative">
+      <button
+        @click="isExtendModalOpen = false"
+        class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition cursor-pointer"
+      >
+        <Icon icon="material-symbols:close" class="text-xl" />
+      </button>
+
+      <div class="flex items-center gap-3 border-b pb-4">
+        <div class="w-10 h-10 rounded-xl bg-purple/10 text-purple flex items-center justify-center shrink-0">
+          <Icon icon="solar:calendar-date-bold" class="text-xl" />
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900">Extend Delivery Deadline</h3>
+          <p class="text-xs text-gray-500">Grant more time to the freelancer</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="text-xs font-bold uppercase tracking-wider text-gray-700">New Deadline</label>
+        <input
+          type="date"
+          v-model="newDeadline"
+          :min="new Date().toISOString().split('T')[0]"
+          class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-900 focus:outline-none focus:border-purple"
+        />
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button
+          type="button"
+          @click="isExtendModalOpen = false"
+          class="px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          @click="confirmExtend"
+          :disabled="isSubmittingExtend || !newDeadline"
+          class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-purple hover:bg-[#7144d6] disabled:opacity-50 transition flex items-center gap-2 cursor-pointer shadow-sm"
+        >
+          <Icon v-if="isSubmittingExtend" icon="line-md:loading-loop" class="text-base" />
+          <span>{{ isSubmittingExtend ? 'Updating...' : 'Save New Deadline' }}</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>

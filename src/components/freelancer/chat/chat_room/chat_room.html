@@ -24,6 +24,15 @@
                     >
                         {{ (client.chat_tag || client.tag) === 'service' ? 'Service' : 'Job Post' }}
                     </span>
+                    <span
+                        v-if="client.end_date"
+                        class="text-[10px] font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1"
+                        :class="new Date(client.end_date) <= new Date() ? 'bg-amber-100 text-amber-800' : 'bg-blue-50 text-blue-700'"
+                        :title="`Contract deadline: ${client.end_date}`"
+                    >
+                        <Icon icon="solar:clock-circle-bold" class="text-xs" />
+                        <span>{{ new Date(client.end_date) <= new Date() ? 'Deadline Reached' : `Ends ${formatDate(client.end_date)}` }}</span>
+                    </span>
                 </div>
             </div>
             <div class="relative shrink-0 mr-4" ref="menuContainerRef">

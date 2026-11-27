@@ -228,7 +228,7 @@
                 <!-- Contract Title -->
                 <td class="py-3.5 px-4 font-semibold text-gray-900">
                   <div class="max-w-xs truncate">
-                    {{ dispute.proposal?.job_post?.title || `Proposal #${dispute.proposal_id}` }}
+                    {{ dispute.proposal?.job_post?.title || dispute.purchase?.service?.title || (dispute.purchase_id ? `Service Order #${dispute.purchase_id}` : `Proposal #${dispute.proposal_id}`) }}
                   </div>
                   <span class="text-[11px] text-gray-400 block truncate font-normal">
                     {{ dispute.reason }}
@@ -245,9 +245,9 @@
                   {{ [dispute.freelancer?.first_name, dispute.freelancer?.last_name].filter(Boolean).join(' ') || dispute.freelancer?.username || 'Freelancer' }}
                 </td>
 
-                <!-- Escrow Bid -->
+                <!-- Escrow Bid / Price -->
                 <td class="py-3.5 px-4 font-bold text-gray-900">
-                  ${{ Number(dispute.proposal?.bid || 0).toFixed(2) }}
+                  ${{ Number(dispute.proposal?.bid || dispute.purchase?.price || 0).toFixed(2) }}
                 </td>
 
                 <!-- Status -->
@@ -411,7 +411,7 @@
               Dispute Case #DIS-{{ String(selectedDispute.id).padStart(5, '0') }}
             </h3>
             <p class="text-xs text-gray-500">
-              Contract: {{ selectedDispute.proposal?.job_post?.title || 'Job Contract' }}
+              Contract: {{ selectedDispute.proposal?.job_post?.title || selectedDispute.purchase?.service?.title || 'Contract Order' }}
             </p>
           </div>
         </div>
@@ -437,9 +437,9 @@
 
         <!-- Escrow Total -->
         <div class="bg-violet-50/70 border border-violet-100 rounded-xl p-3 flex items-center justify-between text-xs">
-          <span class="text-gray-600">Locked Escrow Bid Amount:</span>
+          <span class="text-gray-600">Locked Escrow Amount:</span>
           <strong class="text-purple font-extrabold text-base">
-            ${{ Number(selectedDispute.proposal?.bid || 0).toFixed(2) }}
+            ${{ Number(selectedDispute.proposal?.bid || selectedDispute.purchase?.price || 0).toFixed(2) }}
           </strong>
         </div>
 
@@ -703,9 +703,9 @@ async function openDisputeDetailModal(dispute: Dispute) {
   selectedDispute.value = dispute;
   resolutionType.value = 'full_refund';
   adminNotes.value = '';
-  const bid = Number(dispute.proposal?.bid || 0);
-  partialClientAmount.value = Math.round((bid / 2) * 100) / 100;
-  partialFreelancerAmount.value = Math.round((bid / 2) * 100) / 100;
+  const totalAmount = Number(dispute.proposal?.bid || dispute.purchase?.price || 0);
+  partialClientAmount.value = Math.round((totalAmount / 2) * 100) / 100;
+  partialFreelancerAmount.value = Math.round((totalAmount / 2) * 100) / 100;
   disputeChatMessages.value = [];
 
   try {
@@ -723,10 +723,10 @@ async function openDisputeDetailModal(dispute: Dispute) {
 async function confirmResolveDispute() {
   if (!selectedDispute.value) return;
 
-  const bid = Number(selectedDispute.value.proposal?.bid || 0);
+  const totalAmount = Number(selectedDispute.value.proposal?.bid || selectedDispute.value.purchase?.price || 0);
   if (resolutionType.value === 'partial_refund') {
-    if (partialClientAmount.value + partialFreelancerAmount.value > bid) {
-      toastManager?.value?.alertError?.(`Total split ($${partialClientAmount.value} + $${partialFreelancerAmount.value}) exceeds bid ($${bid}).`);
+    if (partialClientAmount.value + partialFreelancerAmount.value > totalAmount) {
+      toastManager?.value?.alertError?.(`Total split ($${partialClientAmount.value} + $${partialFreelancerAmount.value}) exceeds contract amount ($${totalAmount}).`);
       return;
     }
   }

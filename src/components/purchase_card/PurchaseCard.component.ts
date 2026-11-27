@@ -1,5 +1,9 @@
 import { useRouter } from 'vue-router';
-import { computed } from 'vue';
+import { computed, ref, inject, type Ref } from 'vue';
+import type { AxiosInstance } from 'axios';
+import type ToastsManager from '@/libs/ToastsManager';
+import RestFreelancerServices from '@/libs/RestFreelancerServices';
+import Utils from '@/libs/Utils';
 
 export default {
     props: {
@@ -8,8 +12,24 @@ export default {
             required: true,
         },
     },
-    setup(props: { purchase: Purchase }) {
+    emits: ['purchaseUpdated'],
+    setup(props: { purchase: Purchase }, { emit }: any) {
         const router = useRouter();
+        const axios = inject<AxiosInstance>('axios');
+        const toastManager = inject<Ref<ToastsManager>>("toastManager");
+        const restServices = new RestFreelancerServices(axios!);
+
+        // Modal states
+        const isCompleteModalOpen = ref(false);
+        const isDisputeModalOpen = ref(false);
+        const isExtendModalOpen = ref(false);
+
+        const isSubmittingComplete = ref(false);
+        const isSubmittingDispute = ref(false);
+        const isSubmittingExtend = ref(false);
+
+        const disputeReason = ref('');
+        const newDeadline = ref('');
 
         const serviceImage = computed(() => {
             const images = props.purchase?.service?.images;
@@ -19,13 +39,17 @@ export default {
             return '/default_service_thumbnail.jpg';
         });
 
-        const formattedDate = computed(() => {
-            if (!props.purchase?.created_at) return '';
-            try {
-                return new Date(props.purchase.created_at).toLocaleDateString();
-            } catch {
-                return props.purchase.created_at;
-            }
+        const formattedStartDate = computed(() => {
+            return Utils.formatDate(props.purchase?.started_at || props.purchase?.created_at);
+        });
+
+        const formattedDeadline = computed(() => {
+            return Utils.formatDate(props.purchase?.ends_at);
+        });
+
+        const isDeadlinePassed = computed(() => {
+            if (!props.purchase?.ends_at) return false;
+            return new Date() >= new Date(props.purchase.ends_at);
         });
 
         const openChat = () => {
@@ -38,11 +62,98 @@ export default {
             }
         };
 
+        // Complete Order
+        const confirmComplete = async () => {
+            try {
+                isSubmittingComplete.value = true;
+                const res = await restServices.completePurchase(props.purchase.id);
+                if (res.isSuccess()) {
+                    toastManager?.value?.alertSuccess("Order approved! Escrow funds released to freelancer.");
+                    isCompleteModalOpen.value = false;
+                    emit('purchaseUpdated', res.value);
+                } else {
+                    toastManager?.value?.alertError(res.error || "Failed to complete order.");
+                }
+            } catch (err: any) {
+                toastManager?.value?.alertError(err.message || "Failed to complete order.");
+            } finally {
+                isSubmittingComplete.value = false;
+            }
+        };
+
+        // Submit Dispute
+        const confirmDispute = async () => {
+            if (!disputeReason.value.trim() || disputeReason.value.length < 10) {
+                toastManager?.value?.alertError("Please provide a reason of at least 10 characters.");
+                return;
+            }
+
+            try {
+                isSubmittingDispute.value = true;
+                const res = await restServices.disputePurchase(props.purchase.id, disputeReason.value);
+                if (res.isSuccess()) {
+                    toastManager?.value?.alertSuccess("Dispute opened. Admin will review chat and details.");
+                    isDisputeModalOpen.value = false;
+                    props.purchase.status = 'disputed';
+                    emit('purchaseUpdated', props.purchase);
+                } else {
+                    toastManager?.value?.alertError(res.error || "Failed to submit dispute.");
+                }
+            } catch (err: any) {
+                toastManager?.value?.alertError(err.message || "Failed to submit dispute.");
+            } finally {
+                isSubmittingDispute.value = false;
+            }
+        };
+
+        // Extend Deadline
+        const openExtendModal = () => {
+            newDeadline.value = props.purchase?.ends_at ? props.purchase.ends_at.split('T')[0] : '';
+            isExtendModalOpen.value = true;
+        };
+
+        const confirmExtend = async () => {
+            if (!newDeadline.value) {
+                toastManager?.value?.alertError("Please select a new deadline.");
+                return;
+            }
+
+            try {
+                isSubmittingExtend.value = true;
+                const res = await restServices.extendPurchase(props.purchase.id, newDeadline.value);
+                if (res.isSuccess()) {
+                    toastManager?.value?.alertSuccess("Deadline extended successfully.");
+                    isExtendModalOpen.value = false;
+                    emit('purchaseUpdated', res.value);
+                } else {
+                    toastManager?.value?.alertError(res.error || "Failed to extend deadline.");
+                }
+            } catch (err: any) {
+                toastManager?.value?.alertError(err.message || "Failed to extend deadline.");
+            } finally {
+                isSubmittingExtend.value = false;
+            }
+        };
+
         return {
             serviceImage,
-            formattedDate,
+            formattedStartDate,
+            formattedDeadline,
+            isDeadlinePassed,
             openChat,
-            viewService
+            viewService,
+            isCompleteModalOpen,
+            isDisputeModalOpen,
+            isExtendModalOpen,
+            isSubmittingComplete,
+            isSubmittingDispute,
+            isSubmittingExtend,
+            disputeReason,
+            newDeadline,
+            confirmComplete,
+            confirmDispute,
+            openExtendModal,
+            confirmExtend,
         };
     }
 }

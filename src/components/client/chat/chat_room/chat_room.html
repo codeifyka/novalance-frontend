@@ -29,7 +29,7 @@
                         :title="`Contract deadline: ${freelancer.end_date}`"
                     >
                         <Icon icon="solar:clock-circle-bold" class="text-xs" />
-                        <span>{{ new Date(freelancer.end_date) <= new Date() ? 'Deadline Reached' : `Ends ${freelancer.end_date.split('T')[0] || freelancer.end_date.split(' ')[0]}` }}</span>
+                        <span>{{ new Date(freelancer.end_date) <= new Date() ? 'Deadline Reached' : `Ends ${formatDate(freelancer.end_date)}` }}</span>
                     </span>
                 </div>
             </div>

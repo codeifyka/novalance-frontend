@@ -7,6 +7,7 @@ import { ModalVue } from './modal';
 import Loading from '@/components/loading/Loading.component';
 import { DEFAULT_PROFILE_PICTURE } from '@/consts';
 import type { AxiosInstance } from 'axios';
+import Utils from '@/libs/Utils';
 
 export default defineComponent({
   components: {
@@ -192,6 +193,7 @@ export default defineComponent({
       isLoading,
       toggleChatScreen,
       formatTime,
+      formatDate: Utils.formatDate,
       DEFAULT_PROFILE_PICTURE
     };
   },

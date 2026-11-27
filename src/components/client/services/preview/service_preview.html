@@ -9,16 +9,28 @@
                 <div class="w-full flex flex-col">
                     <div class="flex items-center justify-between mt-8 mb-2">
                         <div class="text-lg font-semibold capitalize">{{service?.title}}</div>
-                        <div class="font-semibold text-green-500">${{service?.price.value}}</div>
+                        <div class="font-semibold text-green-500 text-xl">${{service?.price.value}}</div>
                     </div>
-                    <div class="text-sm py-4">{{service?.description}}</div>
+
+                    <!-- Turnaround Delivery Info -->
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple/10 text-purple">
+                            <Icon icon="solar:clock-circle-bold" class="text-sm" />
+                            <span>{{ service?.delivery_days || 3 }} Days Standard Delivery</span>
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">
+                            <Icon icon="solar:shield-check-bold" class="text-sm" />
+                            <span>Escrow Protected</span>
+                        </span>
+                    </div>
+
+                    <div class="text-sm py-4 text-gray-600 leading-relaxed">{{service?.description}}</div>
                     <button
-                        @click="buyService"
-                        :disabled="isPurchasing"
-                        class="bg-primary self-end px-16 w-fit text-center py-2 rounded-lg text-violet-50 font-semibold mt-8 hover:bg-opacity-90 disabled:opacity-50 cursor-pointer flex items-center gap-2"
+                        @click="openCheckoutModal"
+                        class="bg-primary self-end px-16 w-fit text-center py-2.5 rounded-xl text-violet-50 font-semibold mt-8 hover:bg-opacity-90 cursor-pointer flex items-center gap-2 shadow-sm transition"
                     >
-                        <LoadingSpinner v-if="isPurchasing" class="w-4 h-4" />
-                        <span>{{ isPurchasing ? 'Processing...' : 'BUY' }}</span>
+                        <Icon icon="solar:bag-heart-bold" class="text-lg" />
+                        <span>Order Now · ${{service?.price.value}}</span>
                     </button>
                 </div>
             </div>
@@ -27,5 +39,134 @@
             </div>
         </div>  
     </div>
+
+    <!-- SERVICE CHECKOUT & ESCROW MODAL -->
+    <div
+        v-if="isCheckoutModalOpen"
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+        @click.self="isCheckoutModalOpen = false"
+    >
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 sm:p-8 flex flex-col gap-6 relative">
+            <button
+                @click="isCheckoutModalOpen = false"
+                class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition cursor-pointer"
+            >
+                <Icon icon="material-symbols:close" class="text-xl" />
+            </button>
+
+            <!-- Modal Header -->
+            <div class="flex items-center gap-3 border-b pb-4">
+                <div class="w-10 h-10 rounded-xl bg-purple/10 text-purple flex items-center justify-center shrink-0">
+                    <Icon icon="solar:cart-check-bold" class="text-xl" />
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900">Order Service</h3>
+                    <p class="text-xs text-gray-500">Secure checkout with Escrow protection</p>
+                </div>
+            </div>
+
+            <!-- Service Summary Card -->
+            <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 flex items-center justify-between">
+                <div class="flex flex-col gap-1 pr-4 truncate">
+                    <span class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Service</span>
+                    <h4 class="text-sm font-bold text-gray-900 truncate">{{ service?.title }}</h4>
+                    <span class="text-xs text-gray-500 flex items-center gap-1">
+                        <Icon icon="solar:clock-circle-bold" class="text-xs text-purple" />
+                        <span>{{ service?.delivery_days || 3 }} Days Standard Delivery</span>
+                    </span>
+                </div>
+                <div class="text-right shrink-0">
+                    <span class="text-xs text-gray-400 block">Total Price</span>
+                    <strong class="text-xl font-black text-gray-900">${{ servicePrice.toFixed(2) }}</strong>
+                </div>
+            </div>
+
+            <!-- Escrow Explanation Note -->
+            <div class="p-3 bg-purple/5 border border-purple/10 rounded-xl text-xs text-purple flex items-start gap-2">
+                <Icon icon="solar:shield-check-bold" class="text-base shrink-0 mt-0.5" />
+                <div>
+                    <strong>Buyer Protection:</strong> Your funds will be securely locked into Escrow. The freelancer is only paid once you review and approve the completed order.
+                </div>
+            </div>
+
+            <!-- Delivery Deadline Picker -->
+            <div class="flex flex-col gap-2">
+                <label class="text-xs font-bold uppercase tracking-wider text-gray-700">Expected Delivery Deadline</label>
+                <input
+                    type="date"
+                    v-model="deliveryDeadline"
+                    :min="new Date().toISOString().split('T')[0]"
+                    class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-900 focus:outline-none focus:border-purple"
+                />
+                <p class="text-[11px] text-gray-400">
+                    Once this date arrives, you may approve completion or raise a dispute if work is not delivered.
+                </p>
+            </div>
+
+            <!-- Wallet Balance Check -->
+            <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 flex flex-col gap-2">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-gray-500">Your Wallet Balance:</span>
+                    <strong :class="walletBalance >= servicePrice ? 'text-emerald-600 font-bold' : 'text-amber-600 font-bold'">
+                        ${{ walletBalance.toFixed(2) }}
+                    </strong>
+                </div>
+
+                <!-- Sufficient Balance -->
+                <div v-if="walletBalance >= servicePrice" class="text-xs text-emerald-700 font-medium flex items-center gap-1.5 mt-1">
+                    <Icon icon="solar:check-circle-bold" class="text-sm" />
+                    <span>Sufficient balance to fund this order from your wallet.</span>
+                </div>
+
+                <!-- Insufficient Balance Deficit Alert -->
+                <div v-else class="text-xs text-amber-800 bg-amber-50 p-2.5 rounded-lg border border-amber-200 flex flex-col gap-1 mt-1">
+                    <div class="flex items-center gap-1.5 font-bold">
+                        <Icon icon="solar:danger-circle-bold" class="text-sm" />
+                        <span>Deficit of ${{ balanceDeficit.toFixed(2) }}</span>
+                    </div>
+                    <p class="text-[11px] text-gray-600">
+                        You need an extra ${{ balanceDeficit.toFixed(2) }} to lock escrow. You can deposit and complete checkout in one click via Stripe below.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Modal Action Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <button
+                    type="button"
+                    @click="isCheckoutModalOpen = false"
+                    class="px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 transition cursor-pointer"
+                >
+                    Cancel
+                </button>
+
+                <!-- Case A: Sufficient Wallet Balance -->
+                <button
+                    v-if="walletBalance >= servicePrice"
+                    type="button"
+                    @click="confirmPurchase"
+                    :disabled="isPurchasing"
+                    class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-purple hover:bg-[#7144d6] disabled:opacity-50 transition flex items-center gap-2 cursor-pointer shadow-sm"
+                >
+                    <Icon v-if="isPurchasing" icon="line-md:loading-loop" class="text-base" />
+                    <span>{{ isPurchasing ? 'Locking Escrow...' : 'Confirm & Lock Escrow' }}</span>
+                </button>
+
+                <!-- Case B: Insufficient Balance (Deposit Deficit & Buy via Stripe) -->
+                <button
+                    v-else
+                    type="button"
+                    @click="depositAndPurchase"
+                    :disabled="isDepositing || isPurchasing"
+                    class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 transition flex items-center gap-2 cursor-pointer shadow-sm"
+                >
+                    <Icon v-if="isDepositing || isPurchasing" icon="line-md:loading-loop" class="text-base" />
+                    <Icon v-else icon="logos:stripe" class="h-4 object-contain brightness-0 invert" />
+                    <span>{{ isDepositing ? 'Processing Stripe...' : `Deposit $${balanceDeficit.toFixed(2)} & Buy` }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <ClientFooterVue />
 </div>

@@ -5,6 +5,7 @@ interface Service {
     user_id: number;
     category_id: number;
     price_id: number;
+    delivery_days?: number;
     rate: number;
     images?: ServiceImage[];
     category?: Category;
@@ -52,9 +53,14 @@ interface Purchase {
     service_id: number;
     price: string | number;
     status: string;
+    started_at?: string;
+    ends_at?: string;
+    delivered_at?: string;
+    completed_at?: string;
     created_at: string;
     updated_at: string;
     service?: Service;
     freelancer?: User;
     client?: User;
+    dispute?: Dispute;
 }

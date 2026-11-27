@@ -37,6 +37,7 @@
         v-for="purchase in purchases"
         :key="purchase.id"
         :purchase="purchase"
+        @purchaseUpdated="fetchPurchases"
       />
     </div>
   </div>

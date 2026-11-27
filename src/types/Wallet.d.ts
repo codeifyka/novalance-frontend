@@ -41,7 +41,8 @@ type DisputeStatus =
 
 interface Dispute {
     id: number;
-    proposal_id: number;
+    proposal_id?: number;
+    purchase_id?: number;
     client_id: number;
     freelancer_id: number;
     reason: string;
@@ -52,6 +53,7 @@ interface Dispute {
     resolved_by?: number;
     resolved_at?: string;
     proposal?: Proposal;
+    purchase?: Purchase;
     client?: User;
     freelancer?: User;
     resolver?: User;

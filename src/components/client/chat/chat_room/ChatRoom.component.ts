@@ -7,6 +7,7 @@ import { ModalVue } from './modal';
 import { DEFAULT_PROFILE_PICTURE } from '@/consts';
 import type { AxiosInstance } from 'axios';
 import type ToastsManager from '@/libs/ToastsManager';
+import Utils from '@/libs/Utils';
 
 export default defineComponent({
   components: {
@@ -208,6 +209,7 @@ export default defineComponent({
       handleSend,
       toggleChatScreen,
       formatTime,
+      formatDate: Utils.formatDate,
       DEFAULT_PROFILE_PICTURE,
     };
   },
