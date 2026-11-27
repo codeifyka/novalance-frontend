@@ -116,4 +116,13 @@ export default class RestFreelancerServices {
     async getPurchases(): Promise<Result<string, Purchase[]>> {
         return this.axiosInstance.get('/api/purchases').then(Utils.handleResponse<string, Purchase[]>);
     }
+
+    async rateService(service_id: number, rate: number): Promise<Result<string, { rate: number; ratings_count: number; user_rating: number }>> {
+        return this.axiosInstance.post(`/api/services/${service_id}/rate`, { rate })
+            .then(Utils.handleResponse<string, { rate: number; ratings_count: number; user_rating: number }>)
+            .catch(err => {
+                const errorMsg = err?.response?.data?.error || err?.message || 'Failed to rate service';
+                return Result.failure<string, { rate: number; ratings_count: number; user_rating: number }>(errorMsg);
+            });
+    }
 };

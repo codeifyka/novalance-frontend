@@ -18,11 +18,12 @@
     <Icon
       v-for="i in 5"
       :key="i"
-      :icon="i <= hoveredRate ? 'material-symbols:star' : 'material-symbols:star-outline'"
+      :icon="i <= (hoveredRate || currentRate) ? 'material-symbols:star' : 'material-symbols:star-outline'"
       class="text-primary cursor-pointer"
       @mouseover="setHoveredRate(i)"
+      @click.stop.prevent="rateService(i)"
     />
-    <div>({{ service.rate }})</div>
+    <div>({{ ratingsCount }})</div>
   </div>
   <div class="pt-2 font-semibold text-green-500">${{service.price.value}}</div>
 </div>

@@ -7,6 +7,7 @@ interface Service {
     price_id: number;
     delivery_days?: number;
     rate: number;
+    ratings_count?: number;
     images?: ServiceImage[];
     category?: Category;
     price?: Price;
