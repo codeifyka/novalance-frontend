@@ -11,6 +11,7 @@ interface Service {
     images?: ServiceImage[];
     category?: Category;
     price?: Price;
+    user?: User;
     created_at: string;
     updated_at: string;
 }

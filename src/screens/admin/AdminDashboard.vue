@@ -161,6 +161,15 @@
                 {{ pendingPayoutsCount }}
               </span>
             </button>
+
+            <button
+              @click="activeTab = 'settings'"
+              class="px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 transition cursor-pointer"
+              :class="activeTab === 'settings' ? 'bg-purple text-white shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+            >
+              <Icon icon="solar:settings-bold" class="text-lg" />
+              <span>Service Settings</span>
+            </button>
           </div>
 
           <!-- Status Sub-filter -->
@@ -176,7 +185,7 @@
             </button>
           </div>
 
-          <div v-else class="flex items-center gap-2 overflow-x-auto">
+          <div v-else-if="activeTab === 'payouts'" class="flex items-center gap-2 overflow-x-auto">
             <button
               v-for="s in ['all', 'pending', 'completed', 'rejected']"
               :key="s"
@@ -278,7 +287,7 @@
         </div>
 
         <!-- TAB 2: PAYOUTS TABLE -->
-        <div v-else class="overflow-x-auto">
+        <div v-else-if="activeTab === 'payouts'" class="overflow-x-auto">
           <table class="w-full text-left text-sm">
             <thead>
               <tr class="border-b border-gray-100 text-gray-400 text-xs uppercase tracking-wider font-semibold">
@@ -383,6 +392,62 @@
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- TAB 3: SERVICE SETTINGS -->
+        <div v-else-if="activeTab === 'settings'" class="flex flex-col gap-6 py-2">
+          <div class="border border-gray-200 rounded-2xl p-6 flex flex-col gap-5 max-w-2xl">
+            <div>
+              <h3 class="text-base font-bold text-gray-900">Service Purchase & Fee Settings</h3>
+              <p class="text-xs text-gray-500 mt-1">
+                Configure whether services are free of platform fees (0% fee &amp; $0 service checkout enabled) or set the platform fee percentage applied on service purchase completion.
+              </p>
+            </div>
+
+            <label class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 cursor-pointer">
+              <div>
+                <div class="text-sm font-bold text-gray-900">Free Service Mode (0% Platform Fee)</div>
+                <div class="text-xs text-gray-500 mt-0.5">
+                  When enabled, freelancers keep 100% of service earnings and $0 free services can be purchased directly.
+                </div>
+              </div>
+              <input
+                type="checkbox"
+                v-model="freeServiceEnabled"
+                class="w-5 h-5 accent-purple cursor-pointer"
+              />
+            </label>
+
+            <div class="flex flex-col gap-2" :class="{ 'opacity-50 pointer-events-none': freeServiceEnabled }">
+              <label class="text-xs font-bold uppercase tracking-wider text-gray-700">
+                Service Platform Fee Percentage (%)
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                step="0.5"
+                v-model.number="serviceFeePercentage"
+                :disabled="freeServiceEnabled"
+                class="w-48 px-3 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-900 focus:outline-none focus:border-purple"
+              />
+              <span class="text-[11px] text-gray-400">
+                Applied automatically when a client approves &amp; completes a service purchase.
+              </span>
+            </div>
+
+            <div class="flex justify-end pt-2 border-t border-gray-100">
+              <button
+                type="button"
+                @click="saveServiceSettings"
+                :disabled="isSavingSettings"
+                class="bg-purple text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#7144d6] disabled:opacity-50 transition cursor-pointer flex items-center gap-2"
+              >
+                <Icon v-if="isSavingSettings" icon="line-md:loading-loop" />
+                <span>{{ isSavingSettings ? 'Saving...' : 'Save Service Settings' }}</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -609,12 +674,17 @@ function logout() {
   window.location.href = '/sign_in';
 }
 
-const activeTab = ref<'disputes' | 'payouts'>('disputes');
+const activeTab = ref<'disputes' | 'payouts' | 'settings'>('disputes');
 const disputeFilter = ref('all');
 const payoutFilter = ref('all');
 
 const disputes = ref<Dispute[]>([]);
 const payouts = ref<PayoutRequest[]>([]);
+
+// Service settings state
+const freeServiceEnabled = ref(false);
+const serviceFeePercentage = ref(10);
+const isSavingSettings = ref(false);
 
 // Dispute Detail / Resolution Modal
 const selectedDispute = ref<Dispute | null>(null);
@@ -675,9 +745,10 @@ async function checkAdminAndLoad() {
 async function refreshData() {
   try {
     isLoading.value = true;
-    const [disputesRes, payoutsRes] = await Promise.all([
+    const [disputesRes, payoutsRes, settingsRes] = await Promise.all([
       restAdmin.getDisputes(),
       restAdmin.getPayouts(),
+      restAdmin.getServiceSettings(),
     ]);
 
     if (disputesRes.isSuccess() && disputesRes.value) {
@@ -687,11 +758,35 @@ async function refreshData() {
     if (payoutsRes.isSuccess() && payoutsRes.value) {
       payouts.value = payoutsRes.value;
     }
+
+    if (settingsRes.isSuccess() && settingsRes.value) {
+      freeServiceEnabled.value = settingsRes.value.free_service_enabled;
+      serviceFeePercentage.value = settingsRes.value.service_fee_percentage;
+    }
   } catch (err: any) {
     console.error('Failed to load admin data:', err);
     toastManager?.value?.alertError?.('Failed to load admin data.');
   } finally {
     isLoading.value = false;
+  }
+}
+
+async function saveServiceSettings() {
+  try {
+    isSavingSettings.value = true;
+    const res = await restAdmin.updateServiceSettings({
+      free_service_enabled: freeServiceEnabled.value,
+      service_fee_percentage: Number(serviceFeePercentage.value),
+    });
+    if (res.isSuccess()) {
+      toastManager?.value?.alertSuccess?.('Service settings updated successfully.');
+    } else {
+      toastManager?.value?.alertError?.(res.error || 'Failed to update service settings.');
+    }
+  } catch (err: any) {
+    toastManager?.value?.alertError?.(err?.message || 'Failed to update service settings.');
+  } finally {
+    isSavingSettings.value = false;
   }
 }
 

@@ -85,4 +85,18 @@ export default class RestUserSession {
                 return Result.failure<string, { profile_picture: string; user: User }>(message);
             });
     }
+
+    async deleteAccount(password: string): Promise<Result<string, string>> {
+        return this.axiosInstance.delete('/api/user', { data: { password } })
+            .then(res => {
+                if (res.data?.error) {
+                    return Result.failure<string, string>(res.data.error);
+                }
+                return Result.success<string, string>(res.data?.message || 'Account deleted successfully');
+            })
+            .catch(error => {
+                const message = error.response?.data?.error || error.response?.data?.message || error.message || 'Failed to delete account';
+                return Result.failure<string, string>(message);
+            });
+    }
 };

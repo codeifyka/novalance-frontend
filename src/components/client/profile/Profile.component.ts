@@ -12,6 +12,14 @@ export default {
     let user = ref<User | null>(null);
     const toastManager = inject<Ref<ToastsManager>>("toastManager");
     const isLoading = ref(false);
+    const activeTab = ref<'profile' | 'other'>('profile');
+
+    // Delete account modal state
+    const isDeleteModalOpen = ref(false);
+    const deletePassword = ref("");
+    const deleteError = ref("");
+    const isDeletingAccount = ref(false);
+    const isSavingSettings = ref(false);
 
     // Form errors
     const errors = reactive({
@@ -208,9 +216,54 @@ export default {
       }
     };
 
+    const saveOtherSettings = async () => {
+      if (!user.value) return;
+      try {
+        isSavingSettings.value = true;
+        const restUserSession = new RestUserSession(axios!);
+        const response = await restUserSession.updateUserInfo(user.value);
+        if (response.isSuccess()) {
+          toastManager?.value.alertSuccess("Settings updated successfully.");
+        } else {
+          toastManager?.value.alertError(response.error || "Failed to update settings.");
+        }
+      } catch (e: any) {
+        toastManager?.value.alertError(e?.message || "Failed to update settings.");
+      } finally {
+        isSavingSettings.value = false;
+      }
+    };
+
+    const confirmDeleteAccount = async () => {
+      deleteError.value = "";
+      if (!deletePassword.value) {
+        deleteError.value = "Please enter your password to confirm.";
+        return;
+      }
+      try {
+        isDeletingAccount.value = true;
+        const restUserSession = new RestUserSession(axios!);
+        const response = await restUserSession.deleteAccount(deletePassword.value);
+        if (response.isSuccess()) {
+          localStorage.clear();
+          toastManager?.value.alertSuccess("Account deleted.");
+          location.href = "/";
+        } else {
+          deleteError.value = response.error || "Failed to delete account.";
+        }
+      } catch (e: any) {
+        deleteError.value = e?.response?.data?.error || e?.message || "Failed to delete account.";
+      } finally {
+        isDeletingAccount.value = false;
+      }
+    };
+
     return {
       user,
+      activeTab,
       save,
+      saveOtherSettings,
+      isSavingSettings,
       isLoading,
       errors,
       isPasswordModalOpen,
@@ -224,6 +277,11 @@ export default {
       isAvatarLoading,
       triggerAvatarSelect,
       onAvatarSelected,
+      isDeleteModalOpen,
+      deletePassword,
+      deleteError,
+      isDeletingAccount,
+      confirmDeleteAccount,
     };
   },
 };

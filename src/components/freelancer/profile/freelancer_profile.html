@@ -6,16 +6,16 @@
       <div class="font-bold text-xl">Settings</div>
       <div class="flex flex-col items-start md:flex-row justify-between">
         <div class="flex flex-row md:flex-col gap-4">
-          <div class="flex items-center gap-2 cursor-pointer">
-            <div class="w-4 h-1.5 md:w-1.5 md:h-4 bg-primary"></div>
-            <div class="text-xs">Edit Profile</div>
+          <div @click="activeTab = 'profile'" class="flex items-center gap-2 cursor-pointer">
+            <div :class="`w-4 h-1.5 md:w-1.5 md:h-4 ${activeTab === 'profile' ? 'bg-primary' : 'bg-black/25'}`"></div>
+            <div :class="`text-xs ${activeTab === 'profile' ? 'font-semibold text-primary' : ''}`">Edit Profile</div>
           </div>
-          <div class="flex items-center gap-2 cursor-pointer">
-            <div class="w-4 h-1.5 md:w-1.5 md:h-4 bg-black/25"></div>
-            <div class="text-xs">Other Settings</div>
+          <div @click="activeTab = 'other'" class="flex items-center gap-2 cursor-pointer">
+            <div :class="`w-4 h-1.5 md:w-1.5 md:h-4 ${activeTab === 'other' ? 'bg-primary' : 'bg-black/25'}`"></div>
+            <div :class="`text-xs ${activeTab === 'other' ? 'font-semibold text-primary' : ''}`">Other Settings</div>
           </div>
         </div>
-        <div class="flex flex-col md:w-2/3">
+        <div v-if="activeTab === 'profile'" class="flex flex-col md:w-2/3">
           <div class="flex flex-col gap-2">
             <div class="font-semibold">Edit Profile</div>
             <div class="text-xs font-semibold opacity-70">Fill in your personal details below</div>
@@ -199,6 +199,134 @@
             </div>
           </div>
         </div>
+
+        <!-- OTHER SETTINGS TAB -->
+        <div v-else-if="activeTab === 'other' && user" class="flex flex-col md:w-2/3 gap-6">
+          <div class="flex flex-col gap-1">
+            <div class="font-semibold">Other Settings</div>
+            <div class="text-xs font-semibold opacity-70">Manage your service availability, notifications, and account security</div>
+          </div>
+
+          <!-- Work Availability (Services Only) -->
+          <div class="border border-gray-200 rounded-2xl p-5 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="font-semibold text-sm text-gray-900">Work Availability (Services Only)</h4>
+                <p class="text-xs text-gray-500 mt-0.5">
+                  Visible to clients on your services. Setting this to Unavailable pauses new service orders without affecting your job proposals.
+                </p>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3 mt-1">
+              <button
+                v-for="opt in [
+                  { value: 'available', label: 'Available', dot: 'bg-emerald-500' },
+                  { value: 'busy', label: 'Busy', dot: 'bg-amber-500' },
+                  { value: 'unavailable', label: 'Unavailable', dot: 'bg-rose-500' }
+                ]"
+                :key="opt.value"
+                type="button"
+                @click="user.availability_status = opt.value"
+                class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border text-xs font-semibold cursor-pointer transition"
+                :class="(user.availability_status || 'available') === opt.value ? 'border-primary bg-primary/5 text-primary' : 'border-gray-200 text-gray-600 hover:bg-gray-50'"
+              >
+                <span :class="`w-2 h-2 rounded-full ${opt.dot}`"></span>
+                <span>{{ opt.label }}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Notification Preferences -->
+          <div class="border border-gray-200 rounded-2xl p-5 flex flex-col gap-4">
+            <div>
+              <h4 class="font-semibold text-sm text-gray-900">Notification Preferences</h4>
+              <p class="text-xs text-gray-500 mt-0.5">Choose which notifications you want to receive</p>
+            </div>
+
+            <label class="flex items-center justify-between cursor-pointer">
+              <div>
+                <div class="text-sm font-medium text-gray-800">Proposal Notifications</div>
+                <div class="text-xs text-gray-400">Receive notifications for job proposal updates</div>
+              </div>
+              <input type="checkbox" v-model="user.notify_proposals" class="w-4 h-4 accent-primary cursor-pointer" />
+            </label>
+
+            <label class="flex items-center justify-between cursor-pointer border-t border-gray-100 pt-3">
+              <div>
+                <div class="text-sm font-medium text-gray-800">Service Purchase Notifications</div>
+                <div class="text-xs text-gray-400">Receive notifications when a client purchases your service</div>
+              </div>
+              <input type="checkbox" v-model="user.notify_purchases" class="w-4 h-4 accent-primary cursor-pointer" />
+            </label>
+
+          </div>
+          <div class="flex justify-end pt-2">
+            <button
+              type="button"
+              @click="saveOtherSettings"
+              :disabled="isSavingSettings"
+              class="bg-primary text-white rounded-xl px-6 py-2 text-xs font-semibold hover:bg-opacity-90 disabled:opacity-50 cursor-pointer"
+            >
+              {{ isSavingSettings ? 'Saving...' : 'Save Settings' }}
+            </button>
+          </div>
+
+          <!-- Security & Account (Delete Account) -->
+          <div class="border border-rose-200 bg-rose-50/40 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h4 class="font-semibold text-sm text-rose-700">Delete Account</h4>
+              <p class="text-xs text-rose-600/80 mt-0.5">
+                Permanently delete your account. Blocked if you have active or disputed orders/proposals or remaining balance.
+              </p>
+            </div>
+            <button
+              type="button"
+              @click="isDeleteModalOpen = true; deleteError = ''; deletePassword = ''"
+              class="shrink-0 bg-rose-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl hover:bg-rose-700 transition cursor-pointer"
+            >
+              Delete Account
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Account Confirmation Modal -->
+  <div
+    v-if="isDeleteModalOpen"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+    @click.self="isDeleteModalOpen = false"
+  >
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 flex flex-col gap-4">
+      <div class="flex items-center justify-between pb-3 border-b">
+        <h3 class="text-lg font-bold text-rose-700">Delete Account</h3>
+        <button @click="isDeleteModalOpen = false" class="text-gray-400 hover:text-gray-600 text-xl font-bold cursor-pointer">&times;</button>
+      </div>
+      <p class="text-xs text-gray-600">
+        This action is permanent and cannot be undone. Enter your password to confirm account deletion.
+      </p>
+      <div v-if="deleteError" class="p-3 bg-red-100 border border-red-300 text-red-700 rounded-xl text-xs">
+        {{ deleteError }}
+      </div>
+      <input
+        type="password"
+        v-model="deletePassword"
+        placeholder="Enter your password"
+        class="border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none focus:border-rose-500"
+      />
+      <div class="flex items-center justify-end gap-3 pt-2 border-t">
+        <button type="button" @click="isDeleteModalOpen = false" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-xl cursor-pointer">
+          Cancel
+        </button>
+        <button
+          type="button"
+          @click="confirmDeleteAccount"
+          :disabled="isDeletingAccount"
+          class="px-5 py-2 text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl disabled:opacity-50 cursor-pointer"
+        >
+          {{ isDeletingAccount ? 'Deleting...' : 'Confirm Delete' }}
+        </button>
       </div>
     </div>
   </div>

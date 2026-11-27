@@ -59,6 +59,16 @@ export default class RestAdmin {
             .then(Utils.handleResponse<string, PayoutRequest[]>);
     }
 
+    async getServiceSettings(): Promise<Result<string, { free_service_enabled: boolean; service_fee_percentage: number }>> {
+        return this.axiosInstance.get('/api/admin/settings')
+            .then(Utils.handleResponse<string, { free_service_enabled: boolean; service_fee_percentage: number }>);
+    }
+
+    async updateServiceSettings(payload: { free_service_enabled: boolean; service_fee_percentage: number }): Promise<Result<string, { free_service_enabled: boolean; service_fee_percentage: number }>> {
+        return this.axiosInstance.put('/api/admin/settings', payload)
+            .then(Utils.handleResponse<string, { free_service_enabled: boolean; service_fee_percentage: number }>);
+    }
+
     async processPayout(id: number, admin_notes?: string): Promise<Result<string, PayoutRequest>> {
         return this.axiosInstance.post(`/api/admin/payouts/${id}/process`, { admin_notes })
             .then(Utils.handleResponse<string, PayoutRequest>);

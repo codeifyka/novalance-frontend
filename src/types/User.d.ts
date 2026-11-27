@@ -13,6 +13,9 @@ interface User {
     gender: string;
     country: string;
     profile_picture?: string;
+    notify_proposals?: boolean;
+    notify_purchases?: boolean;
+    availability_status?: 'available' | 'busy' | 'unavailable';
     rememberToken: boolean;
     created_at: string;
     updated_at: string;

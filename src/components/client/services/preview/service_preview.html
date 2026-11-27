@@ -13,7 +13,7 @@
                     </div>
 
                     <!-- Turnaround Delivery Info -->
-                    <div class="flex items-center gap-2 mb-3">
+                    <div class="flex flex-wrap items-center gap-2 mb-3">
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple/10 text-purple">
                             <Icon icon="solar:clock-circle-bold" class="text-sm" />
                             <span>{{ service?.delivery_days || 3 }} Days Standard Delivery</span>
@@ -22,15 +22,35 @@
                             <Icon icon="solar:shield-check-bold" class="text-sm" />
                             <span>Escrow Protected</span>
                         </span>
+                        <span
+                            v-if="service?.user?.availability_status"
+                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold capitalize"
+                            :class="service.user.availability_status === 'unavailable'
+                                ? 'bg-rose-50 text-rose-700'
+                                : service.user.availability_status === 'busy'
+                                ? 'bg-amber-50 text-amber-700'
+                                : 'bg-emerald-50 text-emerald-700'"
+                        >
+                            <span
+                                class="w-2 h-2 rounded-full"
+                                :class="service.user.availability_status === 'unavailable'
+                                    ? 'bg-rose-500'
+                                    : service.user.availability_status === 'busy'
+                                    ? 'bg-amber-500'
+                                    : 'bg-emerald-500'"
+                            ></span>
+                            <span>Seller: {{ service.user.availability_status }}</span>
+                        </span>
                     </div>
 
                     <div class="text-sm py-4 text-gray-600 leading-relaxed">{{service?.description}}</div>
                     <button
                         @click="openCheckoutModal"
-                        class="bg-primary self-end px-16 w-fit text-center py-2.5 rounded-xl text-violet-50 font-semibold mt-8 hover:bg-opacity-90 cursor-pointer flex items-center gap-2 shadow-sm transition"
+                        :disabled="service?.user?.availability_status === 'unavailable'"
+                        class="bg-primary self-end px-16 w-fit text-center py-2.5 rounded-xl text-violet-50 font-semibold mt-8 hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2 shadow-sm transition"
                     >
                         <Icon icon="solar:bag-heart-bold" class="text-lg" />
-                        <span>Order Now · ${{service?.price.value}}</span>
+                        <span>{{ service?.user?.availability_status === 'unavailable' ? 'Seller Unavailable' : `Order Now · $${service?.price.value}` }}</span>
                     </button>
                 </div>
             </div>
