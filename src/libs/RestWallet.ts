@@ -13,6 +13,10 @@ export default class RestWallet {
         return this.axiosInstance.get('/api/wallet').then(Utils.handleResponse<string, WalletSummary>);
     }
 
+    async getGatewayConfig(): Promise<Result<string, WalletGatewayConfig>> {
+        return this.axiosInstance.get('/api/wallet/config').then(Utils.handleResponse<string, WalletGatewayConfig>);
+    }
+
     async depositIntent(amount: number, provider: string = 'stripe'): Promise<Result<string, DepositIntentResult>> {
         return this.axiosInstance.post('/api/wallet/deposit/intent', { amount, provider }).then(Utils.handleResponse<string, DepositIntentResult>);
     }

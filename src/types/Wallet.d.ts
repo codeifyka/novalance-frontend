@@ -81,8 +81,17 @@ interface PayoutRequest {
 interface DepositIntentResult {
     payment_id: string;
     client_secret: string;
+    publishable_key?: string | null;
+    mode?: 'stripe' | 'test_simulation';
     amount: number;
     currency: string;
     status: string;
     provider_data?: Record<string, any>;
+}
+
+interface WalletGatewayConfig {
+    provider: string;
+    stripe_configured: boolean;
+    publishable_key?: string | null;
+    mode: 'stripe' | 'test_simulation';
 }

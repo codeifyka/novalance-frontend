@@ -105,10 +105,10 @@
             </div>
             <div class="text-lg font-bold text-gray-900 flex items-center gap-2">
               <Icon icon="logos:stripe" class="h-6 object-contain" />
-              <span>Strategy</span>
+              <span>{{ stripeConfigured ? 'Elements (Live)' : 'Test Simulation' }}</span>
             </div>
             <p class="text-xs text-gray-500 mt-1">
-              Encapsulated provider layer. Supports testing simulation & card authorization.
+              {{ stripeConfigured ? 'Real-time card checkout via Stripe PaymentElement.' : 'Test fallback active until STRIPE_KEY & STRIPE_SECRET are configured.' }}
             </p>
           </div>
           <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
@@ -220,16 +220,16 @@
       </div>
     </div>
 
-    <!-- Deposit Modal (Stripe Card Simulation) -->
+    <!-- Deposit Modal (Stripe Elements / Test Simulation) -->
     <div
       v-if="isDepositModalOpen"
       class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
-      @click.self="isDepositModalOpen = false"
+      @click.self="closeDepositModal"
     >
-      <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 sm:p-8 flex flex-col gap-6 relative animate-in fade-in zoom-in-95 duration-200">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 sm:p-8 flex flex-col gap-6 relative animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
         <!-- Close button -->
         <button
-          @click="isDepositModalOpen = false"
+          @click="closeDepositModal"
           class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition cursor-pointer"
         >
           <Icon icon="material-symbols:close" class="text-xl" />
@@ -242,12 +242,14 @@
           </div>
           <div>
             <h3 class="text-lg font-bold text-gray-900">Add Funds to Wallet</h3>
-            <p class="text-xs text-gray-500">Secure top-up processed via Stripe Gateway</p>
+            <p class="text-xs text-gray-500">
+              {{ stripeConfigured ? 'Secure card checkout powered by Stripe Elements' : 'Secure top-up processed via Stripe Gateway (Test Mode)' }}
+            </p>
           </div>
         </div>
 
-        <!-- Amount selector -->
-        <div class="flex flex-col gap-2">
+        <!-- Step 1: Amount selector (always visible in simulation mode, or step 1 in live Stripe mode) -->
+        <div v-if="!stripeConfigured || depositStep === 'amount'" class="flex flex-col gap-2">
           <label class="text-xs font-bold uppercase tracking-wider text-gray-600">Select Amount ($USD)</label>
           <div class="grid grid-cols-4 gap-2">
             <button
@@ -275,10 +277,27 @@
           </div>
         </div>
 
-        <!-- Card Simulation Form -->
-        <div class="bg-gray-50/80 border border-gray-200 rounded-xl p-4 flex flex-col gap-3">
+        <!-- LIVE STRIPE ELEMENTS CHECKOUT (Step 2) -->
+        <div v-if="stripeConfigured && depositStep === 'payment'" class="flex flex-col gap-4">
+          <div class="flex items-center justify-between bg-purple/5 border border-purple/10 rounded-xl px-4 py-3">
+            <span class="text-xs font-semibold text-gray-600">Deposit Total</span>
+            <span class="text-lg font-black text-purple">${{ Number(depositAmount).toFixed(2) }} USD</span>
+          </div>
+
+          <div class="bg-white border border-gray-200 rounded-xl p-4 min-h-[160px] flex flex-col justify-center">
+            <div id="stripe-payment-element" ref="paymentElementRef"></div>
+          </div>
+
+          <div v-if="stripeError" class="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 font-medium flex items-center gap-2">
+            <Icon icon="solar:danger-triangle-bold" class="text-base shrink-0" />
+            <span>{{ stripeError }}</span>
+          </div>
+        </div>
+
+        <!-- TEST SIMULATION FALLBACK (when live Stripe keys aren't configured) -->
+        <div v-else-if="!stripeConfigured" class="bg-gray-50/80 border border-gray-200 rounded-xl p-4 flex flex-col gap-3">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-gray-500">Card Information</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-gray-500">Card Information (Simulation)</span>
             <button
               type="button"
               @click="fillTestCard"
@@ -289,7 +308,6 @@
             </button>
           </div>
 
-          <!-- Card Number -->
           <div>
             <input
               type="text"
@@ -316,22 +334,56 @@
 
           <p class="text-[11px] text-gray-400 flex items-center gap-1">
             <Icon icon="solar:shield-check-linear" class="text-emerald-500 text-sm" />
-            <span>Stripe test environment simulation enabled. No real charges.</span>
+            <span>Stripe test simulation active. Configure STRIPE_KEY &amp; STRIPE_SECRET to enable Stripe PaymentElement.</span>
           </p>
         </div>
 
-        <!-- Submit Button -->
+        <!-- Action Buttons -->
         <div class="flex items-center justify-end gap-3 pt-2">
           <button
+            v-if="stripeConfigured && depositStep === 'payment'"
             type="button"
-            @click="isDepositModalOpen = false"
+            @click="resetStripeStep"
+            :disabled="isSubmittingDeposit"
+            class="px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 transition cursor-pointer"
+          >
+            &larr; Change Amount
+          </button>
+          <button
+            v-else
+            type="button"
+            @click="closeDepositModal"
             class="px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 transition cursor-pointer"
           >
             Cancel
           </button>
+
           <button
+            v-if="stripeConfigured && depositStep === 'amount'"
             type="button"
-            @click="handleDeposit"
+            @click="initStripeCheckout"
+            :disabled="isInitializingStripe || depositAmount <= 0"
+            class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-purple hover:bg-[#7144d6] disabled:opacity-50 transition flex items-center gap-2 cursor-pointer shadow-sm"
+          >
+            <Icon v-if="isInitializingStripe" icon="line-md:loading-loop" class="text-base" />
+            <span>{{ isInitializingStripe ? 'Loading Stripe...' : `Continue to Card ($${depositAmount || 0})` }}</span>
+          </button>
+
+          <button
+            v-else-if="stripeConfigured && depositStep === 'payment'"
+            type="button"
+            @click="confirmStripePayment"
+            :disabled="isSubmittingDeposit"
+            class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-purple hover:bg-[#7144d6] disabled:opacity-50 transition flex items-center gap-2 cursor-pointer shadow-sm"
+          >
+            <Icon v-if="isSubmittingDeposit" icon="line-md:loading-loop" class="text-base" />
+            <span>{{ isSubmittingDeposit ? 'Authorizing...' : `Pay $${depositAmount || 0}` }}</span>
+          </button>
+
+          <button
+            v-else
+            type="button"
+            @click="handleSimulatedDeposit"
             :disabled="isSubmittingDeposit || depositAmount <= 0"
             class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-purple hover:bg-[#7144d6] disabled:opacity-50 transition flex items-center gap-2 cursor-pointer shadow-sm"
           >
@@ -444,8 +496,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, inject, type Ref } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick, inject, type Ref } from 'vue';
 import type { AxiosInstance } from 'axios';
+import { loadStripe, type Stripe, type StripeElements, type StripePaymentElement } from '@stripe/stripe-js';
 import { ClientHeaderVue } from '@/components/client/header';
 import FreeLancerHeaderVue from '@/components/freelancer/header/Header.vue';
 import RestWallet from '@/libs/RestWallet';
@@ -462,6 +515,18 @@ const accountType = ref<string | null>(null);
 const wallet = ref<WalletSummary | null>(null);
 const isLoading = ref<boolean>(true);
 const activeFilter = ref<string>('all');
+
+// Stripe Gateway & Elements state
+const stripeConfigured = ref<boolean>(false);
+const stripePublishableKey = ref<string | null>(null);
+const depositStep = ref<'amount' | 'payment'>('amount');
+const paymentElementRef = ref<HTMLElement | null>(null);
+const isInitializingStripe = ref(false);
+const stripeError = ref('');
+let stripeInstance: Stripe | null = null;
+let stripeElements: StripeElements | null = null;
+let paymentElement: StripePaymentElement | null = null;
+let activePaymentIntentId: string | null = null;
 
 // Deposit Modal
 const isDepositModalOpen = ref(false);
@@ -491,9 +556,16 @@ async function loadWallet() {
   try {
     isLoading.value = true;
     accountType.value = userSessionRepo.getAccountType();
-    const result = await restWallet.getMyWallet();
-    if (result.isSuccess() && result.value) {
-      wallet.value = result.value;
+    const [walletRes, configRes] = await Promise.all([
+      restWallet.getMyWallet(),
+      restWallet.getGatewayConfig(),
+    ]);
+    if (walletRes.isSuccess() && walletRes.value) {
+      wallet.value = walletRes.value;
+    }
+    if (configRes.isSuccess() && configRes.value) {
+      stripeConfigured.value = Boolean(configRes.value.stripe_configured);
+      stripePublishableKey.value = configRes.value.publishable_key || null;
     }
   } catch (err: any) {
     console.error('Failed to load wallet:', err);
@@ -507,10 +579,37 @@ onMounted(() => {
   loadWallet();
 });
 
+onBeforeUnmount(() => {
+  destroyStripeElement();
+});
+
+function destroyStripeElement() {
+  if (paymentElement) {
+    paymentElement.destroy();
+    paymentElement = null;
+  }
+  stripeElements = null;
+  activePaymentIntentId = null;
+  stripeError.value = '';
+}
+
 function openDepositModal() {
   depositAmount.value = 50;
+  depositStep.value = 'amount';
+  destroyStripeElement();
   fillTestCard();
   isDepositModalOpen.value = true;
+}
+
+function closeDepositModal() {
+  destroyStripeElement();
+  depositStep.value = 'amount';
+  isDepositModalOpen.value = false;
+}
+
+function resetStripeStep() {
+  destroyStripeElement();
+  depositStep.value = 'amount';
 }
 
 function fillTestCard() {
@@ -519,7 +618,117 @@ function fillTestCard() {
   cardCvc.value = '123';
 }
 
-async function handleDeposit() {
+async function initStripeCheckout() {
+  if (depositAmount.value <= 0) {
+    toastManager?.value?.alertError?.('Please enter a valid deposit amount.');
+    return;
+  }
+
+  try {
+    isInitializingStripe.value = true;
+    stripeError.value = '';
+
+    const intentRes = await restWallet.depositIntent(depositAmount.value, 'stripe');
+    if (!intentRes.isSuccess() || !intentRes.value) {
+      throw new Error(intentRes.error || 'Failed to initialize payment.');
+    }
+
+    const { payment_id, client_secret, publishable_key, mode } = intentRes.value;
+
+    // If backend fell back to test simulation, complete via simulated flow
+    if (mode === 'test_simulation' || !publishable_key) {
+      stripeConfigured.value = false;
+      const confirmRes = await restWallet.confirmDeposit(payment_id, depositAmount.value, 'stripe');
+      if (!confirmRes.isSuccess()) {
+        throw new Error(confirmRes.error || 'Failed to confirm deposit.');
+      }
+      toastManager?.value?.alertSuccess?.(`Successfully added $${depositAmount.value.toFixed(2)} to your balance!`);
+      closeDepositModal();
+      await loadWallet();
+      return;
+    }
+
+    activePaymentIntentId = payment_id;
+    stripeInstance = await loadStripe(publishable_key);
+    if (!stripeInstance) {
+      throw new Error('Failed to load Stripe.js.');
+    }
+
+    depositStep.value = 'payment';
+    await nextTick();
+
+    stripeElements = stripeInstance.elements({
+      clientSecret: client_secret,
+      appearance: {
+        theme: 'stripe',
+        variables: {
+          colorPrimary: '#7c3aed',
+          borderRadius: '12px',
+        },
+      },
+    });
+
+    paymentElement = stripeElements.create('payment');
+    if (paymentElementRef.value) {
+      paymentElement.mount(paymentElementRef.value);
+    }
+  } catch (err: any) {
+    console.error('Stripe initialization error:', err);
+    toastManager?.value?.alertError?.(err.message || 'Could not start Stripe checkout.');
+    depositStep.value = 'amount';
+  } finally {
+    isInitializingStripe.value = false;
+  }
+}
+
+async function confirmStripePayment() {
+  if (!stripeInstance || !stripeElements) {
+    stripeError.value = 'Stripe payment form is not ready.';
+    return;
+  }
+
+  try {
+    isSubmittingDeposit.value = true;
+    stripeError.value = '';
+
+    const { error, paymentIntent } = await stripeInstance.confirmPayment({
+      elements: stripeElements,
+      confirmParams: {
+        return_url: window.location.href,
+      },
+      redirect: 'if_required',
+    });
+
+    if (error) {
+      stripeError.value = error.message || 'Card payment failed.';
+      toastManager?.value?.alertError?.(stripeError.value);
+      return;
+    }
+
+    const confirmedId = paymentIntent?.id || activePaymentIntentId;
+    if (!confirmedId || paymentIntent?.status !== 'succeeded') {
+      stripeError.value = `Payment status: ${paymentIntent?.status || 'incomplete'}. Please complete authentication.`;
+      return;
+    }
+
+    const confirmRes = await restWallet.confirmDeposit(confirmedId, depositAmount.value, 'stripe');
+    if (!confirmRes.isSuccess() || !confirmRes.value) {
+      throw new Error(confirmRes.error || 'Failed to credit wallet after payment.');
+    }
+
+    toastManager?.value?.alertSuccess?.(`Successfully added $${depositAmount.value.toFixed(2)} to your balance!`);
+    closeDepositModal();
+    await loadWallet();
+  } catch (err: any) {
+    console.error('Stripe confirmation error:', err);
+    stripeError.value = err.message || 'Payment confirmation failed.';
+    toastManager?.value?.alertError?.(stripeError.value);
+  } finally {
+    isSubmittingDeposit.value = false;
+  }
+}
+
+async function handleSimulatedDeposit() {
   if (depositAmount.value <= 0) {
     toastManager?.value?.alertError?.('Please enter a valid deposit amount.');
     return;
@@ -527,22 +736,19 @@ async function handleDeposit() {
 
   try {
     isSubmittingDeposit.value = true;
-    // Step 1: Create deposit intent
     const intentRes = await restWallet.depositIntent(depositAmount.value, 'stripe');
     if (!intentRes.isSuccess() || !intentRes.value) {
       throw new Error(intentRes.error || 'Failed to create deposit intent.');
     }
 
     const paymentId = intentRes.value.payment_id;
-
-    // Step 2: Confirm deposit with provider verification
     const confirmRes = await restWallet.confirmDeposit(paymentId, depositAmount.value, 'stripe');
     if (!confirmRes.isSuccess() || !confirmRes.value) {
       throw new Error(confirmRes.error || 'Failed to confirm deposit.');
     }
 
     toastManager?.value?.alertSuccess?.(`Successfully added $${depositAmount.value.toFixed(2)} to your balance!`);
-    isDepositModalOpen.value = false;
+    closeDepositModal();
     await loadWallet();
   } catch (err: any) {
     console.error('Deposit error:', err);
