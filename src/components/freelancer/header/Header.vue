@@ -1,5 +1,5 @@
 <template>
-<nav :class="['w-full', 'h-16', 'md:h-20', 'shadow-sm', 'flex', 'px-8', 'md:px-24', 'justify-between', 'items-center', 'fixed', 'top-0', 'z-50', 'bg-white']">
+<nav :class="['w-full', 'h-16', 'md:h-20', 'shadow-sm', 'flex', 'px-8', 'md:px-24', 'justify-between', 'items-center', 'fixed', 'top-0', 'z-50', 'bg-white','shadow-md','shadow-white']">
   <router-link to="/home" class="h-full flex items-center cursor-pointer">
     <img src="/logo.png" class="mr-2 h-8 object-contain rounded-full" alt="NovaLance logo" />
     <span class="text-black text-xl font-bold inline-block hover:text-primary">NovaLance</span>

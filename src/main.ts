@@ -66,7 +66,9 @@ app.component("Pagination", PaginationVue);
 // WebSocket
 const protocol = import.meta.env.MODE == "development" ? "ws" : "wss"; // Use 'wss' in production for secure WebSocket
 const ws_host = import.meta.env.MODE == "development" ? "127.0.0.1:8001" : window.location.host;
-const ws = new WebSocket(`${protocol}://${ws_host}/ws`);
+const wsToken = localStorage.getItem('access_token');
+const wsUrl = wsToken ? `${protocol}://${ws_host}/ws?token=${encodeURIComponent(wsToken)}` : `${protocol}://${ws_host}/ws`;
+const ws = new WebSocket(wsUrl);
 
 
 ws.onopen = () => { console.log("WebSocket connection is open."); }

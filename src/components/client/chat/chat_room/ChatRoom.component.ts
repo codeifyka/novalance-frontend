@@ -3,6 +3,7 @@ import { onClickOutside } from '@vueuse/core';
 import RestChat from '@/libs/RestChat';
 import RestClientJobs from '@/libs/RestClientJobs';
 import RestUserSession from '@/libs/RestUserSession';
+import UserSessionRepository from '@/libs/UserSessionRepository';
 import { ModalVue } from './modal';
 import { DEFAULT_PROFILE_PICTURE } from '@/consts';
 import type { AxiosInstance } from 'axios';
@@ -45,7 +46,8 @@ export default defineComponent({
         return;
       }
 
-      ws.send(JSON.stringify({ type: 'connect', userId: user.value?.id, channelId: freelancer.value?.freelancer_id, JobPostId: JobPost.value?.id }));
+      const token = new UserSessionRepository(localStorage).getAccessToken();
+      ws.send(JSON.stringify({ type: 'connect', token, userId: user.value?.id, channelId: freelancer.value?.freelancer_id, JobPostId: JobPost.value?.id }));
     };
 
     const sendMessage = async () => {

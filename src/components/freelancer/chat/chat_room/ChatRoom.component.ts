@@ -3,6 +3,7 @@ import { onClickOutside } from '@vueuse/core';
 import RestChat from '@/libs/RestChat';
 import RestClientJobs from '@/libs/RestClientJobs';
 import RestUserSession from '@/libs/RestUserSession';
+import UserSessionRepository from '@/libs/UserSessionRepository';
 import { ModalVue } from './modal';
 import Loading from '@/components/loading/Loading.component';
 import { DEFAULT_PROFILE_PICTURE } from '@/consts';
@@ -45,8 +46,10 @@ export default defineComponent({
       if (!ws || ws.readyState !== WebSocket.OPEN) {
         return;
       }
+      const token = new UserSessionRepository(localStorage).getAccessToken();
       ws.send(JSON.stringify({
         type: 'connect',
+        token,
         userId: user.value?.id,
         channelId: client.value.client.id,
         JobPostId: JobPost.value?.id,
